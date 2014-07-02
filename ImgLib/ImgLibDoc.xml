@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ImgLib</name>
+    </assembly>
+    <members>
+        <member name="T:ImgLib.Encoding.ImageDecoder">
+            <summary>
+            This interface represents an object that can convert its internal image data encoded with the encoding represented by this object, into an Image object.
+            </summary>
+        </member>
+        <member name="M:ImgLib.Encoding.ImageDecoder.DecodeImage">
+            <summary>
+            Constructs an Image object associated to this ImageEncoder
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ImgLib.Encoding.ColorEncoder">
+            <summary>
+            Base class for implementing color encoders. A color encoder is an object that converts a sequence of Color objects
+            into a raw encoding.
+            One example of implementation is ColorEncoder32BitRGBA, that converts a Color into four bytes representing the four components RGBA.
+            </summary>
+        </member>
+        <member name="M:ImgLib.Encoding.ColorEncoder.EncodeColors(System.Drawing.Color[],System.Int32,System.Int32)">
+            <summary>
+            Encodes an array of colors into an array of bytes, following the encoding of this object.
+            </summary>
+            <param name="colors">The array of colors to be encoded.</param>
+            <param name="start">The position of the first color to be encoded.</param>
+            <param name="length">How many colors need to be encoded.</param>
+        </member>
+        <member name="M:ImgLib.Encoding.ColorEncoder.EncodeColors(System.Drawing.Color[])">
+            <summary>
+            See byte[] EncodeColors(Color[] colors, int start, int length) documentation.
+            </summary>
+            <param name="colors"></param>
+            <returns></returns>
+        </member>
+        <member name="P:ImgLib.Encoding.ColorEncoder.BitDepth">
+            <summary>
+            Returns the size in bit of one encoded color in this format.
+            </summary>
+        </member>
+        <member name="T:ImgLib.Encoding.ImageEncoder">
+            <summary>
+            This interface represents an object that can convert its internal image data into the given stream, following the encoding implemented by this object.
+            </summary>
+        </member>
+        <member name="M:ImgLib.Encoding.ImageEncoder.Encode(System.IO.Stream)">
+            <summary>
+            Encode to the given stream, the image associated to this ImageEncoder.
+            </summary>
+            <param name="s"></param>
+        </member>
+        <member name="T:ImgLib.Encoding.ColorDecoder">
+            <summary>
+            Base class for implementing color decoders. A color decoder is an object that converts a byte array of raw color data into a sequence of Colors.
+            One example of implementation is ColorDecoder32BitRGBA, that converts quadruples of bytes representing the four components RGBA.
+            </summary>
+        </member>
+        <member name="M:ImgLib.Encoding.ColorDecoder.DecodeColors(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Decodes an array of bytes, representing a sequence of color data in some format,
+            into an array of Colors objects.
+            </summary>
+            <param name="colors">The encoded byte array representing the sequence of colors to decode.</param>
+            <param name="start">the position in the byte array from which to start.</param>
+            <param name="length">How many bytes have to be considered. If the length is such that the last pixel cannot be completely decoded, then this pixel is discarded.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ImgLib.Encoding.ColorDecoder.DecodeColors(System.Byte[])">
+            <summary>
+            See Color[] DecodeColors(byte[] colors, int start, int length) documentation.
+            </summary>
+        </member>
+        <member name="P:ImgLib.Encoding.ColorDecoder.BitDepth">
+            <summary>
+            Returns the size in bit of one encoded color in this format.
+            </summary>
+        </member>
+        <member name="T:ImgLib.Formats.TextureFormat">
+            <summary>
+            A TextureFormat is used to retrieve image data from a particular format, save this data into this same format and import/export
+            this data into a suitable format for editing. A TextureFormat can contain more than one images, in general.
+            </summary>
+        </member>
+        <member name="M:ImgLib.Formats.TextureFormat.Open(System.IO.Stream)">
+            <summary>
+            Opens from the given stream, data encoded in the format represented by this texture format.
+            </summary>
+            <param name="formatData"></param>
+        </member>
+        <member name="M:ImgLib.Formats.TextureFormat.Save(System.IO.Stream)">
+            <summary>
+            Saves this texture to the given stream into the format represented by this texture format.
+            </summary>
+            <param name="outFormatData"></param>
+        </member>
+        <member name="M:ImgLib.Formats.TextureFormat.Import(System.IO.Stream,System.String)">
+            <summary>
+            Initializes this texture from a given metadata stream and a directory containing image data.
+            </summary>
+            <param name="metadata"></param>
+            <param name="directory"></param>
+        </member>
+        <member name="M:ImgLib.Formats.TextureFormat.Export(System.IO.Stream,System.String,System.String)">
+            <summary>
+            Exports this texture's metadata (if any) and image data into the given directory. ImageData files' names may be constructed
+            starting from a base name.
+            </summary>
+            <param name="metadata"></param>
+            <param name="directory"></param>
+            <param name="basename"></param>
+        </member>
+        <member name="P:ImgLib.Formats.TextureFormat.Extension">
+            <summary>
+            The preferred extension for files of this texture format.
+            </summary>
+        </member>
+        <member name="P:ImgLib.Formats.TextureFormat.Name">
+            <summary>
+            A human readable name for this format.
+            </summary>
+        </member>
+        <member name="P:ImgLib.Formats.TextureFormat.Images">
+            <summary>
+            The collection of images associated to this texture.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C4117527-926B-4588-BDE3-53EC241E62B4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ImgLib</RootNamespace>
+    <AssemblyName>ImgLib</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ImgLib\Encoding\ColorEncoders.cs" />
+    <Compile Include="ImgLib\Common\ImgUtils.cs" />
+    <Compile Include="ImgLib\Encoding\IndexRetriever.cs" />
+    <Compile Include="ImgLib\Encoding\IndexRetrievers.cs" />
+    <Compile Include="ImgLib\Encoding\ImageDecoder.cs" />
+    <Compile Include="ImgLib\Encoding\ImageEncoder.cs" />
+    <Compile Include="ImgLib\Formats\Serializers\TIM2SegmentSerializer.cs" />
+    <Compile Include="ImgLib\Formats\Serializers\TIM2TextureSerializer.cs" />
+    <Compile Include="ImgLib\Formats\TextureFormat.cs" />
+    <Compile Include="ImgLib\Encoding\IndexedImageDecoder.cs" />
+    <Compile Include="ImgLib\Encoding\ColorDecoder.cs" />
+    <Compile Include="ImgLib\Encoding\ColorDecoders.cs" />
+    <Compile Include="ImgLib\Encoding\ColorEncoder.cs" />
+    <Compile Include="ImgLib\Formats\Serializers\TextureFormatSerializer.cs" />
+    <Compile Include="ImgLib\Formats\TextureFormatBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ImgLib\Encoding\SwizzledIndexedImageDecoder.cs" />
+    <Compile Include="ImgLib\Encoding\SwizzledTrueColorImageDecoder.cs" />
+    <Compile Include="ImgLib\Formats\TIM2Texture.cs" />
+    <Compile Include="ImgLib\Formats\TIM2Segment.cs" />
+    <Compile Include="ImgLib\Encoding\TrueColorImageDecoder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nQuant.Core\nQuant.Core.csproj">
+      <Project>{A59307EA-FCB0-4110-BC42-0417871C24C4}</Project>
+      <Name>nQuant.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
