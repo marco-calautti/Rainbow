@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ImgLib.Formats.Serializers
 {
-    interface TextureFormatSerializer
+    public interface TextureFormatSerializer
     {
         /// <summary>
         /// Opens data encoded in the format implemented by this TextureFormatSerializer from the given stream.

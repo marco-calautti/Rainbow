@@ -17,15 +17,12 @@ namespace TIM2Conv
         private PictureBox box;
         private TIM2Texture img;
 
-        public PreviewForm(string filename)
+        public PreviewForm(TIM2Texture tim,string filename)
         {
             this.Text = "TIM2Conv - Preview of " + Path.GetFileName(filename);
             box = new PictureBox();
 
-
-            using (FileStream s = File.OpenRead(filename))
-                img = (TIM2Texture)new TIM2TextureSerializer().Open(s);
-
+            img = tim;
 
             box.Image = img.GetImage();
             box.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -79,19 +76,34 @@ namespace TIM2Conv
 
             try
             {
+                TextureFormatSerializer serializer = new TIM2TextureSerializer();
+                TIM2Texture tim = null;
+                switch (Path.GetExtension(args[0]))
+                {
+                    case ".tm2":
+                        using (Stream s = File.OpenRead(args[0]))
+                            tim = (TIM2Texture)serializer.Open(s);
+                        break;
+                    case ".xml":
+                        using (Stream s = File.OpenRead(args[0]))
+                            tim = (TIM2Texture)serializer.Import(s, Path.GetDirectoryName(args[0]));
+                        break;
+                    default:
+                        Console.WriteLine("Unsupported format");
+                        break;
+                }
+
                 if (args.Length == 1)
                 {
-                    PreviewForm form = new PreviewForm(args[0]);
+                    
+                    PreviewForm form = new PreviewForm(tim,args[0]);
                     form.Show();
                     Application.Run(form);
                 }
                 else
                 {
                     bool swizzled = args.Length == 2;
-                    TIM2Texture tim = null;
-                    using (Stream s = File.OpenRead(args[0]))
-                        tim = (TIM2Texture)new TIM2TextureSerializer().Import(s, Path.GetDirectoryName(args[0]));
-
+                    
                     using (Stream s=File.Open(args[1],FileMode.Create))
                         new TIM2TextureSerializer().Export(tim,s,Path.GetDirectoryName(args[1]),Path.GetFileNameWithoutExtension(args[1]));
                 }

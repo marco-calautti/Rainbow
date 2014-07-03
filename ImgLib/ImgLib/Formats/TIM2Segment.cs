@@ -12,7 +12,6 @@ namespace ImgLib.Formats
     {
         internal class TIM2SegmentParameters
         {
-
             internal int width, height;
             internal bool swizzled = false;
             internal byte format;
@@ -90,7 +89,7 @@ namespace ImgLib.Formats
                     return;
 
                 parameters.swizzled = value;
-                imageData = ImgUtils.unSwizzle(imageData, parameters.width, parameters.height, parameters.bpp);
+                imageData = parameters.swizzled? ImgUtils.unSwizzle(imageData, parameters.width, parameters.height, parameters.bpp) : ImgUtils.Swizzle(imageData,parameters.width,parameters.height,parameters.bpp);
                 CreateImageDecoder(imageData);
             }
         }

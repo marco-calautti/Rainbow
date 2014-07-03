@@ -64,8 +64,6 @@
     <Compile Include="ImgLib\Formats\Serializers\TextureFormatSerializer.cs" />
     <Compile Include="ImgLib\Formats\TextureFormatBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ImgLib\Encoding\SwizzledIndexedImageDecoder.cs" />
-    <Compile Include="ImgLib\Encoding\SwizzledTrueColorImageDecoder.cs" />
     <Compile Include="ImgLib\Formats\TIM2Texture.cs" />
     <Compile Include="ImgLib\Formats\TIM2Segment.cs" />
     <Compile Include="ImgLib\Encoding\TrueColorImageDecoder.cs" />
