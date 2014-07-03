@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace ImgLib.Formats.Serializers
 {
@@ -12,7 +13,6 @@ namespace ImgLib.Formats.Serializers
 
         public TextureFormat Open(Stream formatData)
         {
-            bool swizzled = true;
             int version, textureCount;
             ReadHeader(formatData, out version, out textureCount);
 
@@ -21,14 +21,12 @@ namespace ImgLib.Formats.Serializers
 
             for (int i = 0; i < textureCount; i++)
             {
-                TextureFormatSerializer serializer = new TIM2SegmentSerializer();
+                TextureFormatSerializer serializer = new TIM2SegmentSerializer(false);
                 TIM2Segment segment=(TIM2Segment)serializer.Open(formatData);
                 imagesList.Add(segment);
-                swizzled = segment.Swizzled;
             }
 
             TIM2Texture tim = new TIM2Texture(imagesList);
-            tim.Swizzled = swizzled;
             tim.Version = version;
             return tim;
         }
@@ -77,35 +75,40 @@ namespace ImgLib.Formats.Serializers
         public TextureFormat Import(Stream metadata, string directory)
         {
             TIM2Texture tim2=null;
-            XmlReader reader = XmlReader.Create(metadata);
             try
             {
-                reader.ReadStartElement("TIM2");
-                int version = int.Parse(reader.GetAttribute("version"));
-                string basename = reader.GetAttribute("basename");
-                bool swizzled = bool.Parse(reader.GetAttribute("swizzled"));
-                int textureCount = int.Parse(reader.GetAttribute("textures"));
+                XDocument doc = XDocument.Load(metadata);
+                if (doc.Root.Name != "TIM2")
+                    throw new Exception();
 
+                XElement node = doc.Root;
+
+                int version = int.Parse(node.Attribute("version").Value);
+                string basename = node.Attribute("basename").Value;
+                bool swizzled = bool.Parse(node.Attribute("swizzled").Value);
+                int textureCount = int.Parse(node.Attribute("textures").Value);
+                
                 List<TIM2Segment> imagesList = new List<TIM2Segment>();
 
-                for (int i = 0; i < textureCount; i++)
+                var children = node.Elements();
+                foreach(XNode child in children)
                 {
-                    TIM2Segment segment = (TIM2Segment) new TIM2SegmentSerializer().Import(metadata, directory);
+                    string childMetadata = child.ToString();
+                    MemoryStream s = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(childMetadata));
+                    TIM2Segment segment = (TIM2Segment) new TIM2SegmentSerializer(swizzled).Import(s, directory);
                     imagesList.Add(segment);
                 }
-                reader.ReadEndElement();
 
                 tim2 = new TIM2Texture(imagesList);
-                tim2.Swizzled = swizzled;
                 tim2.Version = version;
-            }
-            catch (XmlException e)
-            {
-                throw new TextureFormatException("Not valid metadata!", e);
             }
             catch (FormatException e)
             {
                 throw new TextureFormatException("Cannot parse value!", e);
+            }
+            catch (Exception e)
+            {
+                throw new TextureFormatException("Not valid metadata!", e);
             }
    
             return tim2;

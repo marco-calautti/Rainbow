@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Xml;
 using ImgLib.Encoding;
+using ImgLib.Common;
 
 namespace ImgLib.Formats
 {
@@ -13,6 +14,7 @@ namespace ImgLib.Formats
         {
 
             internal int width, height;
+            internal bool swizzled = false;
             internal byte format;
             internal byte bpp;
             internal int pixelSize;
@@ -27,7 +29,6 @@ namespace ImgLib.Formats
         private TIM2SegmentParameters parameters=new TIM2SegmentParameters();
 
         private byte[] imageData;
-        private bool swizzled;
         private Color[][] palettes = new Color[0][];
         private ImageDecoder decoder;
 
@@ -37,6 +38,8 @@ namespace ImgLib.Formats
         {
             this.imageData = imageData;
             this.parameters = parameters;
+            if (parameters.swizzled)
+                this.imageData = ImgUtils.unSwizzle(imageData, parameters.width, parameters.height, parameters.bpp);
 
             ConstructPalettes(paletteData, colorEntries);
             CreateImageDecoder(imageData);
@@ -44,7 +47,26 @@ namespace ImgLib.Formats
 
         internal TIM2Segment(ICollection<Image> images,TIM2SegmentParameters parameters)
         {
+            this.parameters = parameters;
 
+            if(parameters.bpp>8) //true color image
+            {
+                if (images.Count > 1) //something wrong, we can have at most one true color segment
+                    throw new TextureFormatException("Too many images for this true color segment!");
+
+                IEnumerator<Image> en = images.GetEnumerator();
+                en.MoveNext();
+                imageData=GetColorEncoder(parameters.pixelSize).
+                                         EncodeColors(
+                                            en.Current.GetColorArray() //I love extension methods. Hurray!
+                                         );
+            }else
+            {
+                IndexedImageEncoder encoder=new IndexedImageEncoder(new List<Image>(images), 1 << parameters.bpp);
+                imageData = encoder.Encode();
+                palettes = new List<Color[]>(encoder.Palettes).ToArray();
+            }
+            CreateImageDecoder(imageData);
         }
 
         #region Properties
@@ -61,10 +83,14 @@ namespace ImgLib.Formats
 
         public bool Swizzled
         {
-            get { return swizzled; }
+            get { return parameters.swizzled; }
             set
             {
-                swizzled = value;
+                if (parameters.swizzled == value)
+                    return;
+
+                parameters.swizzled = value;
+                imageData = ImgUtils.unSwizzle(imageData, parameters.width, parameters.height, parameters.bpp);
                 CreateImageDecoder(imageData);
             }
         }
@@ -90,21 +116,14 @@ namespace ImgLib.Formats
         {
             if (Bpp <= 8) //here we have an Indexed TIM2
             {
-                decoder = Swizzled ? new SwizzledIndexedImageDecoder(imageData,
-                                              parameters.width, parameters.height,
-                                              IndexRetriever.FromBitPerPixel(Bpp),
-                                              palettes[GetActivePalette()]) :
-                                     new IndexedImageDecoder(imageData,
+                decoder = new IndexedImageDecoder(imageData,
                                               parameters.width, parameters.height,
                                               IndexRetriever.FromBitPerPixel(Bpp),
                                               palettes[GetActivePalette()]);
             }
             else //otherwise, we have a true color TIM2
             {
-                decoder = Swizzled ? new SwizzledTrueColorImageDecoder(imageData,
-                                              parameters.width, parameters.height,
-                                              GetColorDecoder(parameters.pixelSize)) :
-                                    new TrueColorImageDecoder(imageData,
+                decoder = new TrueColorImageDecoder(imageData,
                                               parameters.width, parameters.height,
                                               GetColorDecoder(parameters.pixelSize));
 

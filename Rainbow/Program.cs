@@ -89,9 +89,9 @@ namespace TIM2Conv
                 {
                     bool swizzled = args.Length == 2;
                     TIM2Texture tim = null;
-                    using(Stream s=File.OpenRead(args[0]))
-                        tim = (TIM2Texture)new TIM2TextureSerializer().Open(s);
-                    tim.Swizzled = swizzled;
+                    using (Stream s = File.OpenRead(args[0]))
+                        tim = (TIM2Texture)new TIM2TextureSerializer().Import(s, Path.GetDirectoryName(args[0]));
+
                     using (Stream s=File.Open(args[1],FileMode.Create))
                         new TIM2TextureSerializer().Export(tim,s,Path.GetDirectoryName(args[1]),Path.GetFileNameWithoutExtension(args[1]));
                 }

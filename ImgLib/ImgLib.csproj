@@ -47,6 +47,9 @@
   <ItemGroup>
     <Compile Include="ImgLib\Encoding\ColorEncoders.cs" />
     <Compile Include="ImgLib\Common\ImgUtils.cs" />
+    <Compile Include="ImgLib\Encoding\IndexedImageEncoder.cs" />
+    <Compile Include="ImgLib\Encoding\IndexPacker.cs" />
+    <Compile Include="ImgLib\Encoding\IndexPackers.cs" />
     <Compile Include="ImgLib\Encoding\IndexRetriever.cs" />
     <Compile Include="ImgLib\Encoding\IndexRetrievers.cs" />
     <Compile Include="ImgLib\Encoding\ImageDecoder.cs" />

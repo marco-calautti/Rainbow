@@ -1,7 +1,19 @@
-﻿namespace ImgLib.Common
+﻿using System.Collections.Generic;
+using System.Drawing;
+namespace ImgLib.Common
 {
     public static class ImgUtils
     {
+        public static Color[] GetColorArray(this Image img)
+        {
+            Bitmap bmp = new Bitmap(img);
+            var list = new List<Color>();
+            for (int x = 0; x < img.Width; x++)
+                for (int y = 0; y < img.Height; y++)
+                    list.Add(bmp.GetPixel(x, y));
+            return list.ToArray();
+        }
+
         public static byte[] unSwizzle(byte[] Swizzled, int w, int height, int bitDepth)
         {
             byte[] Buf = new byte[Swizzled.Length];

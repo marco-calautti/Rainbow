@@ -6,11 +6,22 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace ImgLib.Formats.Serializers
 {
     internal class TIM2SegmentSerializer : TextureFormatSerializer
     {
+        private bool swizzled;
+
+        public TIM2SegmentSerializer()
+        {
+        }
+
+        public TIM2SegmentSerializer(bool swizzled)
+        {
+            this.swizzled = swizzled;
+        }
 
         public TextureFormat Open(Stream formatData)
         {
@@ -105,31 +116,34 @@ namespace ImgLib.Formats.Serializers
 
         private void ReadMetadata(Stream metadata,out TIM2Segment.TIM2SegmentParameters parameters, out string basename, out int palCount)
         {
-            XmlReader reader = XmlReader.Create(metadata);
-            reader.ReadStartElement("TIM2Texture");
-            basename = reader.GetAttribute("basename");
-            palCount = int.Parse(reader.GetAttribute("cluts"));
+            XDocument doc = XDocument.Load(metadata);
+
+            if (doc.Root.Name != "TIM2Texture")
+                throw new XmlException();
+
+            XElement node=doc.Root;
+
+            basename = node.Attribute("basename").Value;
+            palCount = int.Parse(node.Attribute("cluts").Value);
 
             parameters = new TIM2Segment.TIM2SegmentParameters();
 
-            parameters.width = reader.ReadElementContentAsInt("Width", "");
-            parameters.height = reader.ReadElementContentAsInt("Height", "");
-            parameters.bpp = (byte)reader.ReadElementContentAsInt("Bpp", "");
-            parameters.pixelSize = reader.ReadElementContentAsInt("PixelSize", "");
-            parameters.mipmapCount = (byte)reader.ReadElementContentAsInt("MipmapCount", "");
+            parameters.swizzled = swizzled;
+            parameters.width = int.Parse(node.Element("Width").Value);
+            parameters.height = int.Parse(node.Element("Height").Value);
+            parameters.bpp = (byte)int.Parse(node.Element("Bpp").Value);
+            parameters.pixelSize = int.Parse(node.Element("PixelSize").Value);
+            parameters.mipmapCount = (byte)int.Parse(node.Element("MipmapCount").Value);
 
-            parameters.format = (byte)reader.ReadElementContentAsInt("Format", "");
-            parameters.clutFormat = (byte)reader.ReadElementContentAsInt("ClutFormat", "");
-            reader.ReadStartElement("GsTEX0");
-            reader.ReadElementContentAsBinHex(parameters.GsTEX0, 0, parameters.GsTEX0.Length);
-            reader.ReadEndElement();
-            reader.ReadStartElement("GsTEX1");
-            reader.ReadElementContentAsBinHex(parameters.GsTEX1, 0, parameters.GsTEX1.Length);
-            reader.ReadEndElement();
+            parameters.format = (byte)int.Parse(node.Element("Format").Value);
+            parameters.clutFormat = (byte)int.Parse(node.Element("ClutFormat").Value);
 
-            parameters.GsRegs = (uint)reader.ReadElementContentAsLong("GsRegs", "");
-            parameters.GsTexClut = (uint)reader.ReadElementContentAsLong("GsTexClut", "");
-            reader.ReadEndElement();
+            parameters.GsTEX0=Convert.FromBase64String(node.Element("GsTEX0").Value);
+            parameters.GsTEX1=Convert.FromBase64String(node.Element("GsTEX1").Value);
+
+            parameters.GsRegs = (uint)int.Parse(node.Element("GsRegs").Value);
+            parameters.GsTexClut = (uint)int.Parse(node.Element("GsTexClut").Value);
+
         }
 
         private void WriteMetadata(TIM2Segment segment, Stream metadata, string basename)
@@ -154,8 +168,8 @@ namespace ImgLib.Formats.Serializers
             xml.WriteComment("Raw data from TIM2 header");
             xml.WriteElementString("Format", segment.GetParameters().format.ToString());
             xml.WriteElementString("ClutFormat", segment.GetParameters().clutFormat.ToString());
-            xml.WriteStartElement("GsTEX0"); xml.WriteBinHex(segment.GetParameters().GsTEX0, 0, segment.GetParameters().GsTEX0.Length); xml.WriteEndElement();
-            xml.WriteStartElement("GsTEX1"); xml.WriteBinHex(segment.GetParameters().GsTEX1, 0, segment.GetParameters().GsTEX1.Length); xml.WriteEndElement();
+            xml.WriteStartElement("GsTEX0"); xml.WriteBase64(segment.GetParameters().GsTEX0, 0, segment.GetParameters().GsTEX0.Length); xml.WriteEndElement();
+            xml.WriteStartElement("GsTEX1"); xml.WriteBase64(segment.GetParameters().GsTEX1, 0, segment.GetParameters().GsTEX1.Length); xml.WriteEndElement();
 
             xml.WriteElementString("GsRegs", segment.GetParameters().GsRegs.ToString());
             xml.WriteElementString("GsTexClut", segment.GetParameters().GsTexClut.ToString());
@@ -166,7 +180,7 @@ namespace ImgLib.Formats.Serializers
         private void AcquireInfoFromHeader(byte[] fullHeader, out TIM2Segment.TIM2SegmentParameters parameters, out uint dataSize, out uint paletteSize, out uint colorEntries)
         {
             BinaryReader reader = new BinaryReader(new MemoryStream(fullHeader));
-
+            
             uint totalSize = reader.ReadUInt32();
             paletteSize = reader.ReadUInt32();
             dataSize = reader.ReadUInt32();
@@ -178,6 +192,8 @@ namespace ImgLib.Formats.Serializers
             colorEntries = reader.ReadUInt16();
 
             parameters = new TIM2Segment.TIM2SegmentParameters();
+            parameters.swizzled = swizzled;
+
             parameters.format = reader.ReadByte();
 
             parameters.mipmapCount = reader.ReadByte();

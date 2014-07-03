@@ -9,9 +9,9 @@ namespace ImgLib.Encoding
     public interface ImageEncoder
     {
         /// <summary>
-        /// Encode to the given stream, the image associated to this ImageEncoder.
+        /// Encodes the image associated to this ImageEncoder.
         /// </summary>
         /// <param name="s"></param>
-        void Encode(Stream s);
+        byte[] Encode();
     }
 }
