@@ -103,9 +103,25 @@ namespace TIM2Conv
                 else
                 {
                     bool swizzled = args.Length == 2;
-                    
-                    using (Stream s=File.Open(args[1],FileMode.Create))
-                        new TIM2TextureSerializer().Export(tim,s,Path.GetDirectoryName(args[1]),Path.GetFileNameWithoutExtension(args[1]));
+                    tim.Swizzled = swizzled;
+
+                    using (Stream s = File.Open(args[1], FileMode.Create))
+                    {
+                        TIM2TextureSerializer tim2Serializer = new TIM2TextureSerializer();
+                        switch (Path.GetExtension(args[1]))
+                        {
+                            case ".tm2":
+                                tim2Serializer.Save(tim,s);
+                                break;
+                            case ".xml":
+                                tim2Serializer.Export(tim, s, Path.GetDirectoryName(args[1]), Path.GetFileNameWithoutExtension(args[1]));
+                                break;
+                            default:
+                                Console.WriteLine("Unsupported format");
+                                break;
+                        }
+                    }
+                       
                 }
             }
             catch (Exception e)

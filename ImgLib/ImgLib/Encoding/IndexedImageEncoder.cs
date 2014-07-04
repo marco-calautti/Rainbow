@@ -33,66 +33,22 @@ namespace ImgLib.Encoding
 
         public byte[] Encode()
         {
-            List<Bitmap> bitmaps = new List<Image>(images).ConvertAll(x => new Bitmap(x));
+            List<Bitmap> bitmaps = null;
+            if(images.Count==1) // We can quantize a single palette image
+            {
+                nQuant.WuQuantizerBase quantizer = new nQuant.WuQuantizer(colors);
+                Image img=quantizer.QuantizeImage(new Bitmap(images.First()));
+                bitmaps = new List<Bitmap>(); bitmaps.Add(new Bitmap(img));
+
+            }
+            else //for multi palette images, quantization may break the pixel structure of the images. We must trust the work of the graphics editor.
+                bitmaps = new List<Image>(images).ConvertAll(x => new Bitmap(x)); 
 
             var indexes = new int[width * height];
 
-            /*
-            //var palettes = new Color[bitmaps.Count,colors];
-            var reversePalettes = new IDictionary<Color, HashSet<int>>[bitmaps.Count];
-            for (int i = 0; i < reversePalettes.Length; i++)
-            {
-                reversePalettes[i] = new Dictionary<Color, HashSet<int>>();
-            }
-
-            int index = 0;
-            int k = 0;
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
-                {
-                    HashSet<int> possibleIndexes;
-                    reversePalettes[0].TryGetValue(bitmaps[0].GetPixel(x, y), out possibleIndexes);
-                    if (possibleIndexes == null)
-                        possibleIndexes = new HashSet<int>();
-
-                    for (int i = 0; i < bitmaps.Count; i++)
-                    {
-                        Color pixel = bitmaps[i].GetPixel(x, y);
-
-                        HashSet<int> theOtherSet;
-                        reversePalettes[i].TryGetValue(pixel, out theOtherSet);
-                        if (theOtherSet == null)
-                        {
-                            index++;
-                            break;
-                        }
-                        possibleIndexes.IntersectWith(reversePalettes[i][pixel]);
-                        if (possibleIndexes.Count == 0) //no compatible index found, we need to create a new one
-                        {
-                            index++;
-                            break;
-                        }
-                    }
-                    if (possibleIndexes.Count == 0)
-                    {
-                        indexes[k++] = index;
-                        for (int i = 0; i < bitmaps.Count; i++)
-                        {
-                            Color pixel = bitmaps[i].GetPixel(x, y);
-                            HashSet<int> set; reversePalettes[i].TryGetValue(pixel, out set);
-                            if (set == null)
-                                set = new HashSet<int>();
-                            set.Add(index);
-                            reversePalettes[i][pixel] = set;
-                        }
-                    }
-                    else
-                        indexes[k++] = possibleIndexes.First();
-                }
-             * */
-
             var reversePal=new Dictionary<Color,int>();
             Palettes = new List<Color[]>();
+
             for (int i = 0; i < bitmaps.Count; i++)
                 Palettes.Add(new Color[colors]);
 
@@ -115,7 +71,62 @@ namespace ImgLib.Encoding
                     indexes[k++] = reversePal[pixel];
                         
                 }
+
             return IndexPacker.FromNumberOfColors(colors).PackIndexes(indexes);
+
+            /*
+          //var palettes = new Color[bitmaps.Count,colors];
+          var reversePalettes = new IDictionary<Color, HashSet<int>>[bitmaps.Count];
+          for (int i = 0; i < reversePalettes.Length; i++)
+          {
+              reversePalettes[i] = new Dictionary<Color, HashSet<int>>();
+          }
+
+          int index = 0;
+          int k = 0;
+          for (int x = 0; x < width; x++)
+              for (int y = 0; y < height; y++)
+              {
+                  HashSet<int> possibleIndexes;
+                  reversePalettes[0].TryGetValue(bitmaps[0].GetPixel(x, y), out possibleIndexes);
+                  if (possibleIndexes == null)
+                      possibleIndexes = new HashSet<int>();
+
+                  for (int i = 0; i < bitmaps.Count; i++)
+                  {
+                      Color pixel = bitmaps[i].GetPixel(x, y);
+
+                      HashSet<int> theOtherSet;
+                      reversePalettes[i].TryGetValue(pixel, out theOtherSet);
+                      if (theOtherSet == null)
+                      {
+                          index++;
+                          break;
+                      }
+                      possibleIndexes.IntersectWith(reversePalettes[i][pixel]);
+                      if (possibleIndexes.Count == 0) //no compatible index found, we need to create a new one
+                      {
+                          index++;
+                          break;
+                      }
+                  }
+                  if (possibleIndexes.Count == 0)
+                  {
+                      indexes[k++] = index;
+                      for (int i = 0; i < bitmaps.Count; i++)
+                      {
+                          Color pixel = bitmaps[i].GetPixel(x, y);
+                          HashSet<int> set; reversePalettes[i].TryGetValue(pixel, out set);
+                          if (set == null)
+                              set = new HashSet<int>();
+                          set.Add(index);
+                          reversePalettes[i][pixel] = set;
+                      }
+                  }
+                  else
+                      indexes[k++] = possibleIndexes.First();
+              }
+           * */
         }
 
     }

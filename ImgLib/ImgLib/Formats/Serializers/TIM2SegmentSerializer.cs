@@ -45,7 +45,18 @@ namespace ImgLib.Formats.Serializers
 
         public void Save(TextureFormat texture, Stream outFormatData)
         {
+            TIM2Segment segment = texture as TIM2Segment;
+            if (segment == null)
+                throw new TextureFormatException("Not A valid TIM2Segment!");
 
+            byte[] imageData = segment.GetImageData();
+            byte[] paletteData = segment.GetPaletteData();
+            TIM2Segment.TIM2SegmentParameters parameters = segment.GetParameters();
+
+            //write header
+            WriteHeader(parameters, outFormatData,imageData, paletteData);
+            outFormatData.Write(imageData, 0, imageData.Length);
+            outFormatData.Write(paletteData, 0, paletteData.Length);
         }
 
         public void Export(TextureFormat texture, Stream metadata, string directory, string basename)
@@ -175,6 +186,51 @@ namespace ImgLib.Formats.Serializers
             xml.WriteElementString("GsTexClut", segment.GetParameters().GsTexClut.ToString());
             xml.WriteEndElement();
             xml.Close();
+        }
+
+        private void WriteHeader(TIM2Segment.TIM2SegmentParameters parameters, Stream outFormatData, byte[] imageData, byte[] paletteData)
+        {
+            BinaryWriter writer = new BinaryWriter(outFormatData);
+            uint totalSize = (uint)(0x30 + imageData.Length + paletteData.Length);
+            writer.Write(totalSize);
+            writer.Write((uint)paletteData.Length);
+            writer.Write((uint)imageData.Length);
+            writer.Write((ushort)0x30);
+            
+            ushort colorEntries = (ushort)(paletteData.Length / parameters.pixelSize);
+            writer.Write(colorEntries);
+
+            writer.Write(parameters.format);
+            writer.Write(parameters.mipmapCount);
+            writer.Write(parameters.clutFormat);
+            byte depth;
+            switch(parameters.bpp)
+            {
+                case 4:
+                    depth = 4;
+                    break;
+                case 8:
+                    depth = 5;
+                    break;
+                case 16:
+                    depth = 1;
+                    break;
+                case 24:
+                    depth = 2;
+                    break;
+                case 32:
+                    depth = 3;
+                    break;
+                default:
+                    throw new Exception("Should never happen");
+            }
+            writer.Write(depth);
+            writer.Write((ushort)parameters.width);
+            writer.Write((ushort)parameters.height);
+            writer.Write(parameters.GsTEX0);
+            writer.Write(parameters.GsTEX1);
+            writer.Write(parameters.GsRegs);
+            writer.Write(parameters.GsTexClut);
         }
 
         private void AcquireInfoFromHeader(byte[] fullHeader, out TIM2Segment.TIM2SegmentParameters parameters, out uint dataSize, out uint paletteSize, out uint colorEntries)

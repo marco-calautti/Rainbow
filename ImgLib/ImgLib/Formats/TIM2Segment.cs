@@ -186,12 +186,29 @@ namespace ImgLib.Formats
 
         internal byte[] GetImageData()
         {
-            return imageData;
+            return parameters.swizzled ? 
+                            ImgUtils.Swizzle(imageData, parameters.width, parameters.height, parameters.bpp) : 
+                            ImgUtils.unSwizzle(imageData, parameters.width, parameters.height, parameters.bpp);
         }
 
         internal byte[] GetPaletteData()
         {
-            return null;
+            ColorEncoder encoder = GetColorEncoder(parameters.pixelSize);
+            int maximumColors = 1 << parameters.bpp;
+
+            MemoryStream stream = new MemoryStream();
+            foreach(Color[] palette in palettes)
+            {
+                List<Color> newPalette=new List<Color>(palette);
+                for(int i=0;i<maximumColors-palette.Length;i++)
+                {
+                    newPalette.Add(Color.Black);
+                }
+                byte[] buf = encoder.EncodeColors(newPalette.ToArray());
+                stream.Write(buf, 0, buf.Length);
+            }
+            stream.Close();
+            return stream.ToArray();
         }
 
         internal TIM2SegmentParameters GetParameters()

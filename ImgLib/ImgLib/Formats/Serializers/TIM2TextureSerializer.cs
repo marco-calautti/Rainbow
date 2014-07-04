@@ -21,7 +21,7 @@ namespace ImgLib.Formats.Serializers
 
             for (int i = 0; i < textureCount; i++)
             {
-                TextureFormatSerializer serializer = new TIM2SegmentSerializer(false);
+                TextureFormatSerializer serializer = new TIM2SegmentSerializer();
                 TIM2Segment segment=(TIM2Segment)serializer.Open(formatData);
                 imagesList.Add(segment);
             }
@@ -33,7 +33,20 @@ namespace ImgLib.Formats.Serializers
 
         public void Save(TextureFormat texture, Stream outFormatData)
         {
-            throw new NotImplementedException();
+            TIM2Texture tim2 = texture as TIM2Texture;
+            if (tim2 == null)
+                throw new TextureFormatException("Not a valid TIM2Texture!");
+
+            BinaryWriter writer = new BinaryWriter(outFormatData);
+            writer.Write("TIM2".ToCharArray());
+            writer.Write((ushort)tim2.Version);
+            writer.Write((ushort)tim2.ImagesList.Count);
+
+            for (int i = 0; i < 8; i++) writer.Write((byte)0);
+
+            TIM2SegmentSerializer serializer=new TIM2SegmentSerializer(tim2.Swizzled);
+            foreach (TIM2Segment segment in tim2.ImagesList)
+                serializer.Save(segment, outFormatData);
         }
 
         public void Export(TextureFormat texture, Stream metadata, string directory, string basename)
