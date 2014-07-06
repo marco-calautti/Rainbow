@@ -4,7 +4,7 @@ namespace Rainbow.ImgLib.Encoding
 {
     public abstract class IndexPacker
     {
-        public virtual byte[] packindexes(int[] indexes)
+        public virtual byte[] PackIndexes(int[] indexes)
         {
             return PackIndexes(indexes, 0, indexes.Length);
         }

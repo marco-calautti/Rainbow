@@ -55,6 +55,7 @@
     <Compile Include="ImgLib\Encoding\IndexRetrievers.cs" />
     <Compile Include="ImgLib\Encoding\ImageDecoder.cs" />
     <Compile Include="ImgLib\Encoding\ImageEncoder.cs" />
+    <Compile Include="ImgLib\Formats\Serializers\TextureFormatSerializerProvider.cs" />
     <Compile Include="ImgLib\Formats\Serializers\TIM2SegmentSerializer.cs" />
     <Compile Include="ImgLib\Formats\Serializers\TIM2TextureSerializer.cs" />
     <Compile Include="ImgLib\Formats\TextureFormat.cs" />

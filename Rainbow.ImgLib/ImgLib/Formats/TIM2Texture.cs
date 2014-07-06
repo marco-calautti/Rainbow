@@ -35,9 +35,6 @@ namespace Rainbow.ImgLib.Formats
         public override string Name { get { return "TIM2"; } }
 
         /// <inheritdoc />
-        public override string Extension { get { return ".tm2"; } }
-
-        /// <inheritdoc />
         public override int FramesCount
         {
             get

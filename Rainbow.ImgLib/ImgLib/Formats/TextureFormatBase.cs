@@ -12,8 +12,6 @@ namespace Rainbow.ImgLib.Formats
 
         public abstract string Name { get; }
 
-        public abstract string Extension { get; }
-
         public abstract int FramesCount { get; }
 
         public abstract int PalettesCount { get;  }

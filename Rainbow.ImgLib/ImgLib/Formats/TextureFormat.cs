@@ -21,11 +21,6 @@ namespace Rainbow.ImgLib.Formats
     public interface TextureFormat
     {
         /// <summary>
-        /// The preferred extension for files of this texture format.
-        /// </summary>
-        string Extension { get; }
-
-        /// <summary>
         /// A human readable name for this format.
         /// </summary>
         string Name { get; }

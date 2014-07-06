@@ -15,14 +15,14 @@ namespace TIM2Conv
     class PreviewForm : Form
     {
         private PictureBox box;
-        private TIM2Texture img;
+        private TextureFormat img;
 
-        public PreviewForm(TIM2Texture tim,string filename)
+        public PreviewForm(TextureFormat tex, string filename)
         {
-            this.Text = "TIM2Conv - Preview of " + Path.GetFileName(filename);
+            this.Text = "Rainbow - Preview of " + Path.GetFileName(filename);
             box = new PictureBox();
 
-            img = tim;
+            img = tex;
 
             box.Image = img.GetImage();
             box.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -31,14 +31,16 @@ namespace TIM2Conv
             {
                 if (e.Button == MouseButtons.Right)
                 {
-                    img.Swizzled = !img.Swizzled;
+                    TIM2Texture tim = img as TIM2Texture;
+                    if (tim != null)
+                        tim.Swizzled = !tim.Swizzled;
                 }
                 else if (e.Button == MouseButtons.Left)
                 {
 
                     if (img.PalettesCount > 0)
                         img.SelectActivePalette((img.GetActivePalette() + 1) % img.PalettesCount);
-                        
+
                 }
                 else if (e.Button == MouseButtons.Middle)
                 {
@@ -48,27 +50,26 @@ namespace TIM2Conv
                 box.Image = img.GetImage();
 
             };
-           
-           
+
             this.Controls.Add(box);
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             StartPosition = FormStartPosition.CenterScreen;
         }
 
-        
+
     }
 
     class Program
     {
         static void PrintUsage()
         {
-            Console.WriteLine("TIM2 Converter - (C) SadNEScITy Translations");
-            Console.WriteLine("Usage: input_image.tm2 exported_output.xml [-noswizzle]");
+            Console.WriteLine("Rainbow - (C) SadNEScITy Translations");
+            Console.WriteLine("Usage: input_image.ext exported_output [-noswizzle]");
         }
         static void Main(string[] args)
         {
-            if((args.Length>3 || args.Length<1) || (args.Length==3 && args[2] != "-noswizzle"))
+            if ((args.Length > 3 || args.Length < 1) || (args.Length == 3 && args[2] != "-noswizzle"))
             {
                 PrintUsage();
                 return;
@@ -76,52 +77,46 @@ namespace TIM2Conv
 
             try
             {
-                TextureFormatSerializer serializer = new TIM2TextureSerializer();
-                TIM2Texture tim = null;
-                switch (Path.GetExtension(args[0]))
+
+                var serializer = TextureFormatSerializerProvider.FromFile(args[0]);
+                if (serializer == null)
                 {
-                    case ".tm2":
-                        using (Stream s = File.OpenRead(args[0]))
-                            tim = (TIM2Texture)serializer.Open(s);
-                        break;
-                    case ".xml":
-                        using (Stream s = File.OpenRead(args[0]))
-                            tim = (TIM2Texture)serializer.Import(s, Path.GetDirectoryName(args[0]));
-                        break;
-                    default:
-                        Console.WriteLine("Unsupported format");
-                        break;
+                    Console.WriteLine("Unsupported format");
+                    return;
                 }
+                TextureFormat tex = null;
+                using (Stream s = File.OpenRead(args[0]))
+                {
+                    if (serializer.IsValidFormat(s))
+                        tex = serializer.Open(s);
+                    else
+                        tex = serializer.Import(s, Path.GetDirectoryName(args[0]), Path.GetFileNameWithoutExtension(args[0]));
+                }
+
+
 
                 if (args.Length == 1)
                 {
-                    
-                    PreviewForm form = new PreviewForm(tim,args[0]);
+                    PreviewForm form = new PreviewForm(tex, args[0]);
                     form.Show();
                     Application.Run(form);
                 }
                 else
                 {
                     bool swizzled = args.Length == 2;
-                    tim.Swizzled = swizzled;
+                    TIM2Texture tim = tex as TIM2Texture;
+
+                    if(swizzled&&tim!=null)
+                    {
+                        tim.Swizzled = swizzled;
+
+                    }
 
                     using (Stream s = File.Open(args[1], FileMode.Create))
                     {
-                        TIM2TextureSerializer tim2Serializer = new TIM2TextureSerializer();
-                        switch (Path.GetExtension(args[1]))
-                        {
-                            case ".tm2":
-                                tim2Serializer.Save(tim,s);
-                                break;
-                            case ".xml":
-                                tim2Serializer.Export(tim, s, Path.GetDirectoryName(args[1]), Path.GetFileNameWithoutExtension(args[1]));
-                                break;
-                            default:
-                                Console.WriteLine("Unsupported format");
-                                break;
-                        }
+                        serializer.Export(tex, s, Path.GetDirectoryName(args[1]), Path.GetFileNameWithoutExtension(args[0]));
                     }
-                       
+
                 }
             }
             catch (Exception e)

@@ -23,6 +23,20 @@ namespace Rainbow.ImgLib.Formats.Serializers
             this.swizzled = swizzled;
         }
 
+        public string PreferredFormatExtension { get { return ""; } }
+
+        public string PreferredMetadataExtension{ get {return ""; } }
+
+        public bool IsValidFormat(Stream input)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsValidMetadataFormat(Stream metadata)
+        {
+            throw new NotImplementedException();
+        }
+
         public TextureFormat Open(Stream formatData)
         {
 
@@ -65,7 +79,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             if (segment == null)
                 throw new TextureFormatException("Not A valid TIM2Segment!");
 
-            WriteMetadata(segment,metadata, basename);
+            Writemetadata(segment,metadata, basename);
             int i = 0;
             foreach (Image img in ConstructImages(segment))
             {
@@ -73,7 +87,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             }
         }
 
-        public TextureFormat Import(Stream metadata, string directory)
+        public TextureFormat Import(Stream metadata, string directory,string bname)
         {
             TIM2Segment segment = null;
             try
@@ -82,7 +96,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
                 string basename;
 
                 TIM2Segment.TIM2SegmentParameters parameters;
-                ReadMetadata(metadata, out parameters,out basename, out palCount);
+                Readmetadata(metadata, out parameters,out basename, out palCount);
                 ICollection<Image> images=ReadImageData(directory, basename, palCount);
 
                 segment = new TIM2Segment(images,parameters);
@@ -125,7 +139,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             return images;
         }
 
-        private void ReadMetadata(Stream metadata,out TIM2Segment.TIM2SegmentParameters parameters, out string basename, out int palCount)
+        private void Readmetadata(Stream metadata,out TIM2Segment.TIM2SegmentParameters parameters, out string basename, out int palCount)
         {
             XDocument doc = XDocument.Load(metadata);
 
@@ -157,7 +171,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
         }
 
-        private void WriteMetadata(TIM2Segment segment, Stream metadata, string basename)
+        private void Writemetadata(TIM2Segment segment, Stream metadata, string basename)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -298,5 +312,6 @@ namespace Rainbow.ImgLib.Formats.Serializers
             else
                 parameters.pixelSize = (int)dataSize / (parameters.width * parameters.height);
         }
+
     }
 }

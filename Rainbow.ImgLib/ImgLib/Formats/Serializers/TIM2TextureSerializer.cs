@@ -11,6 +11,33 @@ namespace Rainbow.ImgLib.Formats.Serializers
     public class TIM2TextureSerializer : TextureFormatSerializer
     {
 
+        public string PreferredFormatExtension { get { return "tm2";  } }
+
+        public string PreferredMetadataExtension { get { return "xml"; } }
+
+        public bool IsValidFormat(Stream format)
+        {
+            long oldPos = format.Position;
+
+            BinaryReader reader = new BinaryReader(format);
+
+            char[] magic = reader.ReadChars(4);
+            format.Position = oldPos;
+
+            return new string(magic) == "TIM2";
+        }
+
+        public bool IsValidMetadataFormat(Stream metadata)
+        {
+            long oldPos = metadata.Position;
+
+            XDocument doc = XDocument.Load(metadata);
+            string name=doc.Root.Name.ToString();
+
+            metadata.Position = oldPos;
+            return name == "TIM2";
+        }
+
         public TextureFormat Open(Stream formatData)
         {
             int version, textureCount;
@@ -85,7 +112,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             xml.Close();
         }
 
-        public TextureFormat Import(Stream metadata, string directory)
+        public TextureFormat Import(Stream metadata, string directory,string bname)
         {
             TIM2Texture tim2=null;
             try
@@ -106,9 +133,9 @@ namespace Rainbow.ImgLib.Formats.Serializers
                 var children = node.Elements();
                 foreach(XNode child in children)
                 {
-                    string childMetadata = child.ToString();
-                    MemoryStream s = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(childMetadata));
-                    TIM2Segment segment = (TIM2Segment) new TIM2SegmentSerializer(swizzled).Import(s, directory);
+                    string childmetadata = child.ToString();
+                    MemoryStream s = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(childmetadata));
+                    TIM2Segment segment = (TIM2Segment) new TIM2SegmentSerializer(swizzled).Import(s, directory,basename);
                     imagesList.Add(segment);
                 }
 
@@ -139,5 +166,6 @@ namespace Rainbow.ImgLib.Formats.Serializers
             textureCount = reader.ReadUInt16();
             reader.BaseStream.Position += 8;
         }
+
     }
 }

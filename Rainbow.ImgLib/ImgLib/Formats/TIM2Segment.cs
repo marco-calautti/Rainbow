@@ -70,8 +70,6 @@ namespace Rainbow.ImgLib.Formats
 
         #region Properties
 
-        public override string Extension { get { return ""; } }
-
         public override string Name { get { return "TIM2Segment"; } }
 
         public override int PalettesCount { get { return palettes.Length; } }
