@@ -20,6 +20,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// of TextureFormat.
         /// </summary>
         string Name { get;  }
+
         /// <summary>
         /// The preferred extension for files encoded in the texture format this serializer implements.
         /// </summary>
@@ -62,8 +63,8 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
 
         /// <summary>
-        /// Exports a texture of the format implemented by this TextureFormatSerializer to the metadata stream.
-        /// Additional data can be saved to the given directory and base file name. What is stored in the given directory is specific to this serializer.
+        /// Exports a texture of the format implemented by this TextureFormatSerializer to the given metadata stream.
+        /// Additional data may be saved to the given directory and base file name. What is stored in the given directory is specific to this serializer.
         /// The method does not close the stream, but it does not restore the stream position.
         /// </summary>
         /// <param name="metadata"></param>

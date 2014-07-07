@@ -77,6 +77,15 @@ namespace Rainbow.ImgLib.Formats
             get { return NAME; }
         }
 
+        public override int Width
+        {
+            get { return parameters.width; }
+        }
+
+        public override int Height
+        {
+            get { return parameters.height; }
+        }
         public override int PalettesCount { get { return palettes.Length; } }
 
         public override int FramesCount { get { return 1; } }

@@ -26,13 +26,23 @@ namespace Rainbow.ImgLib.Formats
         string Name { get; }
 
         /// <summary>
+        /// The width of the currently selected frame.
+        /// </summary>
+        int Width { get; }
+
+        /// <summary>
+        /// The height of the currently selected frame.
+        /// </summary>
+        int Height { get; }
+
+        /// <summary>
         /// The number of frames of this texture. An example of multi-frame texture format is the GIF format and the TIM2 format. Every TextureFormat
         /// has at least one frame, which is the image itself.
         /// </summary>
         int FramesCount { get; }
 
         /// <summary>
-        /// The number of color palettes associated to the currently selected active frame of this TextureFormat.
+        /// The number of color palettes associated to the currently selected frame of this TextureFormat.
         /// A frame of a TextureFormat may have zero or more palettes.
         /// </summary>
         int PalettesCount { get; }

@@ -10,13 +10,12 @@ namespace Rainbow.App.GUI.Controls
 {
     public class TransparentPictureBox : UserControl
     {
-        TextureFormat texture;
+        private TextureFormat texture;
 
         public void SetTexture(TextureFormat tex)
         {
-            Image img = tex.GetImage();
-            this.Width = img.Width;
-            this.Height = img.Height;
+            this.Width = tex.Width;
+            this.Height = tex.Height;
             texture = tex;
             this.Invalidate();
         }

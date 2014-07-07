@@ -37,11 +37,23 @@ namespace Rainbow.ImgLib.Formats
 
         public int Version { get; internal set; }
 
+        /// <inheritdoc />
         public override string Name
         {
             get { return NAME; }
         }
 
+        /// <inheritdoc />
+        public override int Width
+        {
+            get { return imagesList[SelectedFrame].Width; }
+        }
+
+        /// <inheritdoc />
+        public override int Height
+        {
+            get { return imagesList[SelectedFrame].Height; }
+        }
         /// <inheritdoc />
         public override int FramesCount
         {

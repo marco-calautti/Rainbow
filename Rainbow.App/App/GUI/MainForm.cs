@@ -24,7 +24,7 @@ namespace Rainbow.App.GUI
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Application.ProductName+", a console image format handling tool.", "About Rainbow",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            MessageBox.Show(Application.ProductName+", a console image format conversion tool.", "About Rainbow",MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -52,10 +52,25 @@ namespace Rainbow.App.GUI
             OpenImportTexture(false);
         }
 
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveExportTexture(true);
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveExportTexture(false);
+        }
+
         private void SaveExportTexture(bool save)
         {
+            if (texture == null)
+                return;
+
             SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = serializer.Name + (save ? "" : " metadata")+"|"+(save? serializer.PreferredFormatExtension : serializer.PreferredMetadataExtension);
+            dialog.Filter = serializer.Name + 
+                            (save ? "|" : " metadata + editable data|")+
+                            (save? serializer.PreferredFormatExtension : serializer.PreferredMetadataExtension);
 
             var result = dialog.ShowDialog();
             if (result != DialogResult.OK)
@@ -85,14 +100,16 @@ namespace Rainbow.App.GUI
 
             if (result != DialogResult.OK)
                 return;
+
             string name = dialog.FileName;
-            serializer = open ? TextureFormatSerializerProvider.FromFileFormatExtension(Path.GetExtension(name)) :
+
+            var curSerializer = open ? TextureFormatSerializerProvider.FromFileFormatExtension(Path.GetExtension(name)) :
                                     TextureFormatSerializerProvider.FromFileMetadataExtension(Path.GetExtension(name));
 
-            if (serializer == null)
-                serializer = TextureFormatSerializerProvider.FromFile(name);
+            if (curSerializer == null)
+                curSerializer = TextureFormatSerializerProvider.FromFile(name);
 
-            if (serializer == null)
+            if (curSerializer == null)
             {
                 MessageBox.Show("Unsupported file format!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -101,10 +118,13 @@ namespace Rainbow.App.GUI
             try
             {
                 using (Stream s = File.Open(name, FileMode.Open))
-                    SetTexture( open? serializer.Open(s) : 
-                                      serializer.Import(s,Path.GetDirectoryName(name),Path.GetFileNameWithoutExtension(name))
-                              );
+                    SetTexture(open ? curSerializer.Open(s) :
+                                      curSerializer.Import(s, 
+                                                           Path.GetDirectoryName(name), 
+                                                           Path.GetFileNameWithoutExtension(name)));
+
                 this.Text = Path.GetFileName(name) + " - " + Application.ProductName;
+                serializer = curSerializer;
             }
             catch (Exception ex)
             {
@@ -136,14 +156,6 @@ namespace Rainbow.App.GUI
             transparentPictureBox1.SetTexture(texture);
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveExportTexture(true);
-        }
-
-        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveExportTexture(false);
-        }
+        
     }
 }
