@@ -10,8 +10,6 @@ namespace Rainbow.ImgLib.Formats
     {
         private int activeFrame, activePalette;
 
-        public abstract string Name { get; }
-
         public abstract int FramesCount { get; }
 
         public abstract int PalettesCount { get;  }

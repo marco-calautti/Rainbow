@@ -11,9 +11,11 @@ namespace Rainbow.ImgLib.Formats.Serializers
     public class TIM2TextureSerializer : TextureFormatSerializer
     {
 
-        public string PreferredFormatExtension { get { return "tm2";  } }
+        public string Name { get { return "TIM2";  } }
 
-        public string PreferredMetadataExtension { get { return "xml"; } }
+        public string PreferredFormatExtension { get { return ".tm2";  } }
+
+        public string PreferredMetadataExtension { get { return ".xml"; } }
 
         public bool IsValidFormat(Stream format)
         {
@@ -67,12 +69,12 @@ namespace Rainbow.ImgLib.Formats.Serializers
             BinaryWriter writer = new BinaryWriter(outFormatData);
             writer.Write("TIM2".ToCharArray());
             writer.Write((ushort)tim2.Version);
-            writer.Write((ushort)tim2.ImagesList.Count);
+            writer.Write((ushort)tim2.TIM2SegmentsList.Count);
 
             for (int i = 0; i < 8; i++) writer.Write((byte)0);
 
             TIM2SegmentSerializer serializer=new TIM2SegmentSerializer(tim2.Swizzled);
-            foreach (TIM2Segment segment in tim2.ImagesList)
+            foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
                 serializer.Save(segment, outFormatData);
         }
 
@@ -94,9 +96,9 @@ namespace Rainbow.ImgLib.Formats.Serializers
             xml.WriteAttributeString("basename", basename);
             xml.WriteAttributeString("swizzled", tim2.Swizzled.ToString());
 
-            xml.WriteAttributeString("textures", tim2.ImagesList.Count.ToString());
+            xml.WriteAttributeString("textures", tim2.TIM2SegmentsList.Count.ToString());
             int layer = 0;
-            foreach (TIM2Segment segment in tim2.ImagesList)
+            foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
             {
                 TextureFormatSerializer serializer = new TIM2SegmentSerializer();
                 MemoryStream timmeta = null;

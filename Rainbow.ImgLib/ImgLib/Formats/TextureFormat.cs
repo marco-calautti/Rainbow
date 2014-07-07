@@ -21,11 +21,6 @@ namespace Rainbow.ImgLib.Formats
     public interface TextureFormat
     {
         /// <summary>
-        /// A human readable name for this format.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
         /// The number of frames of this texture. An example of multi-frame texture format is the GIF format and the TIM2 format. Every TextureFormat
         /// has at least one frame, which is the image itself.
         /// </summary>

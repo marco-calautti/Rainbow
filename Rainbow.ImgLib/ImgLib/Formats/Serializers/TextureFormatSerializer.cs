@@ -16,6 +16,10 @@ namespace Rainbow.ImgLib.Formats.Serializers
     {
 
         /// <summary>
+        /// A human readable name for the TextureFormat implemented by this serializer.
+        /// </summary>
+        string Name { get;  }
+        /// <summary>
         /// The preferred extension for files encoded in the texture format this serializer implements.
         /// </summary>
         string PreferredFormatExtension { get; }

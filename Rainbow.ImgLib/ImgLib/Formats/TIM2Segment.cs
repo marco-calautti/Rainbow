@@ -8,7 +8,7 @@ using Rainbow.ImgLib.Common;
 
 namespace Rainbow.ImgLib.Formats
 {
-    internal class TIM2Segment : TextureFormatBase
+    public class TIM2Segment : TextureFormatBase
     {
         internal class TIM2SegmentParameters
         {
@@ -70,15 +70,13 @@ namespace Rainbow.ImgLib.Formats
 
         #region Properties
 
-        public override string Name { get { return "TIM2Segment"; } }
-
         public override int PalettesCount { get { return palettes.Length; } }
 
         public override int FramesCount { get { return 1; } }
 
         public int Bpp { get { return parameters.bpp;} }
 
-        public bool Swizzled
+        internal bool Swizzled
         {
             get { return parameters.swizzled; }
             set

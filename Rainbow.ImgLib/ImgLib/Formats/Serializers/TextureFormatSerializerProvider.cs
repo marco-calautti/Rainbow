@@ -21,6 +21,16 @@ namespace Rainbow.ImgLib.Formats.Serializers
         }
 
         /// <summary>
+        /// The list of all available TextureFormatSerializers
+        /// </summary>
+        public static IEnumerable<TextureFormatSerializer> RegisteredSerializers
+        {
+            get
+            {
+                return serializers;
+            }
+        }
+        /// <summary>
         /// Adds the given serializer to the list of available TextureFormatSerializers.
         /// </summary>
         /// <param name="serializer"></param>

@@ -23,6 +23,8 @@ namespace Rainbow.ImgLib.Formats.Serializers
             this.swizzled = swizzled;
         }
 
+        public string Name { get { return "TIM2Segment"; } }
+
         public string PreferredFormatExtension { get { return ""; } }
 
         public string PreferredMetadataExtension{ get {return ""; } }

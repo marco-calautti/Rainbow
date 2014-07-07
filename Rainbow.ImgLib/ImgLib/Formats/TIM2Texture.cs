@@ -28,11 +28,9 @@ namespace Rainbow.ImgLib.Formats
             }
         }
 
+        public int Bpp { get { return imagesList[GetActiveFrame()].Bpp;  } }
+
         public int Version { get; internal set; }
-
-
-        /// <inheritdoc />
-        public override string Name { get { return "TIM2"; } }
 
         /// <inheritdoc />
         public override int FramesCount
@@ -61,11 +59,6 @@ namespace Rainbow.ImgLib.Formats
             return tim2.SelectActivePalette(activePalette).GetImage();
         }
 
-        #region Internal methods for serializers
-
-        internal List<TIM2Segment> ImagesList { get { return imagesList; } }
-
-        #endregion
-
+        internal List<TIM2Segment> TIM2SegmentsList { get { return imagesList; } }
     }
 }

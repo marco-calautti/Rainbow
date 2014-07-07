@@ -8,8 +8,8 @@
     <ProjectGuid>{C4117527-926B-4588-BDE3-53EC241E62B4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rainbow.ImgLib</RootNamespace>
-    <AssemblyName>ImgLib</AssemblyName>
+    <RootNamespace>Rainbow</RootNamespace>
+    <AssemblyName>Rainbow.ImgLib</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
