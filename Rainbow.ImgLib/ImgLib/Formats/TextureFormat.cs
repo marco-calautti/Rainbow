@@ -21,6 +21,11 @@ namespace Rainbow.ImgLib.Formats
     public interface TextureFormat
     {
         /// <summary>
+        /// A human readable name for the TextureFormat implemented by this serializer.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// The number of frames of this texture. An example of multi-frame texture format is the GIF format and the TIM2 format. Every TextureFormat
         /// has at least one frame, which is the image itself.
         /// </summary>
@@ -32,23 +37,23 @@ namespace Rainbow.ImgLib.Formats
         /// </summary>
         int PalettesCount { get; }
 
+
         /// <summary>
         /// Selects the active frame.
         /// </summary>
+        /// <exception cref="System.IndexOutOfRangeException">If the given index is out of range.</exception>
         /// <param name="index"></param>
         /// <returns>A reference to this object.</returns>
-        TextureFormat SelectActiveFrame(int index);
+        int SelectedFrame { get; set; }
 
-        int GetActiveFrame();
 
         /// <summary>
-        /// Selects the active palette. If this TextureFormat has no palette, this method does nothing.
+        /// Selects the active palette. If this TextureFormat has no palette, setting this property has no effect.
         /// </summary>
+        /// <exception cref="System.IndexOutOfRangeException">If the texture has some palette and the given index is out of range.</exception>
         /// <param name="index"></param>
         /// <returns></returns>
-        TextureFormat SelectActivePalette(int index);
-
-        int GetActivePalette();
+        int SelectedPalette { get; set; }
 
         /// <summary>
         /// Gets the Image representation of the currently selected active frame and active palette (if any).

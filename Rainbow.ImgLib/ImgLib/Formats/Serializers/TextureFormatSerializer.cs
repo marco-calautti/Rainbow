@@ -16,7 +16,8 @@ namespace Rainbow.ImgLib.Formats.Serializers
     {
 
         /// <summary>
-        /// A human readable name for the TextureFormat implemented by this serializer.
+        /// A human readable name for the TextureFormat implemented by this serializer. This value is the same returned by the property Name
+        /// of TextureFormat.
         /// </summary>
         string Name { get;  }
         /// <summary>

@@ -30,8 +30,10 @@ namespace Rainbow.ImgLib.Formats
         private byte[] imageData;
         private Color[][] palettes = new Color[0][];
         private ImageDecoder decoder;
-
+        
         #endregion
+
+        internal static readonly string NAME = "TIM2Segment";
 
         internal TIM2Segment(byte[] imageData,byte[] paletteData,uint colorEntries,TIM2SegmentParameters parameters)
         {
@@ -70,6 +72,11 @@ namespace Rainbow.ImgLib.Formats
 
         #region Properties
 
+        public override string Name
+        {
+            get { return NAME; }
+        }
+
         public override int PalettesCount { get { return palettes.Length; } }
 
         public override int FramesCount { get { return 1; } }
@@ -99,7 +106,6 @@ namespace Rainbow.ImgLib.Formats
         protected override Image GetImage(int activeFrame,int activePalette)
         {
             IndexedImageDecoder iDecoder = decoder as IndexedImageDecoder;
-
             if (iDecoder != null)
                 iDecoder.Palette = palettes[activePalette];
 
@@ -114,7 +120,7 @@ namespace Rainbow.ImgLib.Formats
                 decoder = new IndexedImageDecoder(imageData,
                                               parameters.width, parameters.height,
                                               IndexRetriever.FromBitPerPixel(Bpp),
-                                              palettes[GetActivePalette()]);
+                                              palettes[SelectedPalette]);
             }
             else //otherwise, we have a true color TIM2
             {

@@ -23,7 +23,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             this.swizzled = swizzled;
         }
 
-        public string Name { get { return "TIM2Segment"; } }
+        public string Name { get { return TIM2Segment.NAME; } }
 
         public string PreferredFormatExtension { get { return ""; } }
 
@@ -118,13 +118,13 @@ namespace Rainbow.ImgLib.Formats.Serializers
         {
 
             var list = new List<Image>();
-            int oldSelected = segment.GetActivePalette();
+            int oldSelected = segment.SelectedPalette;
             for (int i = 0; i < (segment.PalettesCount == 0 ? 1 : segment.PalettesCount); i++)
             {
-                segment.SelectActivePalette(i);
+                segment.SelectedPalette=i;
                 list.Add(segment.GetImage());
             }
-            segment.SelectActivePalette(oldSelected);
+            segment.SelectedPalette=oldSelected;
             return list;
         }
 
@@ -143,34 +143,39 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
         private void Readmetadata(Stream metadata,out TIM2Segment.TIM2SegmentParameters parameters, out string basename, out int palCount)
         {
-            XDocument doc = XDocument.Load(metadata);
+            try
+            {
+                XDocument doc = XDocument.Load(metadata);
 
-            if (doc.Root.Name != "TIM2Texture")
-                throw new XmlException();
+                if (doc.Root.Name != "TIM2Texture")
+                    throw new XmlException();
 
-            XElement node=doc.Root;
+                XElement node = doc.Root;
 
-            basename = node.Attribute("basename").Value;
-            palCount = int.Parse(node.Attribute("cluts").Value);
+                basename = node.Attribute("basename").Value;
+                palCount = int.Parse(node.Attribute("cluts").Value);
 
-            parameters = new TIM2Segment.TIM2SegmentParameters();
+                parameters = new TIM2Segment.TIM2SegmentParameters();
 
-            parameters.swizzled = swizzled;
-            parameters.width = int.Parse(node.Element("Width").Value);
-            parameters.height = int.Parse(node.Element("Height").Value);
-            parameters.bpp = (byte)int.Parse(node.Element("Bpp").Value);
-            parameters.pixelSize = int.Parse(node.Element("PixelSize").Value);
-            parameters.mipmapCount = (byte)int.Parse(node.Element("MipmapCount").Value);
+                parameters.swizzled = swizzled;
+                parameters.width = int.Parse(node.Element("Width").Value);
+                parameters.height = int.Parse(node.Element("Height").Value);
+                parameters.bpp = (byte)int.Parse(node.Element("Bpp").Value);
+                parameters.pixelSize = int.Parse(node.Element("PixelSize").Value);
+                parameters.mipmapCount = (byte)int.Parse(node.Element("MipmapCount").Value);
 
-            parameters.format = (byte)int.Parse(node.Element("Format").Value);
-            parameters.clutFormat = (byte)int.Parse(node.Element("ClutFormat").Value);
+                parameters.format = (byte)int.Parse(node.Element("Format").Value);
+                parameters.clutFormat = (byte)int.Parse(node.Element("ClutFormat").Value);
 
-            parameters.GsTEX0=Convert.FromBase64String(node.Element("GsTEX0").Value);
-            parameters.GsTEX1=Convert.FromBase64String(node.Element("GsTEX1").Value);
+                parameters.GsTEX0 = Convert.FromBase64String(node.Element("GsTEX0").Value);
+                parameters.GsTEX1 = Convert.FromBase64String(node.Element("GsTEX1").Value);
 
-            parameters.GsRegs = (uint)int.Parse(node.Element("GsRegs").Value);
-            parameters.GsTexClut = (uint)int.Parse(node.Element("GsTexClut").Value);
-
+                parameters.GsRegs = (uint)int.Parse(node.Element("GsRegs").Value);
+                parameters.GsTexClut = (uint)int.Parse(node.Element("GsTexClut").Value);
+            }catch(Exception e)
+            {
+                throw new TextureFormatException("Non valid metadata!",e);
+            }
         }
 
         private void Writemetadata(TIM2Segment segment, Stream metadata, string basename)

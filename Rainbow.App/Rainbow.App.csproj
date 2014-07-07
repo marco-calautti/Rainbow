@@ -63,6 +63,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App\GUI\Controls\TransparentPictureBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="App\GUI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +114,9 @@
     <EmbeddedResource Include="App\GUI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App\GUI\Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

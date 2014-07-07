@@ -15,6 +15,7 @@ namespace Rainbow.App.GUI
     public partial class MainForm : Form
     {
         private TextureFormat texture;
+        private TextureFormatSerializer serializer;
 
         public MainForm()
         {
@@ -23,43 +24,106 @@ namespace Rainbow.App.GUI
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Rainbow, a console image format handling tool.", "About Rainbow",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            MessageBox.Show(Application.ProductName+", a console image format handling tool.", "About Rainbow",MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            OpenImportTexture(true);
+        }
+
+        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            SetTexture(texture);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            Text = Application.ProductName;
+        }
+
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenImportTexture(false);
+        }
+
+        private void SaveExportTexture(bool save)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = serializer.Name + (save ? "" : " metadata")+"|"+(save? serializer.PreferredFormatExtension : serializer.PreferredMetadataExtension);
+
+            var result = dialog.ShowDialog();
+            if (result != DialogResult.OK)
+                return;
+
+            try
+            {
+                using(Stream s=File.Open(dialog.FileName,FileMode.Create))
+                {
+                    if (save)
+                        serializer.Save(texture, s);
+                    else
+                        serializer.Export(texture, s, Path.GetDirectoryName(dialog.FileName), Path.GetFileNameWithoutExtension(dialog.FileName));
+                }
+                
+            }catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void OpenImportTexture(bool open)
+        {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = ConstructFilters(true);
-            var result=dialog.ShowDialog();
+            dialog.Filter = ConstructFilters(open);
+            var result = dialog.ShowDialog();
 
             if (result != DialogResult.OK)
                 return;
             string name = dialog.FileName;
-            var serializer=TextureFormatSerializerProvider.FromFileFormatExtension(Path.GetExtension(name));
+            serializer = open ? TextureFormatSerializerProvider.FromFileFormatExtension(Path.GetExtension(name)) :
+                                    TextureFormatSerializerProvider.FromFileMetadataExtension(Path.GetExtension(name));
 
             if (serializer == null)
                 serializer = TextureFormatSerializerProvider.FromFile(name);
 
-            if(serializer==null)
+            if (serializer == null)
             {
                 MessageBox.Show("Unsupported file format!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (Stream s = File.Open(name, FileMode.Open))
-                SetTexture(serializer.Open(s));
+            try
+            {
+                using (Stream s = File.Open(name, FileMode.Open))
+                    SetTexture( open? serializer.Open(s) : 
+                                      serializer.Import(s,Path.GetDirectoryName(name),Path.GetFileNameWithoutExtension(name))
+                              );
+                this.Text = Path.GetFileName(name) + " - " + Application.ProductName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private string ConstructFilters(bool format)
         {
-            StringBuilder builder=new StringBuilder();
+            StringBuilder builder = new StringBuilder();
 
-            IEnumerable<TextureFormatSerializer> ordered=TextureFormatSerializerProvider.RegisteredSerializers.OrderBy(s => s.Name);
-            foreach(var serializer in ordered)
+            IEnumerable<TextureFormatSerializer> ordered = TextureFormatSerializerProvider.RegisteredSerializers.OrderBy(s => s.Name);
+            foreach (var serializer in ordered)
             {
-                builder.AppendFormat("{0}|*{1}|",serializer.Name, 
-                                                                    format? serializer.PreferredFormatExtension : 
-                                                                    serializer.PreferredMetadataExtension);
+                builder.AppendFormat("{0}|*{1}|", format?   serializer.Name : 
+                                                            serializer.Name+" metadata",
+
+                                                  format ?  serializer.PreferredFormatExtension :
+                                                            serializer.PreferredMetadataExtension);
             }
             builder.AppendFormat("All files|*.*");
             return builder.ToString();
@@ -69,12 +133,17 @@ namespace Rainbow.App.GUI
         {
             texture = tex;
             propertyGrid.SelectedObject = texture;
-            pictureBox.Image = texture.GetImage();
+            transparentPictureBox1.SetTexture(texture);
         }
 
-        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SetTexture(texture);
+            SaveExportTexture(true);
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveExportTexture(false);
         }
     }
 }

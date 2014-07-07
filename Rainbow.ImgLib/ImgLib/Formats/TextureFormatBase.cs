@@ -10,37 +10,34 @@ namespace Rainbow.ImgLib.Formats
     {
         private int activeFrame, activePalette;
 
+        public abstract string Name { get;  }
         public abstract int FramesCount { get; }
 
         public abstract int PalettesCount { get;  }
 
-        public TextureFormat SelectActiveFrame(int index)
+        public int SelectedFrame
         {
-            if (index < 0 || index >= FramesCount)
-                throw new IndexOutOfRangeException();
-            activeFrame = index;
-            return this;
+            get { return activeFrame; }
+            set
+            {
+                if (value < 0 || value >= FramesCount)
+                    throw new IndexOutOfRangeException();
+                activeFrame = value;
+            }
         }
 
-        public int GetActiveFrame()
+        public int SelectedPalette
         {
-            return activeFrame;
-        }
+            get{ return activePalette;}
+            set
+            {
+                if (PalettesCount == 0)
+                    return;
+                if (value < 0 || value >= PalettesCount)
+                    throw new IndexOutOfRangeException();
 
-        public TextureFormat SelectActivePalette(int index)
-        {
-            if (PalettesCount == 0)
-                return this;
-            if (index < 0 || index >= PalettesCount)
-                throw new IndexOutOfRangeException();
-
-            activePalette = index;
-            return this;
-        }
-
-        public int GetActivePalette()
-        {
-            return activePalette;
+                activePalette = value;
+            }
         }
 
         public Image GetImage()

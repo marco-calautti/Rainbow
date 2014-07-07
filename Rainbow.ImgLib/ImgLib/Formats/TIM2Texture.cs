@@ -11,10 +11,13 @@ namespace Rainbow.ImgLib.Formats
 
         #endregion
 
+        internal static readonly string NAME = "TIM2";
+
         internal TIM2Texture(List<TIM2Segment> list) 
         {
             imagesList = list;
         }
+
 
         #region Properties
 
@@ -28,9 +31,16 @@ namespace Rainbow.ImgLib.Formats
             }
         }
 
-        public int Bpp { get { return imagesList[GetActiveFrame()].Bpp;  } }
+        public int Bpp { get { return imagesList[SelectedFrame].Bpp;  } }
+
+        public int PixelSize { get { return imagesList[SelectedFrame].PixelSize; } }
 
         public int Version { get; internal set; }
+
+        public override string Name
+        {
+            get { return NAME; }
+        }
 
         /// <inheritdoc />
         public override int FramesCount
@@ -46,7 +56,7 @@ namespace Rainbow.ImgLib.Formats
         {
             get
             {
-                return imagesList[GetActiveFrame()].PalettesCount;
+                return imagesList[SelectedFrame].PalettesCount;
             }
         }
 
@@ -56,7 +66,8 @@ namespace Rainbow.ImgLib.Formats
         protected override System.Drawing.Image GetImage(int activeFrame,int activePalette)
         {
             TIM2Segment tim2 = imagesList[activeFrame];
-            return tim2.SelectActivePalette(activePalette).GetImage();
+            tim2.SelectedPalette=activePalette;
+            return tim2.GetImage();
         }
 
         internal List<TIM2Segment> TIM2SegmentsList { get { return imagesList; } }

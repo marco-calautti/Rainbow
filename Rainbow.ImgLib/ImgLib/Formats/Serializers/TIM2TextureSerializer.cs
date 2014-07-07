@@ -11,7 +11,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
     public class TIM2TextureSerializer : TextureFormatSerializer
     {
 
-        public string Name { get { return "TIM2";  } }
+        public string Name { get { return TIM2Texture.NAME;  } }
 
         public string PreferredFormatExtension { get { return ".tm2";  } }
 
@@ -32,9 +32,15 @@ namespace Rainbow.ImgLib.Formats.Serializers
         public bool IsValidMetadataFormat(Stream metadata)
         {
             long oldPos = metadata.Position;
+            XDocument doc = null;
+            string name = "" ;
+            try { 
+                doc = XDocument.Load(metadata);
+                name=doc.Root.Name.ToString();
+            }catch(Exception)
+            {
 
-            XDocument doc = XDocument.Load(metadata);
-            string name=doc.Root.Name.ToString();
+            }
 
             metadata.Position = oldPos;
             return name == "TIM2";
