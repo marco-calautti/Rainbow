@@ -43,6 +43,9 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.useBlckAsTransparentColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.chessboardBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transparentPictureBox1 = new Rainbow.App.GUI.Controls.TransparentPictureBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -136,6 +139,10 @@
             // 
             // viewToolStripMenuItem
             // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.useBlckAsTransparentColorToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.chessboardBackgroundToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -151,7 +158,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -188,8 +195,31 @@
             this.propertyGrid.TabIndex = 0;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
+            // useBlckAsTransparentColorToolStripMenuItem
+            // 
+            this.useBlckAsTransparentColorToolStripMenuItem.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.useBlckAsTransparentColorToolStripMenuItem.Name = "useBlckAsTransparentColorToolStripMenuItem";
+            this.useBlckAsTransparentColorToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.useBlckAsTransparentColorToolStripMenuItem.Text = "Transparency color";
+            this.useBlckAsTransparentColorToolStripMenuItem.Click += new System.EventHandler(this.useBlckAsTransparentColorToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(200, 6);
+            // 
+            // chessboardBackgroundToolStripMenuItem
+            // 
+            this.chessboardBackgroundToolStripMenuItem.Checked = true;
+            this.chessboardBackgroundToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chessboardBackgroundToolStripMenuItem.Name = "chessboardBackgroundToolStripMenuItem";
+            this.chessboardBackgroundToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.chessboardBackgroundToolStripMenuItem.Text = "Chessboard background";
+            this.chessboardBackgroundToolStripMenuItem.Click += new System.EventHandler(this.chessboardBackgroundToolStripMenuItem_Click);
+            // 
             // transparentPictureBox1
             // 
+            this.transparentPictureBox1.Chessboard = true;
             this.transparentPictureBox1.Location = new System.Drawing.Point(3, 3);
             this.transparentPictureBox1.Name = "transparentPictureBox1";
             this.transparentPictureBox1.Size = new System.Drawing.Size(400, 400);
@@ -233,5 +263,8 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.PropertyGrid propertyGrid;
         private Controls.TransparentPictureBox transparentPictureBox1;
+        private System.Windows.Forms.ToolStripMenuItem useBlckAsTransparentColorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem chessboardBackgroundToolStripMenuItem;
     }
 }

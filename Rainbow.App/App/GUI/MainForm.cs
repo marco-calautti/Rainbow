@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using Rainbow.App.GUI.Controls;
 
 namespace Rainbow.App.GUI
 {
@@ -157,16 +158,26 @@ namespace Rainbow.App.GUI
             StringBuilder builder = new StringBuilder();
 
             IEnumerable<TextureFormatSerializer> ordered = TextureFormatSerializerProvider.RegisteredSerializers.OrderBy(s => s.Name);
+
+            StringBuilder allFormatsBuilder = new StringBuilder();
+            allFormatsBuilder.Append("All supported " + (format ? "formats|" : "metadata formats|"));
+
             foreach (var serializer in ordered)
             {
+                string ext= format ?  serializer.PreferredFormatExtension :
+                                      serializer.PreferredMetadataExtension;
+
+                allFormatsBuilder.AppendFormat("*{0};", ext);
                 builder.AppendFormat("{0}|*{1}|", format?   serializer.Name : 
                                                             serializer.Name+" metadata",
-
-                                                  format ?  serializer.PreferredFormatExtension :
-                                                            serializer.PreferredMetadataExtension);
+                                                            ext);
             }
-            builder.AppendFormat("All files|*.*");
-            return builder.ToString();
+
+            string f=allFormatsBuilder.Remove(allFormatsBuilder.Length - 1, 1).
+                                     Append('|').Append(builder).
+                                     Append("All files|*.*").ToString();
+            return f;
+
         }
 
         private void SetTexture(TextureFormat tex)
@@ -179,6 +190,27 @@ namespace Rainbow.App.GUI
         private void SetFilenameTitle(string name)
         {
             this.Text = Path.GetFileName(name) + " - " + Application.ProductName;
+        }
+
+        private void useBlckAsTransparentColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog dialog = new ColorDialog();
+            dialog.CustomColors = new int[] { TransparentPictureBox.PreferredTransparencyColor.ToArgb() };
+
+            var result=dialog.ShowDialog();
+            if (result != DialogResult.OK)
+                return;
+
+            transparentPictureBox1.SetTransparencyColor(dialog.Color);
+        }
+
+        private void chessboardBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item=sender as ToolStripMenuItem;
+            if(item==null)
+                return;
+            item.Checked=!item.Checked;
+            transparentPictureBox1.Chessboard = item.Checked;
         }
     }
 }
