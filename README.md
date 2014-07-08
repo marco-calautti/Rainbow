@@ -1,7 +1,7 @@
 Rainbow
 =======
 
-Rainbow is intended to be a multi-purpose tool written in C# to handle different graphics format from video games assets.
+Rainbow is intended to be a multi-purpose tool written in C# to handle different graphics formats from video games assets.
 
 ![ScreenShot](http://i.imgur.com/2IolZoh.png)
 
