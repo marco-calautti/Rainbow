@@ -102,11 +102,11 @@ namespace Rainbow.ImgLib.Formats.Serializers
             }
             catch (XmlException e)
             {
-                throw new TextureFormatException("Invalid metadata file!", e);
+                throw new TextureFormatException("Invalid metadata file!\n"+e.Message, e);
             }
             catch (FormatException e)
             {
-                throw new TextureFormatException("Invalid metadata file!", e);
+                throw new TextureFormatException("Invalid metadata file!\n"+e.Message, e);
             }
             return segment;
         }

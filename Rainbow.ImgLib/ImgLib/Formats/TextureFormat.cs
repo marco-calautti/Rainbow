@@ -12,6 +12,7 @@ namespace Rainbow.ImgLib.Formats
 
         public TextureFormatException(string message, Exception e)
             : base(message, e) { }
+
     }
 
     /// <summary>

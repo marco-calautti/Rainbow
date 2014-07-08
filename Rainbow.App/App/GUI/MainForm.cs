@@ -196,6 +196,7 @@ namespace Rainbow.App.GUI
         {
             ColorDialog dialog = new ColorDialog();
             dialog.CustomColors = new int[] { TransparentPictureBox.PreferredTransparencyColor.ToArgb() };
+            dialog.FullOpen = true;
 
             var result=dialog.ShowDialog();
             if (result != DialogResult.OK)

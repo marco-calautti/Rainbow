@@ -61,7 +61,7 @@ namespace Rainbow.ImgLib.Encoding
                     if (!reversePal.ContainsKey(pixel))
                     {
                         if (index >= colors)
-                            throw new Exception("Too many colors");
+                            throw new Exception("Too many colors! The maximum for this TIM2 is "+colors+"!");
 
                         reversePal[pixel] = index;
                         for (int i = 0; i < Palettes.Count; i++)

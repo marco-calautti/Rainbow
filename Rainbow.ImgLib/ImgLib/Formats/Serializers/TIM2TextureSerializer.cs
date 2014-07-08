@@ -127,7 +127,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             {
                 XDocument doc = XDocument.Load(metadata);
                 if (doc.Root.Name != "TIM2")
-                    throw new Exception();
+                    throw new TextureFormatException("Illegal metadata!");
 
                 XElement node = doc.Root;
 
@@ -152,11 +152,19 @@ namespace Rainbow.ImgLib.Formats.Serializers
             }
             catch (FormatException e)
             {
-                throw new TextureFormatException("Cannot parse value!", e);
+                throw new TextureFormatException("Cannot parse value!\n"+e.Message, e);
             }
-            catch (Exception e)
+            catch (XmlException e)
             {
-                throw new TextureFormatException("Not valid metadata!", e);
+                throw new TextureFormatException("Not valid metadata!\n"+e.Message, e);
+            }
+            catch(TextureFormatException e)
+            {
+                throw new TextureFormatException(e.Message, e);
+            }
+            catch(Exception e)
+            {
+                throw new TextureFormatException("Error:\n"+e.Message, e);
             }
    
             return tim2;
