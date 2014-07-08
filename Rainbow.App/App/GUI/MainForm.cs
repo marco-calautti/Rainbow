@@ -36,11 +36,14 @@ namespace Rainbow.App.GUI
             }
             serializer = ser;
             SetTexture(tex);
+            SetFilenameTitle(filename);
         }
 
         public MainForm()
         {
             InitializeComponent();
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+            Text = Application.ProductName;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -61,11 +64,6 @@ namespace Rainbow.App.GUI
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            Text = Application.ProductName;
         }
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
@@ -114,7 +112,7 @@ namespace Rainbow.App.GUI
                                                            Path.GetDirectoryName(name), 
                                                            Path.GetFileNameWithoutExtension(name)));
 
-                this.Text = Path.GetFileName(name) + " - " + Application.ProductName;
+                SetFilenameTitle(name);
                 serializer = curSerializer;
             }
             catch (Exception ex)
@@ -178,6 +176,9 @@ namespace Rainbow.App.GUI
             transparentPictureBox1.SetTexture(texture);
         }
 
-        
+        private void SetFilenameTitle(string name)
+        {
+            this.Text = Path.GetFileName(name) + " - " + Application.ProductName;
+        }
     }
 }
