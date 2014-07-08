@@ -3,7 +3,7 @@ Rainbow
 
 Rainbow is intended to be a multi-purpose tool written in C# to handle different graphics formats from video games assets.
 
-![ScreenShot](http://i.imgur.com/nQTVwEn.png)
+![ScreenShot](http://i.imgur.com/7LLkzhY.png)
 
 Currently, the image library supports the TIM2 format in all its variants,
 both in swizzled and unswizzled form. The image library is extensible and easy to use, just extend
