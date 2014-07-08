@@ -6,7 +6,10 @@ Rainbow is intended to be a multi-purpose tool written in C# to handle different
 ![ScreenShot](http://i.imgur.com/2IolZoh.png)
 
 Currently, the image library supports the TIM2 format in all its variants,
-both in swizzled and unswizzled form. A preliminary version of the GUI application is also available which allows to convert TIM2 textures to an editable format (xml+png) and then back to TIM2.
+both in swizzled and unswizzled form. The image library is extensible and easy to use, just extend
+a couple of classes implementing the new format and that's it.
+
+A preliminary version of the GUI application is also available which allows to convert TIM2 textures to an editable format (xml+png) and then back to TIM2.
 
 How to use Rainbow
 =======
