@@ -8,7 +8,8 @@ both in swizzled and unswizzled form. A preliminary version of the GUI applicati
 
 How to use Rainbow
 =======
-Use the "Open" menu to open any supported texture (currently TIM2).\n
+Use the "Open" menu to open any supported texture (currently TIM2).
+
 Use the property grid on the left side to change some texture parameters (like swizzling).
 The "Save" menu allows to save the texture to the original format (e.g., to TIM2).
 The "Export" menu instead allows to save the texture to a user editable format, like png.
