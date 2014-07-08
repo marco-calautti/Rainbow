@@ -14,5 +14,4 @@ How to use Rainbow
 * The "Import" menu allows to import graphics in user editable format such that they can eventually be saved to the original format by means of the "Save" menu.
 * The "Save" menu allows to save the texture to the original format (e.g., to TIM2).
 
-The application supports opening all the supported texture formats by passing the file name as first argument. In a nutshell,
-you can use Windows to associate the opening of known texture with Rainbow.
+The Rainbow app also supports opening all the supported texture formats by passing the file name of the texture as first argument. In a nutshell, you can use Windows to associate the opening of known texture with Rainbow.
