@@ -55,6 +55,9 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>rainbow.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -117,6 +120,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App\GUI\Model\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="rainbow.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

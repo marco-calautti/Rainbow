@@ -35,6 +35,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// Checks whether the given stream represents a valid texture encoded in the format implemented by this TextureFormatSerializer.
         /// This method does not close the given stream and it restores the original stream position, so that calls to other TextureFormatSeriazliers' IsValidXX can be performed.
         /// </summary>
+        /// <exception cref="IOException">if any I/O exception occurs during reading the given stream</exception>
         /// <param name="inputFormat"></param>
         /// <returns></returns>
         bool IsValidFormat(Stream inputFormat);
@@ -43,6 +44,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// Checks whether the given stream representes valid metadata for a texture encoded in the format implemented by this TextureFormatSerializer.
         /// This method does not close the given stream and it restores the original stream position, so that calls to other TextureFormatSeriazliers' IsValidXX can be performed.
         /// </summary>
+        /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
         /// <param name="metadataStream"></param>
         /// <returns></returns>
         bool IsValidMetadataFormat(Stream metadataStream);
@@ -51,6 +53,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// Opens data encoded in the format implemented by this TextureFormatSerializer from the given stream.
         /// The method does not close the stream, but it does not restore the stream position.
         /// </summary>
+        /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
         /// <param name="formatData">A TextureFormat instance of the format implemented by this Serializer</param>
         TextureFormat Open(Stream formatData);
 
@@ -58,6 +61,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// Saves this texture to the given stream into the format represented by this TextureFormatSerializer.
         /// The method does not close the stream, but it does not restore the stream position.
         /// </summary>
+        /// <exception cref="IOException">if any I/O exception occurs during writing the given stream.</exception>
         /// <param name="outFormatData"></param>
         void Save(TextureFormat texture, Stream outFormatData);
 
@@ -67,6 +71,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// Additional data may be saved to the given directory and base file name. What is stored in the given directory is specific to this serializer.
         /// The method does not close the stream, but it does not restore the stream position.
         /// </summary>
+        /// <exception cref="IOException">if any I/O exception occurs during writing the given stream.</exception>
         /// <param name="metadata"></param>
         /// <param name="directory"></param>
         /// <param name="basename"></param>
@@ -77,6 +82,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// w.r.t. the given basename. What is stored in the given directory is specific to this serializer.
         /// The method does not close the stream, but it does not restore the stream position.
         /// </summary>
+        /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
         /// <param name="metadata"></param>
         /// <param name="directory"></param>
         TextureFormat Import(Stream metadata, string directory, string basename);

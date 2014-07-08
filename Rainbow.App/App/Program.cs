@@ -19,7 +19,8 @@ namespace Rainbow.App
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
-            Form form = new MainForm();
+            Form form= args.Length > 0 ? new MainForm(args[0]) : new MainForm();
+
             form.StartPosition = FormStartPosition.CenterScreen;
             Application.Run(form);
         }

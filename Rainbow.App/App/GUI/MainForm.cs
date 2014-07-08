@@ -17,6 +17,27 @@ namespace Rainbow.App.GUI
         private TextureFormat texture;
         private TextureFormatSerializer serializer;
 
+        public MainForm(string filename) : this()
+        {
+            TextureFormatSerializer ser = null;
+            TextureFormat tex = null;
+            try
+            {
+                ser = TextureFormatSerializerProvider.FromFile(filename);
+                
+                using(Stream s=File.Open(filename,FileMode.Open))
+                {
+                    tex = ser.IsValidFormat(s) ? ser.Open(s) : ser.Import(s,Path.GetDirectoryName(filename),Path.GetFileNameWithoutExtension(filename));
+                }
+                
+            }catch(Exception)
+            {
+                return;
+            }
+            serializer = ser;
+            SetTexture(tex);
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -62,36 +83,6 @@ namespace Rainbow.App.GUI
             SaveExportTexture(false);
         }
 
-        private void SaveExportTexture(bool save)
-        {
-            if (texture == null)
-                return;
-
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = serializer.Name + 
-                            (save ? "|" : " metadata + editable data|")+
-                            (save? serializer.PreferredFormatExtension : serializer.PreferredMetadataExtension);
-
-            var result = dialog.ShowDialog();
-            if (result != DialogResult.OK)
-                return;
-
-            try
-            {
-                using(Stream s=File.Open(dialog.FileName,FileMode.Create))
-                {
-                    if (save)
-                        serializer.Save(texture, s);
-                    else
-                        serializer.Export(texture, s, Path.GetDirectoryName(dialog.FileName), Path.GetFileNameWithoutExtension(dialog.FileName));
-                }
-                
-            }catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
         private void OpenImportTexture(bool open)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -103,20 +94,20 @@ namespace Rainbow.App.GUI
 
             string name = dialog.FileName;
 
-            var curSerializer = open ? TextureFormatSerializerProvider.FromFileFormatExtension(Path.GetExtension(name)) :
-                                    TextureFormatSerializerProvider.FromFileMetadataExtension(Path.GetExtension(name));
-
-            if (curSerializer == null)
-                curSerializer = TextureFormatSerializerProvider.FromFile(name);
-
-            if (curSerializer == null)
-            {
-                MessageBox.Show("Unsupported file format!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            var curSerializer = open ?  TextureFormatSerializerProvider.FromFileFormatExtension(Path.GetExtension(name)) :
+                                        TextureFormatSerializerProvider.FromFileMetadataExtension(Path.GetExtension(name));
 
             try
             {
+                if (curSerializer == null)
+                    curSerializer = TextureFormatSerializerProvider.FromFile(name);
+
+                if (curSerializer == null)
+                {
+                    MessageBox.Show("Unsupported file format!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 using (Stream s = File.Open(name, FileMode.Open))
                     SetTexture(open ? curSerializer.Open(s) :
                                       curSerializer.Import(s, 
@@ -125,6 +116,37 @@ namespace Rainbow.App.GUI
 
                 this.Text = Path.GetFileName(name) + " - " + Application.ProductName;
                 serializer = curSerializer;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void SaveExportTexture(bool save)
+        {
+            if (texture == null)
+                return;
+
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = serializer.Name +
+                            (save ? "|" : " metadata + editable data|") +
+                            (save ? serializer.PreferredFormatExtension : serializer.PreferredMetadataExtension);
+
+            var result = dialog.ShowDialog();
+            if (result != DialogResult.OK)
+                return;
+
+            try
+            {
+                using (Stream s = File.Open(dialog.FileName, FileMode.Create))
+                {
+                    if (save)
+                        serializer.Save(texture, s);
+                    else
+                        serializer.Export(texture, s, Path.GetDirectoryName(dialog.FileName), Path.GetFileNameWithoutExtension(dialog.FileName));
+                }
+
             }
             catch (Exception ex)
             {

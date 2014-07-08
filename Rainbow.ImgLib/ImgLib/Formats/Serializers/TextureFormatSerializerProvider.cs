@@ -70,6 +70,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// <summary>
         /// Retrieves a serializer for textures encoded in the same format of the given stream. The given stream can be either a file format stream or a metadata stream.
         /// </summary>
+        /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
         /// <param name="stream"></param>
         /// <returns>the requested serializer if found, null otherwise.</returns>
         public static TextureFormatSerializer FromStream(Stream stream)
@@ -84,6 +85,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// <summary>
         /// Retrieves a serializer for textures encoded in the same format of the given file. The given file can either encode a texture in metadata or original form.
         /// </summary>
+        /// <exception cref="IOException">if any I/O exception occurs during reading the given file.</exception>
         /// <param name="stream"></param>
         /// <returns>the requested serializer if found, null otherwise.</returns>
         public static TextureFormatSerializer FromFile(string filePath)
