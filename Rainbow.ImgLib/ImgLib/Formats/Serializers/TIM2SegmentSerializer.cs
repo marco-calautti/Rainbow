@@ -42,13 +42,10 @@ namespace Rainbow.ImgLib.Formats.Serializers
         public TextureFormat Open(Stream formatData)
         {
 
-            byte[] fullHeader = new byte[0x30];
-            formatData.Read(fullHeader, 0, fullHeader.Length);
-
             uint dataSize, paletteSize, colorEntries;
             TIM2Segment.TIM2SegmentParameters parameters;
 
-            AcquireInfoFromHeader(fullHeader, out parameters, out dataSize, out paletteSize, out colorEntries);
+            AcquireInfoFromHeader(formatData, out parameters, out dataSize, out paletteSize, out colorEntries);
 
             byte[] imageData = new byte[dataSize];
             formatData.Read(imageData, 0, (int)dataSize);
@@ -172,6 +169,8 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
                 parameters.GsRegs = (uint)int.Parse(node.Element("GsRegs").Value);
                 parameters.GsTexClut = (uint)int.Parse(node.Element("GsTexClut").Value);
+
+                parameters.userdata = Convert.FromBase64String(node.Element("UserData").Value);
             }catch(Exception e)
             {
                 throw new TextureFormatException("Non valid metadata!",e);
@@ -205,6 +204,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
             xml.WriteElementString("GsRegs", segment.GetParameters().GsRegs.ToString());
             xml.WriteElementString("GsTexClut", segment.GetParameters().GsTexClut.ToString());
+            xml.WriteStartElement("UserData"); xml.WriteBase64(segment.GetParameters().userdata, 0, segment.GetParameters().userdata.Length); xml.WriteEndElement();
             xml.WriteEndElement();
             xml.Close();
         }
@@ -212,11 +212,11 @@ namespace Rainbow.ImgLib.Formats.Serializers
         private void WriteHeader(TIM2Segment.TIM2SegmentParameters parameters, Stream outFormatData, byte[] imageData, byte[] paletteData)
         {
             BinaryWriter writer = new BinaryWriter(outFormatData);
-            uint totalSize = (uint)(0x30 + imageData.Length + paletteData.Length);
+            uint totalSize = (uint)(0x30 + parameters.userdata.Length+imageData.Length + paletteData.Length);
             writer.Write(totalSize);
             writer.Write((uint)paletteData.Length);
             writer.Write((uint)imageData.Length);
-            writer.Write((ushort)0x30);
+            writer.Write((ushort)(0x30 + parameters.userdata.Length));
             
             ushort colorEntries = (ushort)(paletteData.Length / parameters.pixelSize);
             writer.Write(colorEntries);
@@ -252,10 +252,14 @@ namespace Rainbow.ImgLib.Formats.Serializers
             writer.Write(parameters.GsTEX1);
             writer.Write(parameters.GsRegs);
             writer.Write(parameters.GsTexClut);
+            writer.Write(parameters.userdata);
         }
 
-        private void AcquireInfoFromHeader(byte[] fullHeader, out TIM2Segment.TIM2SegmentParameters parameters, out uint dataSize, out uint paletteSize, out uint colorEntries)
+        private void AcquireInfoFromHeader(Stream formatData, out TIM2Segment.TIM2SegmentParameters parameters, out uint dataSize, out uint paletteSize, out uint colorEntries)
         {
+            byte[] fullHeader = new byte[0x30];
+            formatData.Read(fullHeader, 0, fullHeader.Length);
+
             BinaryReader reader = new BinaryReader(new MemoryStream(fullHeader));
             
             uint totalSize = reader.ReadUInt32();
@@ -263,8 +267,10 @@ namespace Rainbow.ImgLib.Formats.Serializers
             dataSize = reader.ReadUInt32();
             ushort headerSize = reader.ReadUInt16();
 
-            if (headerSize != 0x30)
-                throw new TextureFormatException("Bad subheader size, unsupported TIM2 format!");
+            int userDataSize = headerSize-0x30; 
+            
+            //if (headerSize != 0x30)
+              //  throw new TextureFormatException("Bad subheader size, unsupported TIM2 format!");
 
             colorEntries = reader.ReadUInt16();
 
@@ -318,6 +324,14 @@ namespace Rainbow.ImgLib.Formats.Serializers
                 parameters.pixelSize = (int)(paletteSize / (uint)colorEntries);
             else
                 parameters.pixelSize = (int)dataSize / (parameters.width * parameters.height);
+
+            if (userDataSize > 0)
+            {
+                byte[] data = new byte[userDataSize];
+                formatData.Read(data, 0, userDataSize);
+                parameters.userdata = data;
+            }
+
         }
 
     }

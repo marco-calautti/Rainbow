@@ -21,6 +21,7 @@ namespace Rainbow.ImgLib.Formats
             internal byte clutFormat; //should correspond to pixelSize
             internal byte[] GsTEX0=new byte[8], GsTEX1=new byte[8];
             internal uint GsRegs, GsTexClut;
+            internal byte[] userdata = new byte[0];
         }
 
         #region Members
