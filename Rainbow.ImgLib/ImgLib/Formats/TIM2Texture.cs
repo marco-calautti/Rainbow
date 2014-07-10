@@ -3,6 +3,11 @@ using System.Linq;
 
 namespace Rainbow.ImgLib.Formats
 {
+    /// <summary>
+    /// This class represents a TIM2 texture. It supports multi frame TIM2 images. Each frame can also have multiple cluts.
+    /// Every segment may have its cluts interleaved or not.
+    /// It currently does not support mipmap TIM2 images.
+    /// </summary>
     public class TIM2Texture : TextureFormatBase
     {
         #region Members
@@ -21,6 +26,10 @@ namespace Rainbow.ImgLib.Formats
 
         #region Properties
 
+        /// <summary>
+        /// Sets if ALL the frames of this TIM2 image are in swizzled form or not. The value returned by GetImage
+        /// will change accordingly.
+        /// </summary>
         public bool Swizzled
         {
             get { return imagesList.First().Swizzled; }
@@ -31,10 +40,35 @@ namespace Rainbow.ImgLib.Formats
             }
         }
 
+        /// <summary>
+        /// Sets if ALL the palettes of the CURRENT frame are interleaved or not. The value returned by GetImage will change accordingly.
+        /// If this TIM2 has no palette, changing this property has no effect.
+        /// </summary>
+        public bool InterleavedPalette
+        {
+            get
+            {
+                return imagesList[SelectedFrame].InterleavedPalette;
+            }
+            set
+            {
+                imagesList[SelectedFrame].InterleavedPalette = value;
+            }
+        }
+
+        /// <summary>
+        /// The bith depth of this TIM2 image.
+        /// </summary>
         public int Bpp { get { return imagesList[SelectedFrame].Bpp;  } }
 
+        /// <summary>
+        /// The number of bytes used to encode the colors of this TIM2 image.
+        /// </summary>
         public int PixelSize { get { return imagesList[SelectedFrame].PixelSize; } }
 
+        /// <summary>
+        /// The version number of this TIM2 image.
+        /// </summary>
         public int Version { get; internal set; }
 
         /// <inheritdoc />

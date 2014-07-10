@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using Rainbow.ImgLib.Encoding;
 using Rainbow.ImgLib.Common;
+using Rainbow.ImgLib.Filters;
 
 namespace Rainbow.ImgLib.Formats
 {
@@ -14,6 +15,7 @@ namespace Rainbow.ImgLib.Formats
         {
             internal int width, height;
             internal bool swizzled = false;
+            internal bool interleavedPalette = false;
             internal byte format;
             internal byte bpp;
             internal int pixelSize;
@@ -31,7 +33,9 @@ namespace Rainbow.ImgLib.Formats
         private byte[] imageData;
         private Color[][] palettes = new Color[0][];
         private ImageDecoder decoder;
-        
+        private TIM2PaletteFilter paletteFilter;
+        private SwizzleFilter swizzleFilter;
+
         #endregion
 
         internal static readonly string NAME = "TIM2Segment";
@@ -40,8 +44,13 @@ namespace Rainbow.ImgLib.Formats
         {
             this.imageData = imageData;
             this.parameters = parameters;
+            swizzleFilter = new SwizzleFilter(parameters.width, parameters.height, parameters.bpp);
+            paletteFilter = new TIM2PaletteFilter(parameters.bpp);
+
             if (parameters.swizzled)
-                this.imageData = ImgUtils.unSwizzle(imageData, parameters.width, parameters.height, parameters.bpp);
+            {
+                this.imageData = parameters.swizzled ? swizzleFilter.Defilter(imageData) : swizzleFilter.ApplyFilter(imageData);
+            }
 
             ConstructPalettes(paletteData, colorEntries);
             CreateImageDecoder(imageData);
@@ -50,6 +59,8 @@ namespace Rainbow.ImgLib.Formats
         internal TIM2Segment(ICollection<Image> images,TIM2SegmentParameters parameters)
         {
             this.parameters = parameters;
+            swizzleFilter = new SwizzleFilter(parameters.width, parameters.height, parameters.bpp);
+            paletteFilter = new TIM2PaletteFilter(parameters.bpp);
 
             if(parameters.bpp>8) //true color image
             {
@@ -87,6 +98,7 @@ namespace Rainbow.ImgLib.Formats
         {
             get { return parameters.height; }
         }
+
         public override int PalettesCount { get { return palettes.Length; } }
 
         public override int FramesCount { get { return 1; } }
@@ -102,8 +114,34 @@ namespace Rainbow.ImgLib.Formats
                     return;
 
                 parameters.swizzled = value;
-                imageData = parameters.swizzled? ImgUtils.unSwizzle(imageData, parameters.width, parameters.height, parameters.bpp) : ImgUtils.Swizzle(imageData,parameters.width,parameters.height,parameters.bpp);
+
+                imageData = parameters.swizzled ? swizzleFilter.Defilter(imageData) : swizzleFilter.ApplyFilter(imageData);
                 CreateImageDecoder(imageData);
+            }
+        }
+
+        internal bool InterleavedPalette
+        {
+            get
+            {
+                return parameters.interleavedPalette;
+            }
+            set
+            {
+                if (PalettesCount == 0)
+                    return;
+
+                if (parameters.interleavedPalette == value)
+                    return;
+
+                parameters.interleavedPalette=value;
+
+                
+                for(int i=0;i<palettes.Length;i++)
+                {
+                    Color[] pal = parameters.interleavedPalette ? paletteFilter.ApplyFilter(palettes[i]) : paletteFilter.Defilter(palettes[i]);
+                    Array.Copy(pal, palettes[i],pal.Length);
+                }
             }
         }
 
@@ -198,20 +236,21 @@ namespace Rainbow.ImgLib.Formats
 
         internal byte[] GetImageData()
         {
-            return parameters.swizzled ?
-                ImgUtils.Swizzle(imageData, parameters.width, parameters.height, parameters.bpp) : imageData;
-
+            return parameters.swizzled ? swizzleFilter.ApplyFilter(imageData) : imageData;
         }
 
         internal byte[] GetPaletteData()
         {
+
             ColorEncoder encoder = GetColorEncoder(parameters.pixelSize);
             int maximumColors = 1 << parameters.bpp;
 
             MemoryStream stream = new MemoryStream();
             foreach(Color[] palette in palettes)
             {
-                List<Color> newPalette=new List<Color>(palette);
+                Color[] pal = parameters.interleavedPalette ? paletteFilter.Defilter(palette) : palette;
+
+                List<Color> newPalette=new List<Color>(pal);
                 for(int i=0;i<maximumColors-palette.Length;i++)
                 {
                     newPalette.Add(Color.Black);

@@ -47,7 +47,9 @@
   <ItemGroup>
     <Compile Include="ImgLib\Common\ImageExtensions.cs" />
     <Compile Include="ImgLib\Encoding\ColorEncoders.cs" />
-    <Compile Include="ImgLib\Common\ImgUtils.cs" />
+    <Compile Include="ImgLib\Filters\Filter.cs" />
+    <Compile Include="ImgLib\Filters\SwizzleFilter.cs" />
+    <Compile Include="ImgLib\Filters\TIM2PaletteFilter.cs" />
     <Compile Include="ImgLib\Encoding\IndexedImageEncoder.cs" />
     <Compile Include="ImgLib\Encoding\IndexPacker.cs" />
     <Compile Include="ImgLib\Encoding\IndexPackers.cs" />

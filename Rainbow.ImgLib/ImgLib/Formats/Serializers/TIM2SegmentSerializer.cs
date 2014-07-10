@@ -155,6 +155,9 @@ namespace Rainbow.ImgLib.Formats.Serializers
                 parameters = new TIM2Segment.TIM2SegmentParameters();
 
                 parameters.swizzled = swizzled;
+
+                parameters.interleavedPalette = bool.Parse(node.Attribute("interleaved_clut").Value);
+
                 parameters.width = int.Parse(node.Element("Width").Value);
                 parameters.height = int.Parse(node.Element("Height").Value);
                 parameters.bpp = (byte)int.Parse(node.Element("Bpp").Value);
@@ -189,6 +192,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             xml.WriteStartElement("TIM2Texture");
             xml.WriteAttributeString("basename", basename);
             xml.WriteAttributeString("cluts", segment.PalettesCount.ToString());
+            xml.WriteAttributeString("interleaved_clut", segment.GetParameters().interleavedPalette.ToString());
 
             xml.WriteElementString("Width", segment.GetParameters().width.ToString());
             xml.WriteElementString("Height", segment.GetParameters().height.ToString());
