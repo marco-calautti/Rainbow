@@ -12,8 +12,8 @@ namespace Rainbow.ImgLib.Common
         {
             Bitmap bmp = new Bitmap(img);
             var list = new List<Color>();
-            for (int x = 0; x < img.Width; x++)
-                for (int y = 0; y < img.Height; y++)
+            for (int y = 0; y < img.Height; y++)
+                for (int x = 0; x < img.Width; x++)
                     list.Add(bmp.GetPixel(x, y));
             return list.ToArray();
         }

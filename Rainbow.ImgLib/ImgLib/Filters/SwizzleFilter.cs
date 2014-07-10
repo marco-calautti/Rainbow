@@ -40,7 +40,7 @@ namespace Rainbow.ImgLib.Filters
                             int absolutey = y + blocky * 8;
                             
                             Buf[block_address + x + y * val] =
-                                originalData[index + absolutex + absolutey * width];
+                                originalData[index + absolutex + absolutey * w];
                             
                         }
                 }

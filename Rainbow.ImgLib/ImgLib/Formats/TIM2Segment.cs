@@ -78,12 +78,8 @@ namespace Rainbow.ImgLib.Formats
                 if (images.Count > 1) //something wrong, we can have at most one true color segment
                     throw new TextureFormatException("Too many images for this true color segment!");
 
-                IEnumerator<Image> en = images.GetEnumerator();
-                en.MoveNext();
-                imageData=GetColorEncoder(parameters.colorSize).
-                                         EncodeColors(
-                                            en.Current.GetColorArray() //I love extension methods. Hurray!
-                                         );
+                IEnumerator<Image> en = images.GetEnumerator(); en.MoveNext();
+                imageData = GetColorEncoder(parameters.colorSize).EncodeColors(en.Current.GetColorArray()); //I love extension methods. Hurray!
             }else
             {
                 IndexedImageEncoder encoder=new IndexedImageEncoder(new List<Image>(images), 1 << parameters.bpp);
