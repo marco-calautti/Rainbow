@@ -7,7 +7,7 @@ namespace Rainbow.ImgLib.Filters
 {
     /// <summary>
     /// A filter is any kind of object that arranges a given array of objects into another array of the same length.
-    /// An example filter is a filter that gets a tiled array of pixel and returns a linear representation of such an array.
+    /// An example filter is a filter that gets a tiled array of pixels and returns a linear representation of such an array.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class Filter<T>

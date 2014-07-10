@@ -17,6 +17,7 @@ namespace Rainbow.App.GUI
     {
         private TextureFormat texture;
         private TextureFormatSerializer serializer;
+        private string filename;
 
         public MainForm(string filename) : this()
         {
@@ -37,7 +38,7 @@ namespace Rainbow.App.GUI
             }
             serializer = ser;
             SetTexture(tex);
-            SetFilenameTitle(filename);
+            SetFilename(filename);
         }
 
         public MainForm()
@@ -113,7 +114,7 @@ namespace Rainbow.App.GUI
                                                            Path.GetDirectoryName(name), 
                                                            Path.GetFileNameWithoutExtension(name)));
 
-                SetFilenameTitle(name);
+                SetFilename(name);
                 serializer = curSerializer;
             }
             catch (Exception ex)
@@ -128,6 +129,8 @@ namespace Rainbow.App.GUI
                 return;
 
             SaveFileDialog dialog = new SaveFileDialog();
+            dialog.FileName = Path.GetFileNameWithoutExtension(filename);
+
             dialog.Filter = serializer.Name +
                             (save ? "|" : " metadata + editable data|") +
                             (save ? serializer.PreferredFormatExtension : serializer.PreferredMetadataExtension);
@@ -187,12 +190,13 @@ namespace Rainbow.App.GUI
             transparentPictureBox1.SetTexture(texture);
         }
 
-        private void SetFilenameTitle(string name)
+        private void SetFilename(string name)
         {
-            this.Text = Path.GetFileName(name) + " - " + Application.ProductName;
+            this.filename = Path.GetFileName(name);
+            this.Text = filename + " - " + Application.ProductName;
         }
 
-        private void useBlckAsTransparentColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void transparentColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ColorDialog dialog = new ColorDialog();
             dialog.CustomColors = new int[] { TransparentPictureBox.PreferredTransparencyColor.ToArgb() };

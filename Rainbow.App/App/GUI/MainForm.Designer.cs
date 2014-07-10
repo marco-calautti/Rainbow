@@ -201,7 +201,7 @@
             this.useBlckAsTransparentColorToolStripMenuItem.Name = "useBlckAsTransparentColorToolStripMenuItem";
             this.useBlckAsTransparentColorToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
             this.useBlckAsTransparentColorToolStripMenuItem.Text = "Transparency color";
-            this.useBlckAsTransparentColorToolStripMenuItem.Click += new System.EventHandler(this.useBlckAsTransparentColorToolStripMenuItem_Click);
+            this.useBlckAsTransparentColorToolStripMenuItem.Click += new System.EventHandler(this.transparentColorToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 

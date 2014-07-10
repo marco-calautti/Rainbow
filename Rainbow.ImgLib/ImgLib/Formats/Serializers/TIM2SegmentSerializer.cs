@@ -138,7 +138,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             return images;
         }
 
-        private void Readmetadata(Stream metadata,out TIM2Segment.TIM2SegmentParameters parameters, out string basename, out int palCount)
+        private void Readmetadata(Stream metadata, out TIM2Segment.TIM2SegmentParameters parameters, out string basename, out int palCount)
         {
             try
             {
@@ -156,16 +156,16 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
                 parameters.swizzled = swizzled;
 
-                parameters.interleavedPalette = bool.Parse(node.Attribute("interleaved_clut").Value);
+                parameters.linearPalette = bool.Parse(node.Attribute("linear_clut").Value);
 
                 parameters.width = int.Parse(node.Element("Width").Value);
                 parameters.height = int.Parse(node.Element("Height").Value);
                 parameters.bpp = (byte)int.Parse(node.Element("Bpp").Value);
-                parameters.pixelSize = int.Parse(node.Element("PixelSize").Value);
+                parameters.colorSize = int.Parse(node.Element("ColorSize").Value);
                 parameters.mipmapCount = (byte)int.Parse(node.Element("MipmapCount").Value);
 
                 parameters.format = (byte)int.Parse(node.Element("Format").Value);
-                parameters.clutFormat = (byte)int.Parse(node.Element("ClutFormat").Value);
+                //parameters.clutFormat = (byte)int.Parse(node.Element("ClutFormat").Value);
 
                 parameters.GsTEX0 = Convert.FromBase64String(node.Element("GsTEX0").Value);
                 parameters.GsTEX1 = Convert.FromBase64String(node.Element("GsTEX1").Value);
@@ -192,17 +192,17 @@ namespace Rainbow.ImgLib.Formats.Serializers
             xml.WriteStartElement("TIM2Texture");
             xml.WriteAttributeString("basename", basename);
             xml.WriteAttributeString("cluts", segment.PalettesCount.ToString());
-            xml.WriteAttributeString("interleaved_clut", segment.GetParameters().interleavedPalette.ToString());
+            xml.WriteAttributeString("linear_clut", segment.GetParameters().linearPalette.ToString());
 
             xml.WriteElementString("Width", segment.GetParameters().width.ToString());
             xml.WriteElementString("Height", segment.GetParameters().height.ToString());
             xml.WriteElementString("Bpp", segment.GetParameters().bpp.ToString());
-            xml.WriteElementString("PixelSize", segment.GetParameters().pixelSize.ToString());
+            xml.WriteElementString("ColorSize", segment.GetParameters().colorSize.ToString());
             xml.WriteElementString("MipmapCount", segment.GetParameters().mipmapCount.ToString());
 
             xml.WriteComment("Raw data from TIM2 header");
             xml.WriteElementString("Format", segment.GetParameters().format.ToString());
-            xml.WriteElementString("ClutFormat", segment.GetParameters().clutFormat.ToString());
+            //xml.WriteElementString("ClutFormat", segment.GetParameters().clutFormat.ToString());
             xml.WriteStartElement("GsTEX0"); xml.WriteBase64(segment.GetParameters().GsTEX0, 0, segment.GetParameters().GsTEX0.Length); xml.WriteEndElement();
             xml.WriteStartElement("GsTEX1"); xml.WriteBase64(segment.GetParameters().GsTEX1, 0, segment.GetParameters().GsTEX1.Length); xml.WriteEndElement();
 
@@ -222,12 +222,17 @@ namespace Rainbow.ImgLib.Formats.Serializers
             writer.Write((uint)imageData.Length);
             writer.Write((ushort)(0x30 + parameters.userdata.Length));
             
-            ushort colorEntries = (ushort)(paletteData.Length / parameters.pixelSize);
+            ushort colorEntries = (ushort)(paletteData.Length / parameters.colorSize);
             writer.Write(colorEntries);
 
             writer.Write(parameters.format);
             writer.Write(parameters.mipmapCount);
-            writer.Write(parameters.clutFormat);
+           
+            byte clutFormat = (byte)(parameters.bpp>8 ? 0 : parameters.colorSize-1);
+
+            clutFormat |= parameters.linearPalette ? (byte)0x80 : (byte)0;
+
+            writer.Write(clutFormat);
             byte depth;
             switch(parameters.bpp)
             {
@@ -272,9 +277,6 @@ namespace Rainbow.ImgLib.Formats.Serializers
             ushort headerSize = reader.ReadUInt16();
 
             int userDataSize = headerSize-0x30; 
-            
-            //if (headerSize != 0x30)
-              //  throw new TextureFormatException("Bad subheader size, unsupported TIM2 format!");
 
             colorEntries = reader.ReadUInt16();
 
@@ -288,7 +290,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             if (parameters.mipmapCount > 1)
                 throw new TextureFormatException("Mipmapped images not supported yet!");
 
-            parameters.clutFormat = reader.ReadByte();
+            byte clutFormat = reader.ReadByte();
 
             byte depth = reader.ReadByte();
 
@@ -323,11 +325,10 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
             reader.Close();
 
-            //TODO: here we should understand how to use clutFormat to identify the pixel size.
-            if (colorEntries > 0)
-                parameters.pixelSize = (int)(paletteSize / (uint)colorEntries);
-            else
-                parameters.pixelSize = (int)dataSize / (parameters.width * parameters.height);
+            parameters.linearPalette = (clutFormat & 0x80) != 0;
+            clutFormat &= 0x7F;
+
+            parameters.colorSize = parameters.bpp>8 ? parameters.bpp/8 : clutFormat + 1;
 
             if (userDataSize > 0)
             {

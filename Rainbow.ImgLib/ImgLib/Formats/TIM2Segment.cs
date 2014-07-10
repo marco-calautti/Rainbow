@@ -13,14 +13,16 @@ namespace Rainbow.ImgLib.Formats
     {
         internal class TIM2SegmentParameters
         {
+            //segment parameters
             internal int width, height;
             internal bool swizzled = false;
-            internal bool interleavedPalette = false;
-            internal byte format;
+            internal bool linearPalette;
             internal byte bpp;
-            internal int pixelSize;
+            internal int colorSize;
             internal byte mipmapCount;
-            internal byte clutFormat; //should correspond to pixelSize
+
+            //raw header data we don't mind to process (I hope so).
+            internal byte format;
             internal byte[] GsTEX0=new byte[8], GsTEX1=new byte[8];
             internal uint GsRegs, GsTexClut;
             internal byte[] userdata = new byte[0];
@@ -40,7 +42,7 @@ namespace Rainbow.ImgLib.Formats
 
         internal static readonly string NAME = "TIM2Segment";
 
-        internal TIM2Segment(byte[] imageData,byte[] paletteData,uint colorEntries,TIM2SegmentParameters parameters)
+        internal TIM2Segment(byte[] imageData,byte[] paletteData, uint colorEntries,TIM2SegmentParameters parameters)
         {
             this.imageData = imageData;
             this.parameters = parameters;
@@ -49,11 +51,20 @@ namespace Rainbow.ImgLib.Formats
 
             if (parameters.swizzled)
             {
-                this.imageData = parameters.swizzled ? swizzleFilter.Defilter(imageData) : swizzleFilter.ApplyFilter(imageData);
+                this.imageData = swizzleFilter.Defilter(imageData);
             }
 
             ConstructPalettes(paletteData, colorEntries);
             CreateImageDecoder(imageData);
+
+            if(!parameters.linearPalette)
+            {
+                for (int i = 0; i < palettes.Length; i++)
+                {
+                    palettes[i] = paletteFilter.Defilter(palettes[i]);
+                }
+            }
+
         }
 
         internal TIM2Segment(ICollection<Image> images,TIM2SegmentParameters parameters)
@@ -69,7 +80,7 @@ namespace Rainbow.ImgLib.Formats
 
                 IEnumerator<Image> en = images.GetEnumerator();
                 en.MoveNext();
-                imageData=GetColorEncoder(parameters.pixelSize).
+                imageData=GetColorEncoder(parameters.colorSize).
                                          EncodeColors(
                                             en.Current.GetColorArray() //I love extension methods. Hurray!
                                          );
@@ -120,32 +131,15 @@ namespace Rainbow.ImgLib.Formats
             }
         }
 
-        internal bool InterleavedPalette
+        public bool LinearPalette
         {
             get
             {
-                return parameters.interleavedPalette;
-            }
-            set
-            {
-                if (PalettesCount == 0)
-                    return;
-
-                if (parameters.interleavedPalette == value)
-                    return;
-
-                parameters.interleavedPalette=value;
-
-                
-                for(int i=0;i<palettes.Length;i++)
-                {
-                    Color[] pal = parameters.interleavedPalette ? paletteFilter.ApplyFilter(palettes[i]) : paletteFilter.Defilter(palettes[i]);
-                    Array.Copy(pal, palettes[i],pal.Length);
-                }
+                return parameters.linearPalette;
             }
         }
 
-        public int PixelSize { get { return parameters.pixelSize;} }
+        public int ColorSize { get { return parameters.colorSize;} }
 
         #endregion
 
@@ -174,7 +168,7 @@ namespace Rainbow.ImgLib.Formats
             {
                 decoder = new TrueColorImageDecoder(imageData,
                                               parameters.width, parameters.height,
-                                              GetColorDecoder(parameters.pixelSize));
+                                              GetColorDecoder(parameters.colorSize));
 
             }
         }
@@ -195,7 +189,7 @@ namespace Rainbow.ImgLib.Formats
             for (int i = 0; i < numberOfPalettes; i++)
             {
 
-                palettes[i] = GetColorDecoder(parameters.pixelSize).DecodeColors(paletteData, start, singlePaletteSize);
+                palettes[i] = GetColorDecoder(parameters.colorSize).DecodeColors(paletteData, start, singlePaletteSize);
                 start += singlePaletteSize;
             }
         }
@@ -242,13 +236,13 @@ namespace Rainbow.ImgLib.Formats
         internal byte[] GetPaletteData()
         {
 
-            ColorEncoder encoder = GetColorEncoder(parameters.pixelSize);
+            ColorEncoder encoder = GetColorEncoder(parameters.colorSize);
             int maximumColors = 1 << parameters.bpp;
 
             MemoryStream stream = new MemoryStream();
             foreach(Color[] palette in palettes)
             {
-                Color[] pal = parameters.interleavedPalette ? paletteFilter.Defilter(palette) : palette;
+                Color[] pal = !parameters.linearPalette ? paletteFilter.ApplyFilter(palette) : palette;
 
                 List<Color> newPalette=new List<Color>(pal);
                 for(int i=0;i<maximumColors-palette.Length;i++)

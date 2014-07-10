@@ -41,18 +41,13 @@ namespace Rainbow.ImgLib.Formats
         }
 
         /// <summary>
-        /// Sets if ALL the palettes of the CURRENT frame are interleaved or not. The value returned by GetImage will change accordingly.
-        /// If this TIM2 has no palette, changing this property has no effect.
+        /// True if the current frame has an interleaved palette or not.
         /// </summary>
-        public bool InterleavedPalette
+        public bool LinearPalette
         {
             get
             {
-                return imagesList[SelectedFrame].InterleavedPalette;
-            }
-            set
-            {
-                imagesList[SelectedFrame].InterleavedPalette = value;
+                return imagesList[SelectedFrame].LinearPalette;
             }
         }
 
@@ -64,7 +59,7 @@ namespace Rainbow.ImgLib.Formats
         /// <summary>
         /// The number of bytes used to encode the colors of this TIM2 image.
         /// </summary>
-        public int PixelSize { get { return imagesList[SelectedFrame].PixelSize; } }
+        public int ColorSize { get { return imagesList[SelectedFrame].ColorSize; } }
 
         /// <summary>
         /// The version number of this TIM2 image.

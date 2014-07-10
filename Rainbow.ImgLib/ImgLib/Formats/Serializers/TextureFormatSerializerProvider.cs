@@ -30,6 +30,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
                 return serializers;
             }
         }
+
         /// <summary>
         /// Adds the given serializer to the list of available TextureFormatSerializers.
         /// </summary>
