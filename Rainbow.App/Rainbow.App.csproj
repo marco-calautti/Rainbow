@@ -148,7 +148,6 @@
   <ItemGroup>
     <Content Include="rainbow.ico" />
     <None Include="rainbow.png" />
-    <None Include="Resources\Abstract-Rainbow-Backdrop.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
