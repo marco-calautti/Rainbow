@@ -12,9 +12,9 @@ namespace Rainbow.App.GUI
 {
     public partial class MainForm : Form
     {
-        private enum TextureOpenMode { Open, Import, Unspecified };
+        private enum TextureFormatMode { Format, Metadata, Unspecified };
 
-        private void OpenImportTexture(TextureOpenMode mode)
+        private void OpenImportTexture(TextureFormatMode mode)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = ConstructFilters(mode);
@@ -39,7 +39,7 @@ namespace Rainbow.App.GUI
             FillListView(new string[] { name });
         }
 
-        private void SaveExportTexture(TextureOpenMode mode)
+        private void SaveExportTexture(TextureFormatMode mode)
         {
             if (texture == null)
                 return;
@@ -47,12 +47,12 @@ namespace Rainbow.App.GUI
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.FileName = Path.GetFileNameWithoutExtension(filename);
 
-            if (mode == TextureOpenMode.Unspecified)
+            if (mode == TextureFormatMode.Unspecified)
                 throw new Exception("Should not happen");
 
             dialog.Filter = serializer.Name +
-                            (mode==TextureOpenMode.Open ? "|" : " metadata + editable data|") +
-                            (mode == TextureOpenMode.Open ? serializer.PreferredFormatExtension : serializer.PreferredMetadataExtension);
+                            (mode==TextureFormatMode.Format ? "|" : " metadata + editable data|") +
+                            (mode == TextureFormatMode.Format ? serializer.PreferredFormatExtension : serializer.PreferredMetadataExtension);
 
             var result = dialog.ShowDialog();
             if (result != DialogResult.OK)
@@ -62,7 +62,7 @@ namespace Rainbow.App.GUI
             {
                 using (Stream s = File.Open(dialog.FileName, FileMode.Create))
                 {
-                    if (mode==TextureOpenMode.Open)
+                    if (mode==TextureFormatMode.Format)
                         serializer.Save(texture, s);
                     else
                         serializer.Export(texture, s, Path.GetDirectoryName(dialog.FileName), Path.GetFileNameWithoutExtension(dialog.FileName));
@@ -75,7 +75,27 @@ namespace Rainbow.App.GUI
             }
         }
 
-        private void OpenImportStream(Stream stream, string fullPath,TextureOpenMode mode)
+
+        private void OpenImportFolder(TextureFormatMode mode)
+        {
+            if (mode == TextureFormatMode.Unspecified)
+                throw new Exception("Should not happen");
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            var result = dialog.ShowDialog();
+
+            if (result != DialogResult.OK)
+                return;
+
+            string path = dialog.SelectedPath;
+
+            IEnumerable<string> extensions = TextureFormatSerializerProvider.RegisteredSerializers.Select(s => mode == TextureFormatMode.Format ? s.PreferredFormatExtension : s.PreferredMetadataExtension);
+            extensions = extensions.OrderBy(s => s);
+            var files = Directory.GetFiles(path, "*.*").Where(s => extensions.Contains(Path.GetExtension(s)));
+
+            FillListView(files);
+        }
+
+        private void OpenImportStream(Stream stream, string fullPath,TextureFormatMode mode)
         {
 
             TextureFormatSerializer curSerializer = null;
@@ -89,10 +109,10 @@ namespace Rainbow.App.GUI
 
 			switch(mode)
             {
-				case TextureOpenMode.Open:
+				case TextureFormatMode.Format:
                     SetTexture(curSerializer.Open(stream));
                     break;
-                case TextureOpenMode.Import:
+                case TextureFormatMode.Metadata:
                     SetTexture(curSerializer.Import(stream, Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath)));
                     break;
                 default:
@@ -109,9 +129,9 @@ namespace Rainbow.App.GUI
 
         }
 
-        private string ConstructFilters(TextureOpenMode mode)
+        private string ConstructFilters(TextureFormatMode mode)
         {
-            if (mode == TextureOpenMode.Unspecified)
+            if (mode == TextureFormatMode.Unspecified)
                 throw new Exception("Should not happen");
 
             StringBuilder builder = new StringBuilder();
@@ -119,15 +139,15 @@ namespace Rainbow.App.GUI
             IEnumerable<TextureFormatSerializer> ordered = TextureFormatSerializerProvider.RegisteredSerializers.OrderBy(s => s.Name);
 
             StringBuilder allFormatsBuilder = new StringBuilder();
-            allFormatsBuilder.Append("All supported " + (mode == TextureOpenMode.Open ? "formats|" : "metadata formats|"));
+            allFormatsBuilder.Append("All supported " + (mode == TextureFormatMode.Format ? "formats|" : "metadata formats|"));
 
             foreach (var serializer in ordered)
             {
-                string ext = mode==TextureOpenMode.Open ? serializer.PreferredFormatExtension :
+                string ext = mode==TextureFormatMode.Format ? serializer.PreferredFormatExtension :
                                       serializer.PreferredMetadataExtension;
 
                 allFormatsBuilder.AppendFormat("*{0};", ext);
-                builder.AppendFormat("{0}|*{1}|", mode == TextureOpenMode.Open ? serializer.Name :
+                builder.AppendFormat("{0}|*{1}|", mode == TextureFormatMode.Format ? serializer.Name :
 																				 serializer.Name + " metadata",
                                      ext);
             }
@@ -151,25 +171,6 @@ namespace Rainbow.App.GUI
         {
             this.filename = Path.GetFileName(name);
             this.Text = filename + " - " + Application.ProductName;
-        }
-
-        private void OpenImportFolder(TextureOpenMode mode)
-        {
-            if (mode == TextureOpenMode.Unspecified)
-                throw new Exception("Should not happen");
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            var result = dialog.ShowDialog();
-
-            if (result != DialogResult.OK)
-                return;
-
-            string path = dialog.SelectedPath;
-
-            IEnumerable<string> extensions = TextureFormatSerializerProvider.RegisteredSerializers.Select(s => mode==TextureOpenMode.Open ? s.PreferredFormatExtension : s.PreferredMetadataExtension);
-            extensions = extensions.OrderBy(s => s);
-            var files = Directory.GetFiles(path, "*.*").Where(s => extensions.Contains(Path.GetExtension(s)));
-
-            FillListView(files);
         }
 
         private void FillListView(IEnumerable<string> files)

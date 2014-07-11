@@ -1,9 +1,5 @@
 ﻿using Rainbow.ImgLib.Formats;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Rainbow.App.GUI.Controls

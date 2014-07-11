@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Rainbow")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © 2014, Phoenix - SadNES cITy Translations")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

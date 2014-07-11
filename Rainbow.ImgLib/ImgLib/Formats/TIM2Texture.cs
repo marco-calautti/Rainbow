@@ -41,7 +41,7 @@ namespace Rainbow.ImgLib.Formats
         }
 
         /// <summary>
-        /// True if the current frame has an interleaved palette or not.
+        /// True if the current frame has a linear palette. If it is false then the palette is interleaved.
         /// </summary>
         public bool LinearPalette
         {

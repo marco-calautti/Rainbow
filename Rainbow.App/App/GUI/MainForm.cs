@@ -1,16 +1,11 @@
-﻿using Rainbow.ImgLib.Formats;
+﻿using Rainbow.App.GUI.Controls;
+using Rainbow.App.GUI.Model;
+using Rainbow.ImgLib.Formats;
 using Rainbow.ImgLib.Formats.Serializers;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
-using Rainbow.App.GUI.Controls;
-using Rainbow.App.GUI.Model;
+using System.Windows.Forms;
 
 namespace Rainbow.App.GUI
 {
@@ -26,7 +21,9 @@ namespace Rainbow.App.GUI
             try
             {
                 using(Stream s=File.Open(filename,FileMode.Open))
-                    OpenImportStream(s,filename,TextureOpenMode.Open);
+                    OpenImportStream(s,filename,TextureFormatMode.Format);
+
+                FillListView(new string[] { filename });
             }catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -42,12 +39,14 @@ namespace Rainbow.App.GUI
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Application.ProductName + ", a console image format conversion tool.", "About Rainbow", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show(Application.ProductName + ", a console image format conversion tool.", "About Rainbow", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            AboutBox about = new AboutBox();
+            about.ShowDialog();
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenImportTexture(TextureOpenMode.Open);
+            OpenImportTexture(TextureFormatMode.Format);
         }
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -62,23 +61,23 @@ namespace Rainbow.App.GUI
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenImportTexture(TextureOpenMode.Import);
+            OpenImportTexture(TextureFormatMode.Metadata);
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveExportTexture(TextureOpenMode.Open);
+            SaveExportTexture(TextureFormatMode.Format);
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveExportTexture(TextureOpenMode.Import);
+            SaveExportTexture(TextureFormatMode.Metadata);
         }
 
 
         private void openFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenImportFolder(TextureOpenMode.Open);
+            OpenImportFolder(TextureFormatMode.Format);
 
         }
 
@@ -96,7 +95,7 @@ namespace Rainbow.App.GUI
                     fullPath=fproxy.FullPath;
  
                 using (Stream s = proxy.GetTextureStream())
-                    OpenImportStream(s, fullPath, TextureOpenMode.Unspecified);
+                    OpenImportStream(s, fullPath, TextureFormatMode.Unspecified);
 
             }
             catch (Exception ex)
