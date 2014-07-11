@@ -20,8 +20,8 @@ extended with custom user data (usually used by programmers).
 To-do
 =======
 * Add support to mipmap TIM2 textures. They are rare and usually used just for materials.
-* Add support to GIM textures, (eventually through GimSharp)
-* Add scanning of files inside other files in order to extract and reimport textures in this files directly.
+* Add support to GIM textures (eventually through GimSharp).
+* Add scanning of textures inside other files in order to extract and reinsert textures with one click. Actually, there is a tool from Vash that allows to achieve such a task http://www.romhacking.net/utilities/659/.
 * Improve performance of the rendering and the import code.
 
 How to use Rainbow
