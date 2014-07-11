@@ -5,11 +5,23 @@ Rainbow is a tool, written in C#, intended to handle different graphics formats 
 
 ![ScreenShot](http://i.imgur.com/PNLtOg5.png)
 
-Currently, the image library supports the TIM2 format in all its variants,
-both in swizzled and unswizzled form. The image library is extensible and easy to use, just extend
-a couple of classes implementing the new format and that's it.
+Features
+=======
 
-A preliminary version of the GUI application is also available which allows for conversion of TIM2 textures to an editable format (xml+png) and viceversa.
+* Almost complete support for TIM2 texture files usually found in PS2 and PSP games. The app supports multi-layer, multi-clut, swizzled/unswizzled TIM2 images with both linear and interleaved palettes and segments headers eventually
+extended with custom user data (usually used by programmers).
+* Can open textures in any format supported by the underlying image library.
+* Can open whole folders in search of supported texture formats. All known texture files are the displayed in a list.
+* Can export textures to a editable format (like png).
+* Can import editable formats to be then saved to the original texture format.
+* Any additional information specific to the texture is preserved when exporting/importing (like the TIM2 header data), in order to have a one-to-one correspondence with the original texture.
+
+To-do
+=======
+* Add support to mipmap TIM2 textures. They are rare and usually used just for materials.
+* Add support to GIM textures, (eventually through GimSharp)
+* Add scanning of files inside other files in order to extract and reimport textures in this files directly.
+* Improve performance of the rendering and the import code.
 
 How to use Rainbow
 =======
