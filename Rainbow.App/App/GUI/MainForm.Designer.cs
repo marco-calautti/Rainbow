@@ -31,6 +31,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,13 +45,12 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.listView = new System.Windows.Forms.ListView();
+            this.Index = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ItemName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ItemSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.openFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Index = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.transparentPictureBox1 = new Rainbow.App.GUI.Controls.TransparentPictureBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -97,6 +97,14 @@
             this.openToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.openToolStripMenuItem.Text = "&Open...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // openFolderToolStripMenuItem
+            // 
+            this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
+            this.openFolderToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.openFolderToolStripMenuItem.Text = "Open folder...";
+            this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.openFolderToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -208,19 +216,6 @@
             this.splitContainer1.SplitterDistance = 256;
             this.splitContainer1.TabIndex = 1;
             // 
-            // propertyGrid
-            // 
-            this.propertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.propertyGrid.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.propertyGrid.Location = new System.Drawing.Point(3, 3);
-            this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.propertyGrid.Size = new System.Drawing.Size(248, 324);
-            this.propertyGrid.TabIndex = 0;
-            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
-            // 
             // splitContainer2
             // 
             this.splitContainer2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -250,7 +245,6 @@
             this.ItemName,
             this.ItemSize});
             this.listView.FullRowSelect = true;
-            this.listView.LabelEdit = true;
             this.listView.Location = new System.Drawing.Point(3, 3);
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
@@ -259,6 +253,10 @@
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
             this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+            // 
+            // Index
+            // 
+            this.Index.Text = "#";
             // 
             // ItemName
             // 
@@ -270,17 +268,18 @@
             this.ItemSize.Text = "Size (bytes)";
             this.ItemSize.Width = 98;
             // 
-            // openFolderToolStripMenuItem
+            // propertyGrid
             // 
-            this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
-            this.openFolderToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.openFolderToolStripMenuItem.Text = "Open folder...";
-            this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.openFolderToolStripMenuItem_Click);
-            // 
-            // Index
-            // 
-            this.Index.Text = "#";
+            this.propertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.propertyGrid.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.propertyGrid.Location = new System.Drawing.Point(3, 3);
+            this.propertyGrid.Name = "propertyGrid";
+            this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
+            this.propertyGrid.Size = new System.Drawing.Size(248, 324);
+            this.propertyGrid.TabIndex = 0;
+            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // transparentPictureBox1
             // 
