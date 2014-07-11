@@ -32,8 +32,9 @@ namespace Rainbow.App.GUI
                     tex = ser.IsValidFormat(s) ? ser.Open(s) : ser.Import(s,Path.GetDirectoryName(filename),Path.GetFileNameWithoutExtension(filename));
                 }
                 
-            }catch(Exception)
+            }catch(Exception ex)
             {
+                MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             serializer = ser;

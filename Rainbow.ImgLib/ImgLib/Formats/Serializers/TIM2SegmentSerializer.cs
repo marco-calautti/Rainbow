@@ -314,6 +314,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
                 default:
                     throw new TextureFormatException("Illegal bit depth!");
             }
+
             parameters.width = reader.ReadUInt16();
             parameters.height = reader.ReadUInt16();
 
