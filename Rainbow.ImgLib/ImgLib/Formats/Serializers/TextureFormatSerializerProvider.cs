@@ -91,8 +91,11 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// <returns>the requested serializer if found, null otherwise.</returns>
         public static TextureFormatSerializer FromFile(string filePath)
         {
+            TextureFormatSerializer serializer = null;
             using (Stream s = File.Open(filePath, FileMode.Open))
-                return FromStream(s);
+                serializer=FromStream(s);
+
+            return serializer;
         }
     }
 }
