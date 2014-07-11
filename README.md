@@ -15,6 +15,7 @@ extended with custom user data (usually used by programmers).
 * Can export textures to a editable format (like png).
 * Can import editable formats to be then saved to the original texture format.
 * Any additional information specific to the texture is preserved when exporting/importing (like the TIM2 header data), in order to have a one-to-one correspondence with the original texture.
+* Customizable background color for transparent and semi-transparent images with chessboard like pattern.
 
 To-do
 =======
