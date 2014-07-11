@@ -3,7 +3,7 @@ Rainbow
 
 Rainbow is a tool, written in C#, intended to handle different graphics formats from video games assets.
 
-![ScreenShot](http://i.imgur.com/PNLtOg5.png)
+![ScreenShot](http://i.imgur.com/Di52PBE.png)
 
 Features
 =======
