@@ -8,7 +8,7 @@ Rainbow is a tool, written in C#, intended to handle different graphics formats 
 Features
 =======
 
-* Almost complete support for TIM2 texture files usually found in PS2 and PSP games. The app supports multi-layer, multi-clut, swizzled/unswizzled TIM2 images with both linear and interleaved palettes and segments headers eventually
+* Almost complete support for TIM2 texture files usually found in PS2 and PSP games. The app supports multi-layer, multi-clut, swizzled (PSP)/unswizzled TIM2 images with both linear and interleaved palettes and segments headers eventually
 extended with custom user data (usually used by programmers).
 * Can open textures in any format supported by the underlying image library.
 * Can open whole folders in search of supported texture formats. All known texture files are the displayed in a list.
