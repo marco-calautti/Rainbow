@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
+
 namespace Rainbow.ImgLib.Encoding
 {
     public class IndexedImageEncoder : ImageEncoder
