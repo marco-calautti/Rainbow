@@ -2,6 +2,7 @@ Rainbow
 =======
 
 Rainbow is a tool, written in C#, intended to handle different graphics formats from video games assets.
+Currently, Rainbow supports almost every variants of the TIM2 format.
 It requires the .NET framework v3.5+ or any version of mono supporting v3.5 (tested on mono 2.10.x).
 
 ![ScreenShot](http://i.imgur.com/FsrZ2SY.png)
