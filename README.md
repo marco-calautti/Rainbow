@@ -2,6 +2,7 @@ Rainbow
 =======
 
 Rainbow is a tool, written in C#, intended to handle different graphics formats from video games assets.
+It requires the .NET framework v3.5+ or any version of mono supporting v3.5 (tested on mono 2.10.x).
 
 ![ScreenShot](http://i.imgur.com/FsrZ2SY.png)
 
@@ -16,13 +17,7 @@ extended with custom user data (usually used by programmers).
 * Can import editable formats to be then saved to the original texture format.
 * Any additional information specific to the texture is preserved when exporting/importing (like the TIM2 header data), in order to have a one-to-one correspondence with the original texture.
 * Customizable background color for transparent and semi-transparent images with chessboard like pattern.
-
-To-do
-=======
-* Add support to mipmap TIM2 textures. They are rare and usually used just for materials.
-* Add support to GIM textures (eventually through GimSharp).
-* Add scanning of textures inside other files in order to extract and reinsert textures with one click. Actually, there is a tool from Vash that allows to achieve such a task http://www.romhacking.net/utilities/659/.
-* Improve performance of rendering and import code.
+* Finally, Rainbow supports parameters via command line: the first parameter is the name of a texture you would like to open.
 
 How to use Rainbow
 =======
@@ -33,8 +28,12 @@ How to use Rainbow
 * The "Import" menu allows to import graphics in user editable format so that they can eventually be saved to the original format by means of the "Save" menu.
 * The "Save" menu allows to save a texture to its original format (e.g., to TIM2).
 
-Finally, Rainbow supports parameters via command line: the first parameter is the name of a texture you would like to open.
-
-
 Note for multi clut TIM2 images. When importing a png obtained by a single-clut TIM2 file, Rainbow will take care of everything for you by applying quantization to the given png, in order to keep the number of used colors under the maximum allowed by the original TIM2.
 When a multi-clut TIM2 is exported, instead, a png file for each clut is created. When editing such pngs, make sure that the pixel "structure" of every png is preserved. Rainbow will use the first exported png as reference to construct the pixels indexes of the image and then will create the palettes from each pngs' colors. Make also sure that the number of colors used by these pngs does not exceed the maximum allowed by the original TIM2. Because of how multi-clut TIM2s work, Rainbow cannot apply quantization to all the exported pngs.
+
+To-do
+=======
+* Add support to mipmap TIM2 textures. They are rare and usually used just for materials.
+* Add support to GIM textures (eventually through GimSharp).
+* Add scanning of textures inside other files in order to extract and reinsert textures with one click. Actually, there is a tool from Vash that allows to achieve such a task http://www.romhacking.net/utilities/659/.
+* Improve performance of rendering and import code.
