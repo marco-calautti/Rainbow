@@ -1,4 +1,21 @@
-﻿using Rainbow.App.GUI.Controls;
+﻿//Copyright (C) 2014 Marco (Phoenix) Calautti.
+
+//This program is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, version 2.0.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License 2.0 for more details.
+
+//A copy of the GPL 2.0 should have been included with the program.
+//If not, see http://www.gnu.org/licenses/
+
+//Official repository and contact information can be found at
+//http://github.com/marco-calautti/Rainbow
+
+using Rainbow.App.GUI.Controls;
 using Rainbow.App.GUI.Model;
 using Rainbow.ImgLib.Formats;
 using Rainbow.ImgLib.Formats.Serializers;
@@ -20,11 +37,12 @@ namespace Rainbow.App.GUI
         {
             try
             {
-                using(Stream s=File.Open(filename,FileMode.Open))
-                    OpenImportStream(s,filename,TextureFormatMode.Format);
+                using (Stream s = File.Open(filename, FileMode.Open))
+                    OpenImportStream(s, filename, TextureFormatMode.Format);
 
                 FillListView(new string[] { filename });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -39,7 +57,6 @@ namespace Rainbow.App.GUI
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show(Application.ProductName + ", a console image format conversion tool.", "About Rainbow", MessageBoxButtons.OK, MessageBoxIcon.Information);
             AboutBox about = new AboutBox();
             about.ShowDialog();
         }
@@ -89,11 +106,11 @@ namespace Rainbow.App.GUI
             TextureFormatProxy proxy = (TextureFormatProxy)listView.SelectedItems[0].Tag;
             try
             {
-                FileTextureFormatProxy fproxy=proxy as FileTextureFormatProxy;
-                string fullPath=null;
-                if(fproxy!=null)
-                    fullPath=fproxy.FullPath;
- 
+                FileTextureFormatProxy fproxy = proxy as FileTextureFormatProxy;
+                string fullPath = null;
+                if (fproxy != null)
+                    fullPath = fproxy.FullPath;
+
                 using (Stream s = proxy.GetTextureStream())
                     OpenImportStream(s, fullPath, TextureFormatMode.Unspecified);
 

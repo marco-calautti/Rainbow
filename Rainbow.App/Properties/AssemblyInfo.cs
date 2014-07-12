@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Rainbow: a texture format converter")]
-[assembly: AssemblyCopyright("Copyright © 2014, Phoenix - SadNES cITy Translations")]
+[assembly: AssemblyCopyright("Copyright © 2014, Marco (Phoenix) Calautti")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
