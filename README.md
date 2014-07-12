@@ -13,7 +13,7 @@ Features
 * Almost complete support for TIM2 texture files usually found in PS2 and PSP games. The app supports multi-layer, multi-clut, swizzled (PSP)/unswizzled TIM2 images with both linear, interleaved palettes, and segments headers eventually
 extended with custom user data (usually used by programmers).
 * Can open textures in any format supported by the underlying image library.
-* Can open whole folders in search of supported texture formats. All known texture files are the displayed in a list.
+* Can open whole folders in search of supported texture formats. All known texture files are then displayed in a list.
 * Can export textures to an editable format (like png).
 * Can import editable formats to be then saved to the original texture format.
 * Any additional information specific to the texture is preserved when exporting/importing (like the TIM2 header data), in order to have a one-to-one correspondence with the original texture.
