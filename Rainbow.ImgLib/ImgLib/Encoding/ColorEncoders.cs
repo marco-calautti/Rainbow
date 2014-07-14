@@ -69,7 +69,7 @@ namespace Rainbow.ImgLib.Encoding
 
             for (int i = start; i < colors.Length; i++)
             {
-                ushort data = (ushort)(colors[i].A > 0 ? 0x8000 : 0);
+                ushort data = (ushort)(colors[i].A > 127 ? 0x8000 : 0);
 
                 data |= (ushort)(((colors[i].B >> 3) << 10) | ((colors[i].G >> 3) << 5) | ((colors[i].R >> 3) & 0x1F));
                 palette[(i - start) * 2] = (byte)(data & 0xFF);
