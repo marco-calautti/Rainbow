@@ -72,7 +72,7 @@ namespace Rainbow.App.GUI
             this.tableLayoutPanel.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel.Margin = new System.Windows.Forms.Padding(1);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
-            this.tableLayoutPanel.RowCount = 4;
+            this.tableLayoutPanel.RowCount = 7;
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());

@@ -54,7 +54,7 @@
     </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>Rainbow.App.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>rainbow.ico</ApplicationIcon>
