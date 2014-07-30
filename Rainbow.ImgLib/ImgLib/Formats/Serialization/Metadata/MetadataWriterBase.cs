@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Rainbow.ImgLib.Formats.Serialization
+namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 {
     public abstract class MetadataWriterBase : MetadataWriter
     {
@@ -45,6 +45,10 @@ namespace Rainbow.ImgLib.Formats.Serialization
             PutAttribute(key, value.ToString());
         }
 
+        public void PutAttribute(string key, bool value)
+        {
+            PutAttribute(key, value.ToString());
+        }
         public abstract void Dispose();
     }
 }

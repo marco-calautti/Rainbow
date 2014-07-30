@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Rainbow.ImgLib.Formats.Serialization
+namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 {
     /// <summary>
     /// Interface exposing methods to store metadata informations for exporting Texture Formats.
@@ -93,6 +93,6 @@ namespace Rainbow.ImgLib.Formats.Serialization
         /// <exception cref="MetadataException"></exception>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        void PutAttribute(string key, string bool);
+        void PutAttribute(string key,bool value);
     }
 }

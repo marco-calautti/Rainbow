@@ -15,6 +15,8 @@
 //Official repository and contact information can be found at
 //http://github.com/marco-calautti/Rainbow
 
+using Rainbow.ImgLib.Formats.Serialization;
+using Rainbow.ImgLib.Formats.Serialization.Metadata;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,7 +34,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
         public string PreferredFormatExtension { get { return ".tm2";  } }
 
-        public string PreferredMetadataExtension { get { return ".xml"; } }
+        //public string PreferredMetadataExtension { get { return ".xml"; } }
 
         public bool IsValidFormat(Stream format)
         {
@@ -46,21 +48,19 @@ namespace Rainbow.ImgLib.Formats.Serializers
             return new string(magic) == "TIM2";
         }
 
-        public bool IsValidMetadataFormat(Stream metadata)
+        
+        public bool IsValidMetadataFormat(MetadataReader metadata)
         {
-            long oldPos = metadata.Position;
-            XDocument doc = null;
-            string name = "" ;
-            try { 
-                doc = XDocument.Load(new StreamReader(metadata));
-                name=doc.Root.Name.ToString();
-            }catch(Exception)
+            try
             {
-
+                metadata.EnterSection("TIM2");
             }
-
-            metadata.Position = oldPos;
-            return name == "TIM2";
+            catch (Exception)
+            {
+                return false;
+            }
+            metadata.ExitSection();
+            return true;
         }
 
         public TextureFormat Open(Stream formatData)
@@ -101,69 +101,51 @@ namespace Rainbow.ImgLib.Formats.Serializers
                 serializer.Save(segment, outFormatData);
         }
 
-        public void Export(TextureFormat texture, Stream metadata, string directory, string basename)
+        public void Export(TextureFormat texture, MetadataWriter metadata, string directory, string basename)
         {
 
             TIM2Texture tim2 = texture as TIM2Texture;
             if (tim2 == null)
                 throw new TextureFormatException("Not a valid TIM2Texture!");
 
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.IndentChars = "\t";
-            XmlWriter xml = XmlWriter.Create(metadata, settings);
 
-            xml.WriteStartDocument();
-            xml.WriteStartElement("TIM2");
-            xml.WriteAttributeString("version", tim2.Version.ToString());
-            xml.WriteAttributeString("basename", basename);
-            xml.WriteAttributeString("swizzled", tim2.Swizzled.ToString());
+            metadata.BeginSection("TIM2");
+            metadata.PutAttribute("version", tim2.Version);
+            metadata.PutAttribute("basename", basename);
+            metadata.PutAttribute("swizzled", tim2.Swizzled);
 
-            xml.WriteAttributeString("textures", tim2.TIM2SegmentsList.Count.ToString());
+            metadata.PutAttribute("textures", tim2.TIM2SegmentsList.Count);
             int layer = 0;
             foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
             {
                 TextureFormatSerializer serializer = new TIM2SegmentSerializer();
-                MemoryStream timmeta = null;
-                using (timmeta = new MemoryStream())
-                    serializer.Export(segment,timmeta, directory, basename + "_layer" + layer);
-                xml.WriteRaw("\n");
-                xml.WriteRaw(System.Text.Encoding.UTF8.GetString(timmeta.ToArray()));
-                xml.WriteRaw("\n");
+                serializer.Export(segment,metadata, directory, basename + "_layer" + layer);
             }
 
-            xml.WriteEndElement();
-            xml.WriteEndDocument();
-            xml.Close();
+            metadata.EndSection();
         }
 
-        public TextureFormat Import(Stream metadata, string directory,string bname)
+        public TextureFormat Import(MetadataReader metadata, string directory,string bname)
         {
             TIM2Texture tim2=null;
             try
             {
-                XDocument doc = XDocument.Load(new StreamReader(metadata));
-                if (doc.Root.Name != "TIM2")
-                    throw new TextureFormatException("Illegal metadata!");
+                metadata.EnterSection("TIM2");
 
-                XElement node = doc.Root;
-
-                int version = int.Parse(node.Attribute("version").Value);
-                string basename = node.Attribute("basename").Value;
-                bool swizzled = bool.Parse(node.Attribute("swizzled").Value);
-                int textureCount = int.Parse(node.Attribute("textures").Value);
+                int version = metadata.GetAttributeInt("version");
+                string basename = metadata.GetAttributeString("basename");
+                bool swizzled = metadata.GetAttributeBool("swizzled");
+                int textureCount = metadata.GetAttributeInt("textures");
                 
                 List<TIM2Segment> imagesList = new List<TIM2Segment>();
 
-                var children = node.Elements();
-                foreach(XNode child in children)
+                for (int i = 0; i < textureCount;i++)
                 {
-                    string childmetadata = child.ToString();
-                    MemoryStream s = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(childmetadata));
-                    TIM2Segment segment = (TIM2Segment) new TIM2SegmentSerializer(swizzled).Import(s, directory,basename);
+                    TIM2Segment segment = (TIM2Segment)new TIM2SegmentSerializer(swizzled).Import(metadata, directory, basename);
                     imagesList.Add(segment);
                 }
 
+                metadata.ExitSection();
                 tim2 = new TIM2Texture(imagesList);
                 tim2.Version = version;
             }

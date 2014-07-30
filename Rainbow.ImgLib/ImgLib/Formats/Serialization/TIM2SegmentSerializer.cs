@@ -16,6 +16,8 @@
 //http://github.com/marco-calautti/Rainbow
 
 using Rainbow.ImgLib.Encoding;
+using Rainbow.ImgLib.Formats.Serialization;
+using Rainbow.ImgLib.Formats.Serialization.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -44,14 +46,15 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
         public string PreferredFormatExtension { get { return ""; } }
 
-        public string PreferredMetadataExtension{ get {return ""; } }
+        //public string PreferredMetadataExtension{ get {return ""; } }
 
         public bool IsValidFormat(Stream input)
         {
             throw new NotImplementedException();
         }
 
-        public bool IsValidMetadataFormat(Stream metadata)
+        
+        public bool IsValidMetadataFormat(MetadataReader metadata)
         {
             throw new NotImplementedException();
         }
@@ -70,7 +73,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             byte[] paletteData = new byte[paletteSize];
             formatData.Read(paletteData, 0, (int)paletteSize);
 
-            return new TIM2Segment(imageData,paletteData,colorEntries,parameters);
+            return new TIM2Segment(imageData, paletteData, colorEntries, parameters);
         }
 
         public void Save(TextureFormat texture, Stream outFormatData)
@@ -84,18 +87,18 @@ namespace Rainbow.ImgLib.Formats.Serializers
             TIM2Segment.TIM2SegmentParameters parameters = segment.GetParameters();
 
             //write header
-            WriteHeader(parameters, outFormatData,imageData, paletteData);
+            WriteHeader(parameters, outFormatData, imageData, paletteData);
             outFormatData.Write(imageData, 0, imageData.Length);
             outFormatData.Write(paletteData, 0, paletteData.Length);
         }
 
-        public void Export(TextureFormat texture, Stream metadata, string directory, string basename)
+        public void Export(TextureFormat texture, MetadataWriter metadata, string directory, string basename)
         {
             TIM2Segment segment = texture as TIM2Segment;
             if (segment == null)
                 throw new TextureFormatException("Not A valid TIM2Segment!");
 
-            Writemetadata(segment,metadata, basename);
+            Writemetadata(segment, metadata, basename);
             int i = 0;
             foreach (Image img in ConstructImages(segment))
             {
@@ -103,28 +106,19 @@ namespace Rainbow.ImgLib.Formats.Serializers
             }
         }
 
-        public TextureFormat Import(Stream metadata, string directory,string bname)
+        public TextureFormat Import(MetadataReader metadata, string directory, string bname)
         {
             TIM2Segment segment = null;
-            try
-            {
-                int palCount;
-                string basename;
 
-                TIM2Segment.TIM2SegmentParameters parameters;
-                Readmetadata(metadata, out parameters,out basename, out palCount);
-                ICollection<Image> images=ReadImageData(directory, basename, palCount);
+            int palCount;
+            string basename;
 
-                segment = new TIM2Segment(images,parameters);
-            }
-            catch (XmlException e)
-            {
-                throw new TextureFormatException("Invalid metadata file!\n"+e.Message, e);
-            }
-            catch (FormatException e)
-            {
-                throw new TextureFormatException("Invalid metadata file!\n"+e.Message, e);
-            }
+            TIM2Segment.TIM2SegmentParameters parameters;
+            Readmetadata(metadata, out parameters, out basename, out palCount);
+            ICollection<Image> images = ReadImageData(directory, basename, palCount);
+
+            segment = new TIM2Segment(images, parameters);
+
             return segment;
         }
 
@@ -135,123 +129,110 @@ namespace Rainbow.ImgLib.Formats.Serializers
             int oldSelected = segment.SelectedPalette;
             for (int i = 0; i < (segment.PalettesCount == 0 ? 1 : segment.PalettesCount); i++)
             {
-                segment.SelectedPalette=i;
+                segment.SelectedPalette = i;
                 list.Add(segment.GetImage());
             }
-            segment.SelectedPalette=oldSelected;
+            segment.SelectedPalette = oldSelected;
             return list;
         }
 
         private ICollection<Image> ReadImageData(string directory, string basename, int palCount)
         {
 
-                ICollection<Image> images=new List<Image>();
-                for (int i = 0; i < (palCount==0? 1 : palCount); i++)
-                {
-                    string file = Path.Combine(directory, basename + "_" + i + ".png");
-                    images.Add(Image.FromFile(file));
-                }
+            ICollection<Image> images = new List<Image>();
+            for (int i = 0; i < (palCount == 0 ? 1 : palCount); i++)
+            {
+                string file = Path.Combine(directory, basename + "_" + i + ".png");
+                images.Add(Image.FromFile(file));
+            }
 
             return images;
         }
 
-        private void Readmetadata(Stream metadata, out TIM2Segment.TIM2SegmentParameters parameters, out string basename, out int palCount)
+        private void Readmetadata(MetadataReader metadata, out TIM2Segment.TIM2SegmentParameters parameters, out string basename, out int palCount)
         {
-            try
-            {
-                XDocument doc = XDocument.Load(new StreamReader(metadata));
 
-                if (doc.Root.Name != "TIM2Texture")
-                    throw new XmlException();
+            metadata.EnterSection("TIM2Texture");
 
-                XElement node = doc.Root;
+            basename = metadata.GetAttributeString("basename");
+            palCount = metadata.GetAttributeInt("cluts");
 
-                basename = node.Attribute("basename").Value;
-                palCount = int.Parse(node.Attribute("cluts").Value);
+            parameters = new TIM2Segment.TIM2SegmentParameters();
 
-                parameters = new TIM2Segment.TIM2SegmentParameters();
+            parameters.swizzled = swizzled;
 
-                parameters.swizzled = swizzled;
+            parameters.linearPalette = metadata.GetAttributeBool("linear_clut");
 
-                parameters.linearPalette = bool.Parse(node.Attribute("linear_clut").Value);
+            parameters.width = metadata.GetInt("Width");
+            parameters.height = metadata.GetInt("Height");
+            parameters.bpp = (byte)metadata.GetInt("Bpp");
+            parameters.colorSize = metadata.GetInt("ColorSize");
+            parameters.mipmapCount = (byte)metadata.GetInt("MipmapCount");
 
-                parameters.width = int.Parse(node.Element("Width").Value);
-                parameters.height = int.Parse(node.Element("Height").Value);
-                parameters.bpp = (byte)int.Parse(node.Element("Bpp").Value);
-                parameters.colorSize = int.Parse(node.Element("ColorSize").Value);
-                parameters.mipmapCount = (byte)int.Parse(node.Element("MipmapCount").Value);
+            parameters.format = (byte)metadata.GetInt("Format");
+            //parameters.clutFormat = (byte)int.Parse(node.Element("ClutFormat").Value);
 
-                parameters.format = (byte)int.Parse(node.Element("Format").Value);
-                //parameters.clutFormat = (byte)int.Parse(node.Element("ClutFormat").Value);
+            parameters.GsTEX0 = metadata.GetRaw("GsTEX0");
+            parameters.GsTEX1 = metadata.GetRaw("GsTEX1");
 
-                parameters.GsTEX0 = Convert.FromBase64String(node.Element("GsTEX0").Value);
-                parameters.GsTEX1 = Convert.FromBase64String(node.Element("GsTEX1").Value);
+            parameters.GsRegs = (uint)metadata.GetInt("GsRegs");
+            parameters.GsTexClut = (uint)metadata.GetInt("GsTexClut");
 
-                parameters.GsRegs = (uint)int.Parse(node.Element("GsRegs").Value);
-                parameters.GsTexClut = (uint)int.Parse(node.Element("GsTexClut").Value);
+            parameters.userdata = metadata.GetRaw("UserData");
 
-                parameters.userdata = Convert.FromBase64String(node.Element("UserData").Value);
-            }catch(Exception e)
-            {
-                throw new TextureFormatException("Non valid metadata!",e);
-            }
+            metadata.ExitSection();
+
         }
 
-        private void Writemetadata(TIM2Segment segment, Stream metadata, string basename)
+        private void Writemetadata(TIM2Segment segment, MetadataWriter metadata, string basename)
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.IndentChars = "\t";
-            settings.ConformanceLevel = ConformanceLevel.Fragment;
-            settings.OmitXmlDeclaration = true;
 
-            XmlWriter xml = XmlWriter.Create(metadata, settings);
-            xml.WriteStartElement("TIM2Texture");
-            xml.WriteAttributeString("basename", basename);
-            xml.WriteAttributeString("cluts", segment.PalettesCount.ToString());
-            xml.WriteAttributeString("linear_clut", segment.GetParameters().linearPalette.ToString());
+            metadata.BeginSection("TIM2Texture");
+            metadata.PutAttribute("basename", basename);
+            metadata.PutAttribute("cluts", segment.PalettesCount);
+            metadata.PutAttribute("linear_clut", segment.GetParameters().linearPalette);
 
-            xml.WriteElementString("Width", segment.GetParameters().width.ToString());
-            xml.WriteElementString("Height", segment.GetParameters().height.ToString());
-            xml.WriteElementString("Bpp", segment.GetParameters().bpp.ToString());
-            xml.WriteElementString("ColorSize", segment.GetParameters().colorSize.ToString());
-            xml.WriteElementString("MipmapCount", segment.GetParameters().mipmapCount.ToString());
+            metadata.Put("Width", segment.GetParameters().width);
+            metadata.Put("Height", segment.GetParameters().height);
+            metadata.Put("Bpp", segment.GetParameters().bpp);
+            metadata.Put("ColorSize", segment.GetParameters().colorSize);
+            metadata.Put("MipmapCount", segment.GetParameters().mipmapCount);
 
-            xml.WriteComment("Raw data from TIM2 header");
-            xml.WriteElementString("Format", segment.GetParameters().format.ToString());
+            //xml.WriteComment("Raw data from TIM2 header");
+            metadata.Put("Format", segment.GetParameters().format);
             //xml.WriteElementString("ClutFormat", segment.GetParameters().clutFormat.ToString());
-            xml.WriteStartElement("GsTEX0"); xml.WriteBase64(segment.GetParameters().GsTEX0, 0, segment.GetParameters().GsTEX0.Length); xml.WriteEndElement();
-            xml.WriteStartElement("GsTEX1"); xml.WriteBase64(segment.GetParameters().GsTEX1, 0, segment.GetParameters().GsTEX1.Length); xml.WriteEndElement();
+            metadata.Put("GsTEX0", segment.GetParameters().GsTEX0);
+            metadata.Put("GsTEX1", segment.GetParameters().GsTEX1);
 
-            xml.WriteElementString("GsRegs", segment.GetParameters().GsRegs.ToString());
-            xml.WriteElementString("GsTexClut", segment.GetParameters().GsTexClut.ToString());
-            xml.WriteStartElement("UserData"); xml.WriteBase64(segment.GetParameters().userdata, 0, segment.GetParameters().userdata.Length); xml.WriteEndElement();
-            xml.WriteEndElement();
-            xml.Close();
+            metadata.Put("GsRegs", (int)segment.GetParameters().GsRegs);
+            metadata.Put("GsTexClut", (int)segment.GetParameters().GsTexClut);
+            metadata.Put("UserData", segment.GetParameters().userdata);
+
+            metadata.EndSection();
         }
 
         private void WriteHeader(TIM2Segment.TIM2SegmentParameters parameters, Stream outFormatData, byte[] imageData, byte[] paletteData)
         {
             BinaryWriter writer = new BinaryWriter(outFormatData);
-            uint totalSize = (uint)(0x30 + parameters.userdata.Length+imageData.Length + paletteData.Length);
+            uint totalSize = (uint)(0x30 + parameters.userdata.Length + imageData.Length + paletteData.Length);
             writer.Write(totalSize);
             writer.Write((uint)paletteData.Length);
             writer.Write((uint)imageData.Length);
             writer.Write((ushort)(0x30 + parameters.userdata.Length));
-            
+
             ushort colorEntries = (ushort)(paletteData.Length / parameters.colorSize);
             writer.Write(colorEntries);
 
             writer.Write(parameters.format);
             writer.Write(parameters.mipmapCount);
-           
-            byte clutFormat = (byte)(parameters.bpp>8 ? 0 : parameters.colorSize-1);
+
+            byte clutFormat = (byte)(parameters.bpp > 8 ? 0 : parameters.colorSize - 1);
 
             clutFormat |= parameters.linearPalette ? (byte)0x80 : (byte)0;
 
             writer.Write(clutFormat);
             byte depth;
-            switch(parameters.bpp)
+            switch (parameters.bpp)
             {
                 case 4:
                     depth = 4;
@@ -287,13 +268,13 @@ namespace Rainbow.ImgLib.Formats.Serializers
             formatData.Read(fullHeader, 0, fullHeader.Length);
 
             BinaryReader reader = new BinaryReader(new MemoryStream(fullHeader));
-            
+
             uint totalSize = reader.ReadUInt32();
             paletteSize = reader.ReadUInt32();
             dataSize = reader.ReadUInt32();
             ushort headerSize = reader.ReadUInt16();
 
-            int userDataSize = headerSize-0x30; 
+            int userDataSize = headerSize - 0x30;
 
             colorEntries = reader.ReadUInt16();
 
@@ -346,7 +327,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             parameters.linearPalette = (clutFormat & 0x80) != 0;
             clutFormat &= 0x7F;
 
-            parameters.colorSize = parameters.bpp>8 ? parameters.bpp/8 : clutFormat + 1;
+            parameters.colorSize = parameters.bpp > 8 ? parameters.bpp / 8 : clutFormat + 1;
 
             if (userDataSize > 0)
             {

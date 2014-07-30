@@ -17,6 +17,8 @@
 
 using Rainbow.App.GUI.Model;
 using Rainbow.ImgLib.Formats;
+using Rainbow.ImgLib.Formats.Serialization;
+using Rainbow.ImgLib.Formats.Serialization.Metadata;
 using Rainbow.ImgLib.Formats.Serializers;
 using System;
 using System.Collections.Generic;
@@ -69,7 +71,7 @@ namespace Rainbow.App.GUI
 
             dialog.Filter = serializer.Name +
                             (mode==TextureFormatMode.Format ? "|" : " metadata + editable data|") +
-                            (mode == TextureFormatMode.Format ? serializer.PreferredFormatExtension : serializer.PreferredMetadataExtension);
+                            (mode == TextureFormatMode.Format ? serializer.PreferredFormatExtension : ".xml");
 
             var result = dialog.ShowDialog();
             if (result != DialogResult.OK)
@@ -82,7 +84,10 @@ namespace Rainbow.App.GUI
                     if (mode==TextureFormatMode.Format)
                         serializer.Save(texture, s);
                     else
-                        serializer.Export(texture, s, Path.GetDirectoryName(dialog.FileName), Path.GetFileNameWithoutExtension(dialog.FileName));
+                    {
+                        using(MetadataWriter writer=XmlMetadataWriter.Create(s))
+                            serializer.Export(texture, writer, Path.GetDirectoryName(dialog.FileName), Path.GetFileNameWithoutExtension(dialog.FileName));
+                    }
                 }
 
             }
@@ -105,7 +110,8 @@ namespace Rainbow.App.GUI
 
             string path = dialog.SelectedPath;
 
-            IEnumerable<string> extensions = TextureFormatSerializerProvider.RegisteredSerializers.Select(s => mode == TextureFormatMode.Format ? s.PreferredFormatExtension : s.PreferredMetadataExtension);
+            IEnumerable<string> extensions = TextureFormatSerializerProvider.RegisteredSerializers.Select(
+                s => mode == TextureFormatMode.Format ? s.PreferredFormatExtension : ".xml");
             extensions = extensions.OrderBy(s => s);
             var files = Directory.GetFiles(path, "*.*").Where(s => extensions.Contains(Path.GetExtension(s)));
 
@@ -114,11 +120,17 @@ namespace Rainbow.App.GUI
 
         private void OpenImportStream(Stream stream, string fullPath,TextureFormatMode mode)
         {
-
             TextureFormatSerializer curSerializer = null;
-            curSerializer = TextureFormatSerializerProvider.FromStream(stream);
+            MetadataReader reader = null;
+            if (mode == TextureFormatMode.Format)
+            {
+                curSerializer = TextureFormatSerializerProvider.FromStream(stream);
+            }
 
-            if (curSerializer == null)
+            if (curSerializer == null && mode == TextureFormatMode.Metadata)
+                curSerializer = TextureFormatSerializerProvider.FromMetadata(reader = XmlMetadataReader.Create(stream));
+
+            if (curSerializer == null )
             {
                 MessageBox.Show("Unsupported file format!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -130,17 +142,19 @@ namespace Rainbow.App.GUI
                     SetTexture(curSerializer.Open(stream));
                     break;
                 case TextureFormatMode.Metadata:
-                    SetTexture(curSerializer.Import(stream, Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath)));
+                    SetTexture(curSerializer.Import(reader, Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath)));
                     break;
                 default:
 					if(curSerializer.IsValidFormat(stream))
                     {
                         SetTexture(curSerializer.Open(stream));
                     }else
-                        SetTexture(curSerializer.Import(stream, Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath)));
+                        SetTexture(curSerializer.Import(reader, Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath)));
                     break;
             }
-            
+            if (reader != null)
+                reader.Dispose();
+
             SetFilename(Path.GetFileName(fullPath));
             serializer = curSerializer;
 
@@ -161,7 +175,7 @@ namespace Rainbow.App.GUI
             foreach (var serializer in ordered)
             {
                 string ext = mode==TextureFormatMode.Format ? serializer.PreferredFormatExtension :
-                                      serializer.PreferredMetadataExtension;
+                                      ".xml";
 
                 allFormatsBuilder.AppendFormat("*{0};", ext);
                 builder.AppendFormat("{0}|*{1}|", mode == TextureFormatMode.Format ? serializer.Name :

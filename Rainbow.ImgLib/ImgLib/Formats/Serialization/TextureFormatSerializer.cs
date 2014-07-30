@@ -15,6 +15,8 @@
 //Official repository and contact information can be found at
 //http://github.com/marco-calautti/Rainbow
 
+using Rainbow.ImgLib.Formats.Serialization;
+using Rainbow.ImgLib.Formats.Serialization.Metadata;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,10 +45,11 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// </summary>
         string PreferredFormatExtension { get; }
 
+        /*
         /// <summary>
         /// The preferred extension for the exported meta format of the texture format this serializer implements.
         /// </summary>
-        string PreferredMetadataExtension { get; }
+        string PreferredMetadataExtension { get; }*/
 
         /// <summary>
         /// Checks whether the given stream represents a valid texture encoded in the format implemented by this TextureFormatSerializer.
@@ -57,14 +60,15 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// <returns></returns>
         bool IsValidFormat(Stream inputFormat);
 
+        
         /// <summary>
-        /// Checks whether the given stream representes valid metadata for a texture encoded in the format implemented by this TextureFormatSerializer.
-        /// This method does not close the given stream and it restores the original stream position, so that calls to other TextureFormatSeriazliers' IsValidXX can be performed.
+        /// Checks whether the given metadata is valid for a texture encoded in the format implemented by this TextureFormatSerializer.
+        /// This method does not close the given metadata reader and it restores the metadata reader so that calls to other TextureFormatSeriazliers' IsValidXX can be performed.
         /// </summary>
         /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
         /// <param name="metadataStream"></param>
         /// <returns></returns>
-        bool IsValidMetadataFormat(Stream metadataStream);
+        bool IsValidMetadataFormat(MetadataReader metadataStream);
 
         /// <summary>
         /// Opens data encoded in the format implemented by this TextureFormatSerializer from the given stream.
@@ -92,7 +96,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// <param name="metadata"></param>
         /// <param name="directory"></param>
         /// <param name="basename"></param>
-        void Export(TextureFormat texture, Stream metadata, string directory, string basename);
+        void Export(TextureFormat texture, MetadataWriter metadata, string directory, string basename);
 
         /// <summary>
         /// Initializes a texture of the format implemented by this TextureFormatSerializer from a given metadata stream and a directory containing additional data
@@ -102,6 +106,6 @@ namespace Rainbow.ImgLib.Formats.Serializers
         /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
         /// <param name="metadata"></param>
         /// <param name="directory"></param>
-        TextureFormat Import(Stream metadata, string directory, string basename);
+        TextureFormat Import(MetadataReader metadata, string directory, string basename);
     }
 }

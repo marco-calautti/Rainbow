@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Rainbow.ImgLib.Formats.Serialization
+namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 {
     public class XmlMetadataWriter : MetadataWriterBase
     {
@@ -16,7 +16,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
         private XmlMetadataWriter(Stream stream)
         {
             outputStream = stream;
-            doc = new XDocument();
+            doc = new XDocument(new XElement("TextureFormatMetadata"));
             currentElement = doc.Root;
         }
         public override void BeginSection(string name)

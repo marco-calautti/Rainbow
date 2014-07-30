@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Rainbow.ImgLib.Formats.Serialization
+namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 {
     public class XmlMetadataReader : MetadataReaderBase
     {
@@ -17,6 +17,9 @@ namespace Rainbow.ImgLib.Formats.Serialization
         {
             inputStream = stream;
             doc = XDocument.Load(new StreamReader(inputStream));
+            if (doc.Root.Name != "TextureFormatMetadata")
+                throw new MetadataException("Illegal metadata!");
+
             currentElement = doc.Root;
         }
 

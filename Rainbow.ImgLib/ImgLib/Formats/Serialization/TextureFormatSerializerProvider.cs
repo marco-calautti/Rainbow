@@ -15,6 +15,8 @@
 //Official repository and contact information can be found at
 //http://github.com/marco-calautti/Rainbow
 
+using Rainbow.ImgLib.Formats.Serialization;
+using Rainbow.ImgLib.Formats.Serialization.Metadata;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -71,6 +73,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             return null;
         }
 
+        /*
         /// <summary>
         /// Retrieves a serializer for textures of the given metadata file extension
         /// </summary>
@@ -83,10 +86,10 @@ namespace Rainbow.ImgLib.Formats.Serializers
                     return serializer;
 
             return null;
-        }
+        }*/
 
         /// <summary>
-        /// Retrieves a serializer for textures encoded in the same format of the given stream. The given stream can be either a file format stream or a metadata stream.
+        /// Retrieves a serializer for textures encoded in the same format of the given stream.
         /// </summary>
         /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
         /// <param name="stream"></param>
@@ -94,14 +97,28 @@ namespace Rainbow.ImgLib.Formats.Serializers
         public static TextureFormatSerializer FromStream(Stream stream)
         {
             foreach (var serializer in serializers)
-                if (serializer.IsValidFormat(stream) || serializer.IsValidMetadataFormat(stream))
+                if (serializer.IsValidFormat(stream) /*|| serializer.IsValidMetadataFormat(stream)*/)
                     return serializer;
 
             return null;
         }
 
         /// <summary>
-        /// Retrieves a serializer for textures encoded in the same format of the given file. The given file can either encode a texture in metadata or original form.
+        /// Retrieves a serializer for textures encoded in the same format represented by the given metadata.
+        /// </summary>
+        /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
+        /// <param name="stream"></param>
+        /// <returns>the requested serializer if found, null otherwise.</returns>
+        public static TextureFormatSerializer FromMetadata(MetadataReader  reader)
+        {
+            foreach (var serializer in serializers)
+                if (serializer.IsValidMetadataFormat(reader) /*|| serializer.IsValidMetadataFormat(stream)*/)
+                    return serializer;
+
+            return null;
+        }
+        /// <summary>
+        /// Retrieves a serializer for textures encoded in the same format of the given file.
         /// </summary>
         /// <exception cref="IOException">if any I/O exception occurs during reading the given file.</exception>
         /// <param name="stream"></param>
