@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using Rainbow.ImgLib.Common;
 
 
 namespace Rainbow.ImgLib.Encoding
@@ -54,8 +55,12 @@ namespace Rainbow.ImgLib.Encoding
             List<Bitmap> bitmaps = null;
             if(images.Count==1) // We can quantize a single palette image
             {
-                nQuant.WuQuantizerBase quantizer = new nQuant.WuQuantizer(colors);
-                Image img=quantizer.QuantizeImage(new Bitmap(images.First()));
+                Image img = images.First();
+                if (img.ColorsCount() > colors)
+                {
+                    nQuant.WuQuantizerBase quantizer = new nQuant.WuQuantizer(colors);
+                    img = quantizer.QuantizeImage(new Bitmap(img));
+                }
                 bitmaps = new List<Bitmap>(); bitmaps.Add(new Bitmap(img));
 
             }

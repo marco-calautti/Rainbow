@@ -119,7 +119,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
             foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
             {
                 TextureFormatSerializer serializer = new TIM2SegmentSerializer();
-                serializer.Export(segment,metadata, directory, basename + "_layer" + layer);
+                serializer.Export(segment,metadata, directory, basename + "_layer" + layer++);
             }
 
             metadata.EndSection();

@@ -125,14 +125,28 @@ namespace Rainbow.App.GUI
             if (mode == TextureFormatMode.Format)
             {
                 curSerializer = TextureFormatSerializerProvider.FromStream(stream);
+
+            }
+            else if (mode == TextureFormatMode.Metadata)
+            {
+                curSerializer = TextureFormatSerializerProvider.FromMetadata(reader = XmlMetadataReader.Create(stream));
+            }
+            else
+            {
+                curSerializer = TextureFormatSerializerProvider.FromStream(stream);
+                mode = TextureFormatMode.Format;
+                if (curSerializer == null)
+                {
+                    curSerializer = TextureFormatSerializerProvider.FromMetadata(reader = XmlMetadataReader.Create(stream));
+                    mode = TextureFormatMode.Metadata;
+                }
             }
 
-            if (curSerializer == null && mode == TextureFormatMode.Metadata)
-                curSerializer = TextureFormatSerializerProvider.FromMetadata(reader = XmlMetadataReader.Create(stream));
-
-            if (curSerializer == null )
+            if (curSerializer == null)
             {
                 MessageBox.Show("Unsupported file format!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                if(reader!=null)
+                    reader.Dispose();
                 return;
             }
 
@@ -145,12 +159,7 @@ namespace Rainbow.App.GUI
                     SetTexture(curSerializer.Import(reader, Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath)));
                     break;
                 default:
-					if(curSerializer.IsValidFormat(stream))
-                    {
-                        SetTexture(curSerializer.Open(stream));
-                    }else
-                        SetTexture(curSerializer.Import(reader, Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath)));
-                    break;
+                    throw new Exception("Should never happen!");
             }
             if (reader != null)
                 reader.Dispose();

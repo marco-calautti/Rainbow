@@ -34,5 +34,20 @@ namespace Rainbow.ImgLib.Common
                     list.Add(bmp.GetPixel(x, y));
             return list.ToArray();
         }
+
+        public static int ColorsCount(this Image img)
+        {
+            Bitmap bmp = new Bitmap(img);
+            HashSet<Color> colors = new HashSet<Color>();
+            int count = 0;
+            for (int y = 0; y < img.Height; y++)
+                for (int x = 0; x < img.Width; x++)
+                    if (!colors.Contains(bmp.GetPixel(x, y)))
+                    {
+                        colors.Add(bmp.GetPixel(x, y));
+                        count++;
+                    }
+            return count;
+        }
     }
 }
