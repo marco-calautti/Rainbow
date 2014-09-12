@@ -28,21 +28,34 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
     public class XmlMetadataWriter : MetadataWriterBase
     {
         private XDocument doc;
-        private XElement currentElement;
-        private Stream outputStream;
+        XElement currentElement = null;
+        Stream outputStream;
+        Stack<XElement> savedElements = new Stack<XElement>();
+
         private XmlMetadataWriter(Stream stream)
         {
             outputStream = stream;
             doc = new XDocument(new XElement("TextureFormatMetadata"));
+
             currentElement = doc.Root;
         }
+
         public override void BeginSection(string name)
         {
             try
             {
-                var elem = new XElement(name);
-                currentElement.Add(elem);
-                currentElement = elem;
+                XElement newElement = null;
+                if (currentElement == doc.Root)
+                    currentElement.Add(newElement=new XElement(name));
+                else
+                {
+                    if (currentElement.Element("SubSections") == null)
+                        currentElement.Add(new XElement("SubSections"));
+                    currentElement.Element("SubSections").Add(newElement = new XElement(name));
+                }
+
+                savedElements.Push(currentElement);
+                currentElement = newElement;
             }catch(Exception e)
             {
                 throw new MetadataException("Cannot create section!", e);
@@ -51,15 +64,17 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public override void EndSection()
         {
-            if (currentElement.Parent == null)
+            if (savedElements.Count==0)
                 throw new MetadataException("Cannot close root section!");
-            currentElement = currentElement.Parent;
+            currentElement = savedElements.Pop();
         }
 
         public override void Put(string key, string value)
         {
             try
             {
+                if (currentElement == doc.Root)
+                    throw new MetadataException("Must first enter one section at least to insert a value!");
                 currentElement.Add(new XElement(key, value));
             }catch(Exception e)
             {
@@ -71,6 +86,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             try
             {
+                if (currentElement == doc.Root)
+                    throw new MetadataException("Must first enter one section at least to insert an attribute!");
                 currentElement.SetAttributeValue(key, value);
             }catch(Exception e)
             {

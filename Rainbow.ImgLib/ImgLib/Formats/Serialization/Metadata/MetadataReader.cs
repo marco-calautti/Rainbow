@@ -111,5 +111,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         /// <param name="key"></param>
         /// <returns></returns>
         bool GetAttributeBool(string key);
+
+        void Rewind();
     }
 }

@@ -28,8 +28,12 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
     public class XmlMetadataReader : MetadataReaderBase
     {
         XDocument doc;
-        XElement currentElement;
+        IEnumerator<XElement> subSections=null;
+        XElement currentElement=null;
         Stream inputStream;
+        Stack<IEnumerator<XElement>> savedPointers = new Stack<IEnumerator<XElement>>();
+        Stack<XElement> savedElements = new Stack<XElement>();
+
         private XmlMetadataReader(Stream stream)
         {
             inputStream = stream;
@@ -37,14 +41,24 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             if (doc.Root.Name != "TextureFormatMetadata")
                 throw new MetadataException("Illegal metadata!");
 
-            currentElement = doc.Root;
+            subSections=doc.Root.Elements().GetEnumerator();
         }
 
         public override void EnterSection(string name)
         {
             try
             {
-                currentElement = currentElement.Element(name);
+                if(subSections==null || !subSections.MoveNext())
+                    throw new MetadataException("No more sections available on this level!");
+                if(subSections.Current.Name!=name)
+                    throw new MetadataException("Expected section named " + name + " but found " + subSections.Current.Name);
+
+                savedElements.Push(currentElement);
+                savedPointers.Push(subSections);
+                currentElement=subSections.Current;
+                if(currentElement.Element("SubSections")!=null)
+                    subSections = currentElement.Element("SubSections").Elements().GetEnumerator();
+
             }catch(Exception e)
             {
                 throw new MetadataException("Cannot enter the given section!", e);
@@ -53,15 +67,21 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public override void ExitSection()
         {
-            if (currentElement.Parent == null)
+            if (savedPointers.Count==0)
                 throw new MetadataException("Cannot exit from root section!");
-            currentElement = currentElement.Parent;
+
+            subSections = savedPointers.Pop();
+            currentElement = subSections.Current;
         }
 
         public override string GetString(string key)
         {
             try
             {
+                if (key == "SubSections")
+                    throw new MetadataException("Forbidden key name \"SubSections\"");
+                if (currentElement == null)
+                    throw new MetadataException("Non sections entered");
                 return currentElement.Element(key).Value;
             }catch(Exception e)
             {
@@ -73,6 +93,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             try
             {
+                if (currentElement == null)
+                    throw new MetadataException("Non sections entered");
                 return currentElement.Attribute(key).Value;
             }catch(Exception e)
             {
@@ -83,6 +105,14 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         public override void Dispose()
         {
             inputStream.Dispose();
+        }
+
+        public override void Rewind()
+        {
+            subSections = doc.Root.Elements().GetEnumerator();
+            currentElement = null;
+            savedPointers.Clear();
+            savedElements.Clear();
         }
 
         public static XmlMetadataReader Create(Stream stream)

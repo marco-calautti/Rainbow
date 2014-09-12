@@ -31,6 +31,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public abstract string GetString(string key);
 
+        public abstract void Rewind();
+
         public int GetInt(string key)
         {
             try

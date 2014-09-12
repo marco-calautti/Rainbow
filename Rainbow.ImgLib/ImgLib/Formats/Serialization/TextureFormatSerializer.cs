@@ -63,7 +63,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         
         /// <summary>
         /// Checks whether the given metadata is valid for a texture encoded in the format implemented by this TextureFormatSerializer.
-        /// This method does not close the given metadata reader and it restores the metadata reader so that calls to other TextureFormatSeriazliers' IsValidXX can be performed.
+        /// This method does not close the given metadata reader and since metadata can be traversed in one way restores the metadata reader so that calls to other TextureFormatSeriazliers' IsValidXX can be performed.
         /// </summary>
         /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
         /// <param name="metadataStream"></param>
