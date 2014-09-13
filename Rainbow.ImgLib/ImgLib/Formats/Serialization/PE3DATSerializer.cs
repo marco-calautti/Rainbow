@@ -14,6 +14,8 @@
 
 //Official repository and contact information can be found at
 //http://github.com/marco-calautti/Rainbow
+//
+// Parts of this code are inspired by...
 
 using Rainbow.ImgLib.Formats.Serializers;
 using System;
