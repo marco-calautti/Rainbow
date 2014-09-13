@@ -41,7 +41,11 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             if (doc.Root.Name != "TextureFormatMetadata")
                 throw new MetadataException("Illegal metadata!");
 
-            subSections=doc.Root.Elements().GetEnumerator();
+            IEnumerable<XElement> en = doc.Root.Elements("Section");
+            if (en == null)
+                throw new MetadataException("At least one section is required!");
+
+            subSections=en.GetEnumerator();
         }
 
         public override void EnterSection(string name)
@@ -50,14 +54,14 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             {
                 if(subSections==null || !subSections.MoveNext())
                     throw new MetadataException("No more sections available on this level!");
-                if(subSections.Current.Name!=name)
+                if(subSections.Current.Attribute("name").Value!=name)
                     throw new MetadataException("Expected section named " + name + " but found " + subSections.Current.Name);
 
                 savedElements.Push(currentElement);
                 savedPointers.Push(subSections);
                 currentElement=subSections.Current;
-                if(currentElement.Element("SubSections")!=null)
-                    subSections = currentElement.Element("SubSections").Elements().GetEnumerator();
+                if(currentElement.Elements("Section")!=null)
+                    subSections = currentElement.Elements("Section").GetEnumerator();
 
             }catch(Exception e)
             {
@@ -78,11 +82,11 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             try
             {
-                if (key == "SubSections")
-                    throw new MetadataException("Forbidden key name \"SubSections\"");
+                //if (key == "SubSections")
+                 //   throw new MetadataException("Forbidden key name \"SubSections\"");
                 if (currentElement == null)
                     throw new MetadataException("Non sections entered");
-                return currentElement.Element(key).Value;
+                return currentElement.Element("Data").Element(key).Value;
             }catch(Exception e)
             {
                 throw new MetadataException("Error while retrieving element value!", e);
@@ -94,8 +98,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             try
             {
                 if (currentElement == null)
-                    throw new MetadataException("Non sections entered");
-                return currentElement.Attribute(key).Value;
+                    throw new MetadataException("No sections entered");
+                return currentElement.Element("Attributes").Element(key).Value;
             }catch(Exception e)
             {
                 throw new MetadataException("Error while retrieving element value!", e);

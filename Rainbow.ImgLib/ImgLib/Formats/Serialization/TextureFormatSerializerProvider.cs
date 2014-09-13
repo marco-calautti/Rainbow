@@ -37,6 +37,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         static TextureFormatSerializerProvider()
         {
             RegisterSerializer(new TIM2TextureSerializer());
+            RegisterSerializer(new PE3DATSerializer());
         }
 
         /// <summary>

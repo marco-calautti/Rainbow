@@ -44,15 +44,20 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             try
             {
-                XElement newElement = null;
-                if (currentElement == doc.Root)
+                XElement newElement = new XElement("Section");
+                newElement.SetAttributeValue("name", name);
+                newElement.Add(new XElement("Attributes"));
+                newElement.Add(new XElement("Data"));
+
+                currentElement.Add(newElement);
+                /*if (currentElement == doc.Root)
                     currentElement.Add(newElement=new XElement(name));
                 else
                 {
                     if (currentElement.Element("SubSections") == null)
                         currentElement.Add(new XElement("SubSections"));
                     currentElement.Element("SubSections").Add(newElement = new XElement(name));
-                }
+                }*/
 
                 savedElements.Push(currentElement);
                 currentElement = newElement;
@@ -75,7 +80,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             {
                 if (currentElement == doc.Root)
                     throw new MetadataException("Must first enter one section at least to insert a value!");
-                currentElement.Add(new XElement(key, value));
+
+                currentElement.Element("Data").Add(new XElement(key, value));
             }catch(Exception e)
             {
                 throw new MetadataException("Error while inserting value " + key + "!", e);
@@ -88,7 +94,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             {
                 if (currentElement == doc.Root)
                     throw new MetadataException("Must first enter one section at least to insert an attribute!");
-                currentElement.SetAttributeValue(key, value);
+
+                currentElement.Element("Attributes").Add(new XElement(key, value));
             }catch(Exception e)
             {
                 throw new MetadataException("Error while inserting attribute " + key + "!", e);

@@ -28,6 +28,7 @@ namespace Rainbow.ImgLib.Encoding
     {
         public static readonly ColorDecoder DECODER_24BIT_RGB = new ColorDecoder24BitRGB();
         public static readonly ColorDecoder DECODER_32BIT_RGBA = new ColorDecoder32BitRGBA();
+        public static readonly ColorDecoder DECODER_32BIT_BGRA = new ColorDecoder32BitBGRA();
         public static readonly ColorDecoder DECODER_16BITLE_ABGR = new ColorDecoder16BitLEABGR();
 
         /// <summary>

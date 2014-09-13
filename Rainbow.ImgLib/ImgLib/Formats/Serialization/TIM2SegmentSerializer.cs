@@ -154,14 +154,14 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
             metadata.EnterSection("TIM2Texture");
 
-            basename = metadata.GetAttributeString("basename");
-            palCount = metadata.GetAttributeInt("cluts");
+            basename = metadata.GetAttributeString("Basename");
+            palCount = metadata.GetAttributeInt("Cluts");
 
             parameters = new TIM2Segment.TIM2SegmentParameters();
 
             parameters.swizzled = swizzled;
 
-            parameters.linearPalette = metadata.GetAttributeBool("linear_clut");
+            parameters.linearPalette = metadata.GetAttributeBool("LinearClut");
 
             parameters.width = metadata.GetInt("Width");
             parameters.height = metadata.GetInt("Height");
@@ -188,9 +188,9 @@ namespace Rainbow.ImgLib.Formats.Serializers
         {
 
             metadata.BeginSection("TIM2Texture");
-            metadata.PutAttribute("basename", basename);
-            metadata.PutAttribute("cluts", segment.PalettesCount);
-            metadata.PutAttribute("linear_clut", segment.GetParameters().linearPalette);
+            metadata.PutAttribute("Basename", basename);
+            metadata.PutAttribute("Cluts", segment.PalettesCount);
+            metadata.PutAttribute("LinearClut", segment.GetParameters().linearPalette);
 
             metadata.Put("Width", segment.GetParameters().width);
             metadata.Put("Height", segment.GetParameters().height);

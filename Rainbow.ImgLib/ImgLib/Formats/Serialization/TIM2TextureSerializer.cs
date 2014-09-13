@@ -111,11 +111,11 @@ namespace Rainbow.ImgLib.Formats.Serializers
 
 
             metadata.BeginSection("TIM2");
-            metadata.PutAttribute("version", tim2.Version);
-            metadata.PutAttribute("basename", basename);
-            metadata.PutAttribute("swizzled", tim2.Swizzled);
+            metadata.PutAttribute("Version", tim2.Version);
+            metadata.PutAttribute("Basename", basename);
+            metadata.PutAttribute("Swizzled", tim2.Swizzled);
 
-            metadata.PutAttribute("textures", tim2.TIM2SegmentsList.Count);
+            metadata.PutAttribute("Textures", tim2.TIM2SegmentsList.Count);
             int layer = 0;
             foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
             {
@@ -133,10 +133,10 @@ namespace Rainbow.ImgLib.Formats.Serializers
             {
                 metadata.EnterSection("TIM2");
 
-                int version = metadata.GetAttributeInt("version");
-                string basename = metadata.GetAttributeString("basename");
-                bool swizzled = metadata.GetAttributeBool("swizzled");
-                int textureCount = metadata.GetAttributeInt("textures");
+                int version = metadata.GetAttributeInt("Version");
+                string basename = metadata.GetAttributeString("Basename");
+                bool swizzled = metadata.GetAttributeBool("Swizzled");
+                int textureCount = metadata.GetAttributeInt("Textures");
                 
                 List<TIM2Segment> imagesList = new List<TIM2Segment>();
 
