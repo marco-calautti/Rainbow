@@ -53,6 +53,7 @@ namespace Rainbow.App.GUI
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
             FillListView(new string[] { name });

@@ -1,6 +1,24 @@
-﻿using Rainbow.ImgLib.Formats.Serializers;
+﻿//Copyright (C) 2014 Marco (Phoenix) Calautti.
+
+//This program is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, version 2.0.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License 2.0 for more details.
+
+//A copy of the GPL 2.0 should have been included with the program.
+//If not, see http://www.gnu.org/licenses/
+
+//Official repository and contact information can be found at
+//http://github.com/marco-calautti/Rainbow
+
+using Rainbow.ImgLib.Formats.Serializers;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -49,9 +67,19 @@ namespace Rainbow.ImgLib.Formats.Serialization
             return true;
         }
 
-        public bool IsValidMetadataFormat(Metadata.MetadataReader metadataStream)
+        public bool IsValidMetadataFormat(Metadata.MetadataReader metadata)
         {
-            throw new NotImplementedException();
+            try
+            {
+                metadata.EnterSection("PE3DAT");
+            }catch(Exception e)
+            {
+                metadata.Rewind();
+                return false;
+            }
+
+            metadata.Rewind();
+            return true;
         }
 
         public TextureFormat Open(System.IO.Stream formatData)
@@ -77,23 +105,112 @@ namespace Rainbow.ImgLib.Formats.Serialization
                 formats[i] = reader.ReadUInt32();
             }
 
-            return new PE3DATTexture(reader, positions1, positions2, widths, heights, formats);
+            int[] bpps = new int[formats.Length];
+            for (int i = 0; i < bpps.Length;i++ )
+            {
+                if (formats[i] != 2 && formats[i] != 1)
+                    throw new TextureFormatException("Not valid format code: " + formats[i]);
+                bpps[i] = formats[i] == 2 ? 8 : 4;
+            }
+            
+            return new PE3DATTexture(reader, positions1, positions2, widths, heights, bpps);
             
         }
 
         public void Save(TextureFormat texture, System.IO.Stream outFormatData)
         {
-            throw new NotImplementedException();
+            PE3DATTexture dat = texture as PE3DATTexture;
+            if (dat == null)
+                throw new TextureFormatException("Not a valid PE3 DAT texture!");
+
+            BinaryWriter writer=new BinaryWriter(outFormatData);
+
+            writer.Write((uint)dat.FramesCount);
+            for (int i = 0; i < 3; i++)
+                writer.Write((uint)0);
+
+            int oldSelected = dat.SelectedFrame;
+            for(int i=0;i<dat.FramesCount;i++)
+            {
+                dat.SelectedFrame = i;
+                writer.Write(dat.Position1);
+                writer.Write((ushort)dat.Width);
+                writer.Write((ushort)dat.Height);
+                writer.Write(dat.Position2);
+                writer.Write(dat.Bpp == 8 ? (uint)2 : (uint)1);
+            }
+            dat.SelectedFrame = oldSelected;
+
+            IList<byte[]> imagesData=dat.GetImagesData();
+            IList<byte[]> palettesData=dat.GetPalettesData();
+
+            for (int i = 0; i < dat.FramesCount;i++ )
+            {
+                writer.Write(palettesData[i]);
+                writer.Write(imagesData[i]);
+            }
         }
 
         public void Export(TextureFormat texture, Metadata.MetadataWriter metadata, string directory, string basename)
         {
-            throw new NotImplementedException();
+            PE3DATTexture dat = texture as PE3DATTexture;
+            if (dat == null)
+                throw new TextureFormatException("Not a valid PE3 DAT texture!");
+
+            metadata.BeginSection("PE3DAT");
+            metadata.PutAttribute("Textures", dat.FramesCount);
+            metadata.PutAttribute("Basename", basename);
+
+            int oldSelected=dat.SelectedFrame;
+            for(int i=0;i<dat.FramesCount;i++)
+            {
+                dat.SelectedFrame=i;
+
+                metadata.BeginSection("PE3DATSegment");
+                metadata.Put("Position1", dat.Position1);
+                metadata.Put("Position2", dat.Position2);
+                metadata.Put("Bpp", dat.Bpp);
+                metadata.EndSection();
+
+                dat.GetImage().Save(Path.Combine(directory, basename + "_" + i + ".png"));
+            }
+            dat.SelectedFrame = oldSelected;
+            metadata.EndSection();
         }
 
-        public TextureFormat Import(Metadata.MetadataReader metadata, string directory, string basename)
+        public TextureFormat Import(Metadata.MetadataReader metadata, string directory, string b)
         {
-            throw new NotImplementedException();
+            metadata.EnterSection("PE3DAT");
+
+            int count = metadata.GetAttributeInt("Textures");
+            string basename = metadata.GetAttributeString("Basename");
+
+            uint[] positions1 = new uint[count];
+            ushort[] widths = new ushort[count];
+            ushort[] heights = new ushort[count];
+            uint[] positions2 = new uint[count];
+            int[] bpps = new int[count];
+
+            IList<Image> images = new List<Image>(count);
+
+            for(int i=0;i<count;i++)
+            {
+                metadata.EnterSection("PE3DATSegment");
+
+                positions1[i] = (uint)metadata.GetLong("Position1");
+                positions2[i] = (uint)metadata.GetLong("Position2");
+                bpps[i] = metadata.GetInt("Bpp");
+
+                Image img=Image.FromFile(Path.Combine(directory, basename + "_" + i + ".png"));
+                widths[i] = (ushort)img.Width;
+                heights[i] = (ushort)img.Height;
+                images.Add(img);
+
+                metadata.ExitSection();
+            }
+
+            metadata.ExitSection();
+            return new PE3DATTexture(images, positions1, positions2, widths, heights, bpps);
         }
     }
 }

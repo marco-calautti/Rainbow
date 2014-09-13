@@ -25,6 +25,8 @@ namespace Rainbow.App.GUI.Model
         {
             if (texture.GetType() == typeof(TIM2Texture))
                 return new TIM2PropertyGridObject((TIM2Texture)texture);
+            else if (texture.GetType() == typeof(PE3DATTexture))
+                return new PE3DATPropertyGridObject((PE3DATTexture)texture);
             else
                 return new TexturePropertyGridObject(texture);
         }

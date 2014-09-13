@@ -82,6 +82,7 @@
     <Compile Include="App\GUI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="App\GUI\Model\PE3DATPropertyGridObject.cs" />
     <Compile Include="App\GUI\Model\PropertyGridObjectFactory.cs" />
     <Compile Include="App\GUI\Model\RangedTypeConverter.cs" />
     <Compile Include="App\GUI\Model\TextureFormatProxy.cs" />
