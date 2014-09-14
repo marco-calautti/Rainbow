@@ -27,6 +27,7 @@ namespace Rainbow.ImgLib.Encoding
 {
     public class IndexedImageEncoder : ImageEncoder
     {
+
         private IList<Image> images;
         private int colors;
         private int width, height;
@@ -69,6 +70,39 @@ namespace Rainbow.ImgLib.Encoding
 
             var indexes = new int[width * height];
 
+            SortedList<int,Color> palette = new SortedList<int,Color>();
+            Palettes = new List<Color[]>();
+
+            for (int i = 0; i < bitmaps.Count; i++)
+                Palettes.Add(new Color[colors]);
+
+            int count = 0;
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                {
+                    Color pixel = bitmaps[0].GetPixel(x, y);
+                    if (!palette.ContainsKey(pixel.ToArgb()))
+                    {
+                        if (count >= colors)
+                            throw new Exception("Too many colors! The maximum for this image is " + colors + "!");
+
+                        palette.Add(pixel.ToArgb(), pixel);
+                        count++;
+                    }
+                }
+
+            int k = 0;
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                {
+                    Color pixel=bitmaps[0].GetPixel(x, y);
+                    int idx = palette.IndexOfKey(pixel.ToArgb());
+                    indexes[k++] = idx;
+                    for (int i = 0; i < Palettes.Count; i++)
+                          Palettes[i][idx] = bitmaps[i].GetPixel(x, y);
+                }
+           
+            /*
             var reversePal=new Dictionary<Color,int>();
             Palettes = new List<Color[]>();
 
@@ -84,7 +118,7 @@ namespace Rainbow.ImgLib.Encoding
                     if (!reversePal.ContainsKey(pixel))
                     {
                         if (index >= colors)
-                            throw new Exception("Too many colors! The maximum for this TIM2 is "+colors+"!");
+                            throw new Exception("Too many colors! The maximum for this image is "+colors+"!");
 
                         reversePal[pixel] = index;
                         for (int i = 0; i < Palettes.Count; i++)
@@ -94,7 +128,7 @@ namespace Rainbow.ImgLib.Encoding
                     indexes[k++] = reversePal[pixel];
                         
                 }
-
+            */
             return IndexPacker.FromNumberOfColors(colors).PackIndexes(indexes);
 
             /*

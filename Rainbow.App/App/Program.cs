@@ -25,7 +25,7 @@ using System.IO;
 
 using Rainbow.ImgLib;
 using Rainbow.ImgLib.Formats;
-using Rainbow.ImgLib.Formats.Serializers;
+using Rainbow.ImgLib.Formats.Serialization;
 using Rainbow.App.GUI;
 
 namespace Rainbow.App

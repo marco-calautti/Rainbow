@@ -23,7 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Rainbow.ImgLib.Formats.Serializers
+namespace Rainbow.ImgLib.Formats.Serialization
 {
     /// <summary>
     /// A class implementing this interface must be able to retrieve a TextureFormat object starting from a stream encoding an texture in the format implemented by this

@@ -155,7 +155,11 @@ namespace Rainbow.ImgLib.Formats
 
         internal IList<byte[]> GetImagesData()
         {
-            return imagesData;
+            IList<byte[]> result = new List<byte[]>(imagesData.Count);
+            for (int i = 0; i < imagesData.Count; i++)
+                result.Add(new SwizzleFilter(widths[i], heights[i], bpps[i]).ApplyFilter(imagesData[i]));
+
+            return result;
         }
 
         internal IList<byte[]> GetPalettesData()

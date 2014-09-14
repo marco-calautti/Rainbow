@@ -59,12 +59,14 @@
     <Compile Include="ImgLib\Encoding\ImageDecoder.cs" />
     <Compile Include="ImgLib\Encoding\ImageEncoder.cs" />
     <Compile Include="ImgLib\Formats\PE3DATTexture.cs" />
+    <Compile Include="ImgLib\Formats\PE3SimpleDATTexture.cs" />
     <Compile Include="ImgLib\Formats\Serialization\Exceptions\MetadataException.cs" />
     <Compile Include="ImgLib\Formats\Serialization\Metadata\MetadataReader.cs" />
     <Compile Include="ImgLib\Formats\Serialization\Metadata\MetadataReaderBase.cs" />
     <Compile Include="ImgLib\Formats\Serialization\Metadata\MetadataWriter.cs" />
     <Compile Include="ImgLib\Formats\Serialization\Metadata\MetadataWriterBase.cs" />
     <Compile Include="ImgLib\Formats\Serialization\PE3DATSerializer.cs" />
+    <Compile Include="ImgLib\Formats\Serialization\PE3SimpleDATSerializer.cs" />
     <Compile Include="ImgLib\Formats\Serialization\TextureFormatSerializerProvider.cs" />
     <Compile Include="ImgLib\Formats\Serialization\TIM2SegmentSerializer.cs" />
     <Compile Include="ImgLib\Formats\Serialization\TIM2TextureSerializer.cs" />

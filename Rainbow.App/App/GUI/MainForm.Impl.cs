@@ -19,7 +19,6 @@ using Rainbow.App.GUI.Model;
 using Rainbow.ImgLib.Formats;
 using Rainbow.ImgLib.Formats.Serialization;
 using Rainbow.ImgLib.Formats.Serialization.Metadata;
-using Rainbow.ImgLib.Formats.Serializers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -114,7 +113,7 @@ namespace Rainbow.App.GUI
             IEnumerable<string> extensions = TextureFormatSerializerProvider.RegisteredSerializers.Select(
                 s => mode == TextureFormatMode.Format ? s.PreferredFormatExtension : ".xml");
             extensions = extensions.OrderBy(s => s);
-            var files = Directory.GetFiles(path, "*.*").Where(s => extensions.Contains(Path.GetExtension(s)));
+            var files = Directory.GetFiles(path, "*.*").Where(s => extensions.Contains(Path.GetExtension(s)) && TextureFormatSerializerProvider.FromFile(s)!=null);
 
             FillListView(files);
         }

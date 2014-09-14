@@ -27,7 +27,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Rainbow.ImgLib.Formats.Serializers
+namespace Rainbow.ImgLib.Formats.Serialization
 {
     internal class TIM2SegmentSerializer : TextureFormatSerializer
     {

@@ -23,7 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Rainbow.ImgLib.Formats.Serializers
+namespace Rainbow.ImgLib.Formats.Serialization
 {
     /// <summary>
     /// This class helps creating the right TextureFormatSerializer for a given source texture. The texture can be given in stream form or file form.
@@ -38,6 +38,7 @@ namespace Rainbow.ImgLib.Formats.Serializers
         {
             RegisterSerializer(new TIM2TextureSerializer());
             RegisterSerializer(new PE3DATSerializer());
+            RegisterSerializer(new PE3SimpleDATSerializer());
         }
 
         /// <summary>

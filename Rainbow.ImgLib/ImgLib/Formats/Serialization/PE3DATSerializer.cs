@@ -17,7 +17,7 @@
 //
 // Parts of this code are inspired by...
 
-using Rainbow.ImgLib.Formats.Serializers;
+using Rainbow.ImgLib.Formats.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -74,7 +74,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             try
             {
                 metadata.EnterSection("PE3DAT");
-            }catch(Exception e)
+            }catch(Exception)
             {
                 metadata.Rewind();
                 return false;

@@ -18,7 +18,7 @@
 using Rainbow.App.GUI.Controls;
 using Rainbow.App.GUI.Model;
 using Rainbow.ImgLib.Formats;
-using Rainbow.ImgLib.Formats.Serializers;
+using Rainbow.ImgLib.Formats.Serialization;
 using System;
 using System.Drawing;
 using System.IO;
