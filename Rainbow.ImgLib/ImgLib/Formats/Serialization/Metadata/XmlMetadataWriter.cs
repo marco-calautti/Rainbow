@@ -35,7 +35,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         private XmlMetadataWriter(Stream stream)
         {
             outputStream = stream;
-            doc = new XDocument(new XElement("TextureFormatMetadata"));
+            doc = new XDocument(new XElement("textureFormatMetadata"));
 
             currentElement = doc.Root;
         }
@@ -44,10 +44,10 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             try
             {
-                XElement newElement = new XElement("Section");
+                XElement newElement = new XElement("section");
                 newElement.SetAttributeValue("name", name);
-                newElement.Add(new XElement("Attributes"));
-                newElement.Add(new XElement("Data"));
+                //newElement.Add(new XElement("Attributes"));
+                //newElement.Add(new XElement("Data"));
 
                 currentElement.Add(newElement);
                 /*if (currentElement == doc.Root)
@@ -81,7 +81,11 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 if (currentElement == doc.Root)
                     throw new MetadataException("Must first enter one section at least to insert a value!");
 
-                currentElement.Element("Data").Add(new XElement(key, value));
+                XElement element=new XElement("data");
+                element.SetAttributeValue("name", key);
+                element.Value = value;
+                currentElement.Add(element);
+
             }catch(Exception e)
             {
                 throw new MetadataException("Error while inserting value " + key + "!", e);
@@ -95,7 +99,11 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 if (currentElement == doc.Root)
                     throw new MetadataException("Must first enter one section at least to insert an attribute!");
 
-                currentElement.Element("Attributes").Add(new XElement(key, value));
+                XElement element = new XElement("attribute");
+                element.SetAttributeValue("name", key);
+                element.Value = value;
+                currentElement.Add(element);
+
             }catch(Exception e)
             {
                 throw new MetadataException("Error while inserting attribute " + key + "!", e);
