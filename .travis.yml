@@ -7,3 +7,13 @@ install:
 script:
   - xbuild /p:Configuration=Release Rainbow.sln
   
+deploy:
+  provider: releases
+  api_key:
+    secure: mRxJcXYSL5Am012VnJOnbdjoUwRcsbXhtPrDUpScDRmKE1Yk3lWn22kM1frdf6J3tVvn1pf/s2qfwQHLs4CkY5qkOHOZu+jLmnn3hBeBQwNpFEcGffP42gspnEPcap6FMbWoVSwsi4ry9AQVP1Rv7kmPcVO/aNH7F+96Tkan/K4=
+  file:
+    - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.App.exe
+    - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.ImgLib.dll
+    - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/nQuant.Core.dll
+  on:
+    branch: master
