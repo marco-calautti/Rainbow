@@ -1,6 +1,6 @@
 Rainbow
 =======
-Build Status https://travis-ci.org/marco-calautti/Rainbow.svg?branch=master
+Build Status ![Build status](https://travis-ci.org/marco-calautti/Rainbow.svg?branch=master)
 
 Rainbow is a tool, written in C#, intended to handle different graphics formats from video games assets.
 Currently, Rainbow supports almost every variant of the TIM2 format.
