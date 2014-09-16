@@ -46,18 +46,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             {
                 XElement newElement = new XElement("section");
                 newElement.SetAttributeValue("name", name);
-                //newElement.Add(new XElement("Attributes"));
-                //newElement.Add(new XElement("Data"));
 
                 currentElement.Add(newElement);
-                /*if (currentElement == doc.Root)
-                    currentElement.Add(newElement=new XElement(name));
-                else
-                {
-                    if (currentElement.Element("SubSections") == null)
-                        currentElement.Add(new XElement("SubSections"));
-                    currentElement.Element("SubSections").Add(newElement = new XElement(name));
-                }*/
 
                 savedElements.Push(currentElement);
                 currentElement = newElement;

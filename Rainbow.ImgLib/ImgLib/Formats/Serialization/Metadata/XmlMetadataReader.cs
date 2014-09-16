@@ -82,8 +82,6 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             try
             {
-                //if (key == "SubSections")
-                 //   throw new MetadataException("Forbidden key name \"SubSections\"");
                 if (currentElement == null)
                     throw new MetadataException("Non sections entered");
                 IEnumerable<XElement> en=currentElement.Elements("data").Where( el => el.Attribute("name").Value==key );
