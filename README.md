@@ -1,7 +1,8 @@
 Rainbow
 =======
-Latest build status: ![Build status](https://travis-ci.org/marco-calautti/Rainbow.svg?branch=master)
-Download latest dev builds: ![here](https://www.dropbox.com/s/gb18dgxdgr2ca1w/rainbow_win32_bin_dev.zip?dl=1)
+Latest build status: ![Build status](https://travis-ci.org/marco-calautti/Rainbow.svg?branch=master).
+Download latest dev build from ![here](https://www.dropbox.com/s/gb18dgxdgr2ca1w/rainbow_win32_bin_dev.zip?dl=1).
+
 Rainbow is a tool, written in C#, intended to handle different graphics formats from video games assets.
 Currently, Rainbow supports almost every variant of the TIM2 format.
 It requires the .NET framework v3.5+ or any version of mono supporting v3.5 (tested on mono 2.10.x).
