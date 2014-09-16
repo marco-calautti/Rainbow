@@ -2,18 +2,25 @@
 
 language: c
 
+env:
+  global:
+  - secure: CVZbuPPT+6b6gVhuqa7HUFZNs2QlPGdhRBtRYgjGniZKyTBPuB6ofOjhupBcMSmVZyHES6m0GcJNUxSUe726je6nB+8jmvmhoMtUpMmsR/uG53NntCRlaUjWtHVLQEOgNrFKzHYWxsBxztosERaqay28V9okLJyYkLZCB2QIngY=
+  - secure: KRq/zSKJLFlYEf4NBNnm51A9ceDOOEmClu63TU5x7z8p4PCIHDcYF3GwpRi/O/WpkxKZL8o37+Qat8z2cyxKi4fZpHVqJxRGYKXItopj9oV2zTvEMXHxXsJixC2exejTWEBU5CtkTxkLOmcb6qkHYhuHTd2hxcjkJQwl9m2WXPs=
+  - secure: nIxBDSH5efqVRv+GMqYG2Nx9gz3rvIz3Wsm1rdu5G2knhWYaMdrrHpYo/0JpKKwx9sK5wL+tx/dLilgfbS9RDIFMczKULyC8YSEliPReYQq5VXUpKvpiJZgBhE5Rl2TMy+WdxcgA1mgXZtLlMcWFJF+0bJIKOhkUeKZJxu2KT6I=
+  - secure: EBpkujWNFVDWZVgIJNJAjqFuMRh+w5ASfIm0lrumSSBSicQrmaxUb8+ScGNgA9qra2HwK6RBrJwcKnZNl6HsznvTnBYGNF0bNEEZxGERIgSkwcW83JudxUZOeYly3tqQwFzMQHnJleaFf2Oq4Lqo78FoTRK7HA1Hg7fxKRzSZz8=
+    
 install:
   - sudo apt-get install mono-devel mono-gmcs nunit-console
 script:
   - xbuild /p:Configuration=Release Rainbow.sln
   
-deploy:
-  provider: releases
-  api_key:
-    secure: mRxJcXYSL5Am012VnJOnbdjoUwRcsbXhtPrDUpScDRmKE1Yk3lWn22kM1frdf6J3tVvn1pf/s2qfwQHLs4CkY5qkOHOZu+jLmnn3hBeBQwNpFEcGffP42gspnEPcap6FMbWoVSwsi4ry9AQVP1Rv7kmPcVO/aNH7F+96Tkan/K4=
-  file:
-    - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.App.exe
-    - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.ImgLib.dll
-    - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/nQuant.Core.dll
-  on:
-    branch: master
+after_succes:
+- curl "https://raw.github.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh" -o ./dropbox_uploader.sh && chmod +x ./dropbox_uploader.sh
+- echo $APPKEY >> dropbox_config
+- echo $APPSECRET >> dropbox_config
+- echo $ACCESS_LEVEL >> dropbox_config
+- echo $OAUTH_ACCESS_TOKEN >> dropbox_config
+- echo $OAUTH_ACCESS_TOKEN_SECRET >> dropbox_config
+- ./dropbox_uploader.sh upload /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.App.exe AutomatedBuilds/Rainbow/Rainbow.App.exe -f dropbox_config
+- ./dropbox_uploader.sh upload /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.ImgLib.dll AutomatedBuilds/Rainbow/Rainbow.ImgLib.dll -f dropbox_config
+- ./dropbox_uploader.sh upload /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/nQuant.Core.dll AutomatedBuilds/Rainbow/nQuant.Core.dll -f dropbox_config
