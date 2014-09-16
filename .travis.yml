@@ -6,3 +6,15 @@ install:
   - sudo apt-get install mono-devel mono-gmcs nunit-console
 script:
   - xbuild /p:Configuration=Release Rainbow.sln
+
+deploy:
+  provider: releases
+  api_key:
+    secure: fO7WQgWUTjwdriEw3YW+6BX7fSoKecAlOP4HlKtRMjA+scRLN16ihtfZ8KMhPRne0G4ZYxKNHhGzlG9HoTrHTxP9SBLjqd4FY5DmLP6hkAHI1PkVBzUmzYvQvxoAwUjWgeh/livUP3dvlGQ0NMdY52H6Tbp1fm/nNwW4IW/Ayek=
+  file:
+    - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.App.exe
+    - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.ImgLib.dll
+    - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/nQuant.Core.dll
+  on:
+    repo: marco-calautti/Rainbow
+    branch: master
