@@ -10,7 +10,7 @@ script:
 deploy:
   provider: releases
   user: marco-calautti
-  secure: "m/TWoEDimkf2IGyVDwLPOu5kBQ46qNWAgg+6gY4Pv7G2jwLiXSg6IWhIRAwg57YQ48EQ4wnZ1SoURkPBpEqZz+zbcDNJZnmTcdmK0XQ70gPoO0p7cpCDIQGLDMFgCv9eeUX/+EYelgtjOJEGy+R+20tnI7PfP1LbPk9BsG0ar2k="
+  secure: m/TWoEDimkf2IGyVDwLPOu5kBQ46qNWAgg+6gY4Pv7G2jwLiXSg6IWhIRAwg57YQ48EQ4wnZ1SoURkPBpEqZz+zbcDNJZnmTcdmK0XQ70gPoO0p7cpCDIQGLDMFgCv9eeUX/+EYelgtjOJEGy+R+20tnI7PfP1LbPk9BsG0ar2k=
   file:
     - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.App.exe
     - /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/Rainbow.ImgLib.dll
