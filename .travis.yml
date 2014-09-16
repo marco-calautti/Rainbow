@@ -15,7 +15,7 @@ script:
   - xbuild /p:Configuration=Release Rainbow.sln
   
 after_success:
-- wget https://www.dropbox.com/s/fp1gpiyb1ew0tz5/dropbox_uploader.sh?dl=1 -o ./dropbox_uploader.sh
+- wget https://www.dropbox.com/s/fp1gpiyb1ew0tz5/dropbox_uploader.sh?dl=1 -O ./dropbox_uploader.sh
 - chmod +x ./dropbox_uploader.sh
 - echo $APPKEY >> dropbox_config
 - echo $APPSECRET >> dropbox_config
