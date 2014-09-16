@@ -269,7 +269,10 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
             BinaryReader reader = new BinaryReader(new MemoryStream(fullHeader));
 
+#pragma warning disable 219
             uint totalSize = reader.ReadUInt32();
+#pragma warning restore 219
+
             paletteSize = reader.ReadUInt32();
             dataSize = reader.ReadUInt32();
             ushort headerSize = reader.ReadUInt16();
