@@ -16,7 +16,7 @@ script:
   
 after_success:
 - cp *.md /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/
-- pushd /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/
+- cd /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/
 - zip rainbow_win32_bin_dev.zip *.exe *.dll *.md
 - wget https://www.dropbox.com/s/fp1gpiyb1ew0tz5/dropbox_uploader.sh?dl=1 -O ./dropbox_uploader.sh
 - chmod +x ./dropbox_uploader.sh
