@@ -22,5 +22,8 @@ after_success:
 - echo $ACCESS_LEVEL >> dropbox_config
 - echo $OAUTH_ACCESS_TOKEN >> dropbox_config
 - echo $OAUTH_ACCESS_TOKEN_SECRET >> dropbox_config
-- zip rainbow_win32_bin_dev.zip /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/*.exe /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/*.dll
+- cp marco-calautti/Rainbow/*.md /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/
+- pushd /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/
+- zip rainbow_win32_bin_dev.zip *.exe *.dll *.md
+- popd
 - ./dropbox_uploader.sh upload rainbow_win32_bin_dev.zip AutomatedBuilds/Rainbow/rainbow_win32_bin_dev.zip
