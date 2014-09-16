@@ -25,4 +25,4 @@ after_success:
 - echo $ACCESS_LEVEL >> dropbox_config
 - echo $OAUTH_ACCESS_TOKEN >> dropbox_config
 - echo $OAUTH_ACCESS_TOKEN_SECRET >> dropbox_config
-- ./dropbox_uploader.sh upload rainbow_win32_bin_dev.zip AutomatedBuilds/Rainbow/rainbow_win32_bin_dev.zip
+- ./dropbox_uploader.sh upload rainbow_win32_bin_dev.zip Rainbow/rainbow_win32_bin_dev.zip
