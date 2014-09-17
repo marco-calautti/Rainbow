@@ -163,7 +163,7 @@
     <ReadLinesFromFile File="$(ProjectDir)$(GitVersionFile)">
       <Output TaskParameter="Lines" PropertyName="OutputGitVersion" />
     </ReadLinesFromFile>
-    <Copy SourceFiles="$(ProjectDir)$(AssemblyInfoTemplate)" DestinationFiles="$(ProjectDir)$(AssemblyInfoOutput)" OverwriteReadOnlyFiles="True" />
+    <Copy SourceFiles="$(ProjectDir)$(AssemblyInfoTemplate)" DestinationFiles="$(ProjectDir)$(AssemblyInfoOutput)"/>
     <WriteLinesToFile File="$(ProjectDir)$(AssemblyInfoOutput)" Lines="[assembly: AssemblyInformationalVersion(&quot;$(OutputGitVersion)&quot;)]" Overwrite="false" />
     <Delete Files="$(GitVersionFile)" />
   </Target>
