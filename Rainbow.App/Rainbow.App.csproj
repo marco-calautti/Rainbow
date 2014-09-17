@@ -160,11 +160,11 @@
     <AssemblyInfoOutput>Properties\AssemblyInfo.cs</AssemblyInfoOutput>
   </PropertyGroup>
   <Target Name="BeforeBuild">
+    <Copy SourceFiles="$(ProjectDir)$(AssemblyInfoTemplate)" DestinationFiles="$(ProjectDir)$(AssemblyInfoOutput)" />
     <Exec Command="git --git-dir &quot;$(SolutionDir).git&quot; describe --tags &gt; &quot;$(ProjectDir)$(GitVersionFile)&quot;" />
     <ReadLinesFromFile File="$(ProjectDir)$(GitVersionFile)">
       <Output TaskParameter="Lines" PropertyName="OutputGitVersion" />
     </ReadLinesFromFile>
-    <Copy SourceFiles="$(ProjectDir)$(AssemblyInfoTemplate)" DestinationFiles="$(ProjectDir)$(AssemblyInfoOutput)" />
     <WriteLinesToFile File="$(ProjectDir)$(AssemblyInfoOutput)" Lines="[assembly: AssemblyInformationalVersion(&quot;$(OutputGitVersion)&quot;)]" Overwrite="false" />
     <Delete Files="$(GitVersionFile)" />
   </Target>
