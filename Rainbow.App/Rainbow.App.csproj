@@ -88,8 +88,7 @@
     <Compile Include="App\GUI\Model\TextureFormatProxy.cs" />
     <Compile Include="App\GUI\Model\TexturePropertyGridObject.cs" />
     <Compile Include="App\GUI\Model\TIM2PropertyGridObject.cs" />
-	<None Include="Properties\AssemblyInfo.templ"/>
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\AssemblyInfo.templ" />
     <Compile Include="App\Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
