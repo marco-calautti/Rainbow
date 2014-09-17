@@ -28,7 +28,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
     public class XmlMetadataWriter : MetadataWriterBase
     {
         private XDocument doc;
-        XElement currentElement = null;
+        XElement currentElement;
         Stream outputStream;
         Stack<XElement> savedElements = new Stack<XElement>();
 
@@ -69,7 +69,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             try
             {
                 if (currentElement == doc.Root)
-                    throw new MetadataException("Must first enter one section at least to insert a value!");
+                    throw new MetadataException("Must first enter at least one section to insert a value!");
 
                 XElement element=new XElement("data");
                 element.SetAttributeValue("name", key);
@@ -78,6 +78,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
             }catch(Exception e)
             {
+                if (e is MetadataException)
+                    throw e;
                 throw new MetadataException("Error while inserting value " + key + "!", e);
             }
         }
@@ -96,6 +98,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
             }catch(Exception e)
             {
+                if (e is MetadataException)
+                    throw e;
                 throw new MetadataException("Error while inserting attribute " + key + "!", e);
             }
         }

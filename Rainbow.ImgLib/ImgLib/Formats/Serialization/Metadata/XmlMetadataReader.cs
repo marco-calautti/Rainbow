@@ -55,16 +55,20 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 if(subSections==null || !subSections.MoveNext())
                     throw new MetadataException("No more sections available on this level!");
                 if(subSections.Current.Attribute("name").Value!=name)
-                    throw new MetadataException("Expected section named " + name + " but found " + subSections.Current.Name);
+                    throw new MetadataException("Expected section named " + name + " but found " + subSections.Current.Attribute("name").Value);
 
                 savedElements.Push(currentElement);
                 savedPointers.Push(subSections);
                 currentElement=subSections.Current;
-                if(currentElement.Elements("section")!=null)
+                if (currentElement.Elements("section") != null)
                     subSections = currentElement.Elements("section").GetEnumerator();
+                else
+                    subSections = null;
 
             }catch(Exception e)
             {
+                if (e is MetadataException)
+                    throw e;
                 throw new MetadataException("Cannot enter the given section!", e);
             }
         }
@@ -83,7 +87,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             try
             {
                 if (currentElement == null)
-                    throw new MetadataException("Non sections entered");
+                    throw new MetadataException("No sections entered");
                 IEnumerable<XElement> en=currentElement.Elements("data").Where( el => el.Attribute("name").Value==key );
                 
                 if (en.Count() != 1)
@@ -92,6 +96,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 return en.First().Value;
             }catch(Exception e)
             {
+                if (e is MetadataException)
+                    throw e;
                 throw new MetadataException("Error while retrieving element value!", e);
             }
         }
@@ -111,6 +117,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 return en.First().Value;
             }catch(Exception e)
             {
+                if (e is MetadataException)
+                    throw e;
+
                 throw new MetadataException("Error while retrieving element value!", e);
             }
         }
@@ -122,7 +131,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public override void Rewind()
         {
-            subSections = doc.Root.Elements().GetEnumerator();
+            subSections = doc.Root.Elements("section").GetEnumerator();
             currentElement = null;
             savedPointers.Clear();
             savedElements.Clear();
