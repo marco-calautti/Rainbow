@@ -8,7 +8,9 @@ env:
   - secure: KRq/zSKJLFlYEf4NBNnm51A9ceDOOEmClu63TU5x7z8p4PCIHDcYF3GwpRi/O/WpkxKZL8o37+Qat8z2cyxKi4fZpHVqJxRGYKXItopj9oV2zTvEMXHxXsJixC2exejTWEBU5CtkTxkLOmcb6qkHYhuHTd2hxcjkJQwl9m2WXPs=
   - secure: nIxBDSH5efqVRv+GMqYG2Nx9gz3rvIz3Wsm1rdu5G2knhWYaMdrrHpYo/0JpKKwx9sK5wL+tx/dLilgfbS9RDIFMczKULyC8YSEliPReYQq5VXUpKvpiJZgBhE5Rl2TMy+WdxcgA1mgXZtLlMcWFJF+0bJIKOhkUeKZJxu2KT6I=
   - secure: EBpkujWNFVDWZVgIJNJAjqFuMRh+w5ASfIm0lrumSSBSicQrmaxUb8+ScGNgA9qra2HwK6RBrJwcKnZNl6HsznvTnBYGNF0bNEEZxGERIgSkwcW83JudxUZOeYly3tqQwFzMQHnJleaFf2Oq4Lqo78FoTRK7HA1Hg7fxKRzSZz8=
-    
+
+cache: apt
+
 install:
   - sudo apt-get install mono-devel mono-gmcs nunit-console
 script:
