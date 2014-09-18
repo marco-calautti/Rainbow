@@ -26,17 +26,37 @@ using System.IO;
 using Rainbow.ImgLib;
 using Rainbow.ImgLib.Formats;
 using Rainbow.ImgLib.Formats.Serialization;
+using Rainbow.ImgLib.Formats.Serialization.Metadata;
 using Rainbow.App.GUI;
 
 namespace Rainbow.App
 {
     class Program
     {
+        private static void PrintUsage()
+        {
+            StringWriter writer = new StringWriter();
+            writer.WriteLine("Rainbow: a texture format converter (" + Application.ProductVersion + ")");
+            writer.WriteLine("(C) 2014+ Marco (Phoenix) Calautti.");
+            writer.WriteLine();
+            writer.WriteLine("Usage: Rainbow.exe [--help] [--export] [--import] [<args>]");
+            writer.WriteLine();
+            writer.WriteLine("--help\tDisplays this help message\n");
+            writer.WriteLine("--export <texture> [output]\n\tConverts the given texture into pngs and saves a metadata xml file into \"output\" or in a file with the same name as <texture> if [output] is not specified\n");
+            writer.WriteLine("--import <xml> [output]\n\tConverts the given xml file + pngs into the origianl texture format and saves it to \"output\" or in a file with the same name as <texture> if [output] is not specified\n");
+
+            writer.WriteLine("Examples:");
+            writer.WriteLine("Rainbow.exe texture.tm2\n\tOpens the TIM2 in the GUI program\n");
+            writer.WriteLine("Rainbow.exe --export texture.tm2 \n\tExports the TIM2 into pngs and saves the metadata file texture.xml\n");
+            MessageBox.Show(writer.ToString(), "Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         [STAThread]
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
-            Form form= args.Length > 0 ? new MainForm(args[0]) : new MainForm();
+
+            Form form = args.Length > 0 ? new MainForm(args[0]) : new MainForm();
 
             form.StartPosition = FormStartPosition.CenterScreen;
             Application.Run(form);

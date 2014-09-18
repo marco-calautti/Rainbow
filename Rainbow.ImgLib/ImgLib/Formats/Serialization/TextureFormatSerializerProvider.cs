@@ -62,33 +62,14 @@ namespace Rainbow.ImgLib.Formats.Serialization
         }
 
         /// <summary>
-        /// Retrieves a serializer for textures of the given file format extension.
+        /// Retrieves a list possible serializers for textures of the given file format extension.
         /// </summary>
         /// <param name="formatExtension"></param>
-        /// <returns>the requested serializer if found, null otherwise.</returns>
-        public static TextureFormatSerializer FromFileFormatExtension(string formatExtension)
+        /// <returns>A list of possible serializers found for this format extension.</returns>
+        public static IEnumerable<TextureFormatSerializer> FromFileFormatExtension(string formatExtension)
         {
-            foreach (var serializer in serializers)
-                if (serializer.PreferredFormatExtension == formatExtension)
-                    return serializer;
-
-            return null;
+            return serializers.Where( s => s.PreferredFormatExtension == formatExtension);
         }
-
-        /*
-        /// <summary>
-        /// Retrieves a serializer for textures of the given metadata file extension
-        /// </summary>
-        /// <param name="metadataExtension"></param>
-        /// <returns>the requested serializer if found, null otherwise.</returns>
-        public static TextureFormatSerializer FromFileMetadataExtension(string metadataExtension)
-        {
-            foreach (var serializer in serializers)
-                if (serializer.PreferredMetadataExtension == metadataExtension)
-                    return serializer;
-
-            return null;
-        }*/
 
         /// <summary>
         /// Retrieves a serializer for textures encoded in the same format of the given stream.
@@ -114,7 +95,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
         public static TextureFormatSerializer FromMetadata(MetadataReader  reader)
         {
             foreach (var serializer in serializers)
-                if (serializer.IsValidMetadataFormat(reader) /*|| serializer.IsValidMetadataFormat(stream)*/)
+                if (serializer.IsValidMetadataFormat(reader))
                     return serializer;
 
             return null;
