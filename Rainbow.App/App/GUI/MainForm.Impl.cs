@@ -204,7 +204,7 @@ namespace Rainbow.App.GUI
             texture = tex;
             propertyGrid.SelectedObject = PropertyGridObjectFactory.Create(texture);
 
-            transparentPictureBox1.SetTexture(texture);
+            transparentPictureBox.SetTexture(texture);
         }
 
         private void SetFilename(string name)
@@ -224,6 +224,11 @@ namespace Rainbow.App.GUI
                 item.Tag = proxy;
                 listView.Items.Add(item);
             }
+        }
+
+        private void Zoom(float factor)
+        {
+            transparentPictureBox.ScaleImage(factor);
         }
     }
 }

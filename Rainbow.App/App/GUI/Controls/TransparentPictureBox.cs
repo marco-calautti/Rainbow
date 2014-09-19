@@ -16,7 +16,9 @@
 //http://github.com/marco-calautti/Rainbow
 
 using Rainbow.ImgLib.Formats;
+using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Rainbow.App.GUI.Controls
@@ -26,7 +28,8 @@ namespace Rainbow.App.GUI.Controls
         private TextureFormat texture;
         private Color color;
         private bool chessboard;
-
+        private int originalWidth, originalHeight;
+        private float scaleFactor = 1.0f;
         public TransparentPictureBox()
         {
             Chessboard = true;
@@ -35,8 +38,11 @@ namespace Rainbow.App.GUI.Controls
 
         public void SetTexture(TextureFormat tex)
         {
-            this.Width = tex.Width;
-            this.Height = tex.Height;
+            Width = tex.Width;
+            Height = tex.Height;
+            originalWidth = tex.Width;
+            originalHeight = tex.Height;
+            scaleFactor = 1.0f;
             texture = tex;
             this.Invalidate();
         }
@@ -50,9 +56,22 @@ namespace Rainbow.App.GUI.Controls
         public static Color PreferredTransparencyColor { get { return Color.LightGray; } }
         public bool Chessboard { get { return chessboard; } set { chessboard = value; this.Invalidate(); } }
 
+        public void ScaleImage(float factor)
+        {
+            scaleFactor *= factor;
+            
+            int newWidth = (int)(originalWidth  * scaleFactor);
+            int newHeight = (int)(originalHeight * scaleFactor);
+
+            Width = newWidth;
+            Height = newHeight;
+
+            this.Invalidate();
+        }
+
         protected override void OnPaint(PaintEventArgs pe)
         {
-
+            
             base.OnPaint(pe);
             if (texture == null)
                 return;
@@ -78,12 +97,16 @@ namespace Rainbow.App.GUI.Controls
                     graphics.FillRectangle((x / squareSize + y / squareSize) % 2 == 0 ? brush1 : brush2, x, y, squareSize, squareSize);
                 }
 
+            Image img = texture.GetImage();
 
-            if (texture != null)
-            {
-                Image img = texture.GetImage();
-                graphics.DrawImage(img, 0, 0, img.Width, img.Height);
-            }
+            Bitmap b = new Bitmap(this.Width, this.Height);
+            Graphics g = Graphics.FromImage(b);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+            g.DrawImage(img, 0, 0, b.Width, b.Height);
+            g.Dispose();
+
+            graphics.DrawImage(b, 0, 0, b.Width, b.Height);
 
         }
     }

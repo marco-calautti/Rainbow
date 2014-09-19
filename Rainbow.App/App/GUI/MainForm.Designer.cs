@@ -56,6 +56,9 @@ namespace Rainbow.App.GUI
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.zoomInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.zoomPlusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.zoomMinusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.useBlckAsTransparentColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.chessboardBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,7 +71,7 @@ namespace Rainbow.App.GUI
             this.ItemName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ItemSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.transparentPictureBox1 = new Rainbow.App.GUI.Controls.TransparentPictureBox();
+            this.transparentPictureBox = new Rainbow.App.GUI.Controls.TransparentPictureBox();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -166,12 +169,38 @@ namespace Rainbow.App.GUI
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.zoomInToolStripMenuItem,
             this.useBlckAsTransparentColorToolStripMenuItem,
             this.toolStripSeparator3,
             this.chessboardBackgroundToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
+            // 
+            // zoomInToolStripMenuItem
+            // 
+            this.zoomInToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.zoomPlusToolStripMenuItem,
+            this.zoomMinusToolStripMenuItem});
+            this.zoomInToolStripMenuItem.Name = "zoomInToolStripMenuItem";
+            this.zoomInToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+            this.zoomInToolStripMenuItem.Text = "Zoom";
+            // 
+            // zoomPlusToolStripMenuItem
+            // 
+            this.zoomPlusToolStripMenuItem.Name = "zoomPlusToolStripMenuItem";
+            this.zoomPlusToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Add)));
+            this.zoomPlusToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.zoomPlusToolStripMenuItem.Text = "Zoom+";
+            this.zoomPlusToolStripMenuItem.Click += new System.EventHandler(this.OnZoomMenuItem);
+            // 
+            // zoomMinusToolStripMenuItem
+            // 
+            this.zoomMinusToolStripMenuItem.Name = "zoomMinusToolStripMenuItem";
+            this.zoomMinusToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Subtract)));
+            this.zoomMinusToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.zoomMinusToolStripMenuItem.Text = "Zoom-";
+            this.zoomMinusToolStripMenuItem.Click += new System.EventHandler(this.OnZoomMenuItem);
             // 
             // useBlckAsTransparentColorToolStripMenuItem
             // 
@@ -226,7 +255,7 @@ namespace Rainbow.App.GUI
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.AutoScroll = true;
-            this.splitContainer1.Panel2.Controls.Add(this.transparentPictureBox1);
+            this.splitContainer1.Panel2.Controls.Add(this.transparentPictureBox);
             this.splitContainer1.Size = new System.Drawing.Size(783, 553);
             this.splitContainer1.SplitterDistance = 256;
             this.splitContainer1.TabIndex = 1;
@@ -296,13 +325,13 @@ namespace Rainbow.App.GUI
             this.propertyGrid.TabIndex = 0;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
-            // transparentPictureBox1
+            // transparentPictureBox
             // 
-            this.transparentPictureBox1.Chessboard = true;
-            this.transparentPictureBox1.Location = new System.Drawing.Point(3, 3);
-            this.transparentPictureBox1.Name = "transparentPictureBox1";
-            this.transparentPictureBox1.Size = new System.Drawing.Size(370, 317);
-            this.transparentPictureBox1.TabIndex = 0;
+            this.transparentPictureBox.Chessboard = true;
+            this.transparentPictureBox.Location = new System.Drawing.Point(3, 3);
+            this.transparentPictureBox.Name = "transparentPictureBox";
+            this.transparentPictureBox.Size = new System.Drawing.Size(370, 317);
+            this.transparentPictureBox.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -313,6 +342,7 @@ namespace Rainbow.App.GUI
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
+            this.Load += new System.EventHandler(this.OnLoad);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -342,7 +372,7 @@ namespace Rainbow.App.GUI
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.PropertyGrid propertyGrid;
-        private Controls.TransparentPictureBox transparentPictureBox1;
+        private Controls.TransparentPictureBox transparentPictureBox;
         private System.Windows.Forms.ToolStripMenuItem useBlckAsTransparentColorToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem chessboardBackgroundToolStripMenuItem;
@@ -352,5 +382,8 @@ namespace Rainbow.App.GUI
         private System.Windows.Forms.ColumnHeader ItemSize;
         private System.Windows.Forms.ToolStripMenuItem openFolderToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader Index;
+        private System.Windows.Forms.ToolStripMenuItem zoomInToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem zoomPlusToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem zoomMinusToolStripMenuItem;
     }
 }

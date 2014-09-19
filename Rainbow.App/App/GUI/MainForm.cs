@@ -131,7 +131,7 @@ namespace Rainbow.App.GUI
             if (result != DialogResult.OK)
                 return;
 
-            transparentPictureBox1.SetTransparencyColor(dialog.Color);
+            transparentPictureBox.SetTransparencyColor(dialog.Color);
         }
 
         private void chessboardBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
@@ -140,7 +140,35 @@ namespace Rainbow.App.GUI
             if (item == null)
                 return;
             item.Checked = !item.Checked;
-            transparentPictureBox1.Chessboard = item.Checked;
+            transparentPictureBox.Chessboard = item.Checked;
+        }
+
+        private void OnZoomMenuItem(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            if (item == null)
+                return;
+            if (item == zoomPlusToolStripMenuItem)
+            {
+                Zoom(1.2f);
+            }
+            else if (item == zoomMinusToolStripMenuItem)
+            {
+                Zoom(0.8f);
+            }
+            else
+                return;
+        }
+
+        private void OnLoad(object sender, EventArgs e)
+        {
+            splitContainer1.Panel2.MouseWheel += new MouseEventHandler(OnMouseWheel);
+            splitContainer1.Panel2.MouseEnter += (s,ev) => splitContainer1.Panel2.Select();
+        }
+
+        private void OnMouseWheel(Object sender, MouseEventArgs e)
+        {
+            Zoom(e.Delta > 0 ? 1.2f : 0.8f);
         }
     }
 }
