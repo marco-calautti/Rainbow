@@ -82,6 +82,7 @@
     <Compile Include="App\GUI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="App\GUI\Model\ListViewItemComparer.cs" />
     <Compile Include="App\GUI\Model\PE3DATPropertyGridObject.cs" />
     <Compile Include="App\GUI\Model\PropertyGridObjectFactory.cs" />
     <Compile Include="App\GUI\Model\RangedTypeConverter.cs" />
@@ -89,6 +90,9 @@
     <Compile Include="App\GUI\Model\TexturePropertyGridObject.cs" />
     <Compile Include="App\GUI\Model\TIM2PropertyGridObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="App\GUI\MainForm.MenuEvents.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <None Include="Properties\AssemblyInfo.templ" />
     <Compile Include="App\Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

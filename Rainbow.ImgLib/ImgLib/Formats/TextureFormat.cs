@@ -39,6 +39,11 @@ namespace Rainbow.ImgLib.Formats
     public interface TextureFormat
     {
         /// <summary>
+        /// This event is fired whenever the Texture changes. For example, another frame/palette is selected, or
+        /// some other properties, specific to this texture, changes.
+        /// </summary>
+        event EventHandler TextureChanged;
+        /// <summary>
         /// A human readable name for the TextureFormat implemented by this serializer.
         /// </summary>
         string Name { get; }

@@ -37,6 +37,8 @@ namespace Rainbow.ImgLib.Formats
 
         public abstract int PalettesCount { get;  }
 
+        public event EventHandler TextureChanged;
+
         public int SelectedFrame
         {
             get { return activeFrame; }
@@ -44,7 +46,13 @@ namespace Rainbow.ImgLib.Formats
             {
                 if (value < 0 || value >= FramesCount)
                     throw new IndexOutOfRangeException();
+
+                bool changed = activeFrame != value;
+
                 activeFrame = value;
+
+                if (changed)
+                    OnTextureChanged();
             }
         }
 
@@ -58,7 +66,11 @@ namespace Rainbow.ImgLib.Formats
                 if (value < 0 || value >= PalettesCount)
                     throw new IndexOutOfRangeException();
 
+                bool changed = activePalette != value;
                 activePalette = value;
+
+                if (changed)
+                    OnTextureChanged();
             }
         }
 
@@ -68,5 +80,11 @@ namespace Rainbow.ImgLib.Formats
         }
 
         protected abstract Image GetImage(int activeFrame, int activePalette);
+
+        protected void OnTextureChanged()
+        {
+            if(TextureChanged!=null)
+                TextureChanged(this, new EventArgs());
+        }
     }
 }

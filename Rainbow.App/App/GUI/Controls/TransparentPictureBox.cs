@@ -30,6 +30,7 @@ namespace Rainbow.App.GUI.Controls
         private bool chessboard;
         private int originalWidth, originalHeight;
         private float scaleFactor = 1.0f;
+
         public TransparentPictureBox()
         {
             Chessboard = true;
@@ -38,12 +39,16 @@ namespace Rainbow.App.GUI.Controls
 
         public void SetTexture(TextureFormat tex)
         {
+            if (texture != null)
+                texture.TextureChanged -= OnTextureChanged;
+
             Width = tex.Width;
             Height = tex.Height;
             originalWidth = tex.Width;
             originalHeight = tex.Height;
             scaleFactor = 1.0f;
             texture = tex;
+            texture.TextureChanged += OnTextureChanged;
             this.Invalidate();
         }
 
@@ -107,7 +112,11 @@ namespace Rainbow.App.GUI.Controls
             g.Dispose();
 
             graphics.DrawImage(b, 0, 0, b.Width, b.Height);
+        }
 
+        private void OnTextureChanged(object sender, EventArgs e)
+        {
+            this.Invalidate();
         }
     }
 }

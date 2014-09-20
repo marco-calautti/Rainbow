@@ -52,8 +52,12 @@ namespace Rainbow.ImgLib.Formats
             get { return imagesList.First().Swizzled; }
             set
             {
+                bool changed = imagesList.First().Swizzled != value;
                 foreach (TIM2Segment tim2 in imagesList)
                     tim2.Swizzled = value;
+
+                if (changed)
+                    OnTextureChanged();
             }
         }
 
