@@ -250,19 +250,13 @@ namespace Rainbow.ImgLib.Formats
         {
 
             ColorEncoder encoder = GetColorEncoder(parameters.colorSize);
-            int maximumColors = 1 << parameters.bpp;
 
             MemoryStream stream = new MemoryStream();
             foreach(Color[] palette in palettes)
             {
                 Color[] pal = !parameters.linearPalette ? paletteFilter.ApplyFilter(palette) : palette;
 
-                List<Color> newPalette=new List<Color>(pal);
-                for(int i=0;i<maximumColors-palette.Length;i++)
-                {
-                    newPalette.Add(Color.Black);
-                }
-                byte[] buf = encoder.EncodeColors(newPalette.ToArray());
+                byte[] buf = encoder.EncodeColors(pal);
                 stream.Write(buf, 0, buf.Length);
             }
             stream.Close();

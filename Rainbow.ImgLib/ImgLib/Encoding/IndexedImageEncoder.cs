@@ -74,7 +74,9 @@ namespace Rainbow.ImgLib.Encoding
             Palettes = new List<Color[]>();
 
             for (int i = 0; i < bitmaps.Count; i++)
-                Palettes.Add(new Color[colors]);
+            {
+                Palettes.Add(Enumerable.Repeat<Color>(Color.Black, colors).ToArray());
+            }
 
             int count = 0;
             for (int y = 0; y < height; y++)
