@@ -193,7 +193,7 @@ namespace Rainbow.ImgLib.Formats
                 return;
 
             int colors = 1 << parameters.bpp;
-            int numberOfPalettes = (int)colorEntries / colors;
+            int numberOfPalettes = paletteData.Length / ((int)colorEntries * parameters.colorSize); //(int)colorEntries / colors;
             int singlePaletteSize = paletteData.Length / numberOfPalettes;
 
             palettes = new Color[numberOfPalettes][];
