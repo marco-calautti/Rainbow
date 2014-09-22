@@ -330,7 +330,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             parameters.linearPalette = (clutFormat & 0x80) != 0;
             clutFormat &= 0x7F;
 
-            parameters.colorSize = parameters.bpp > 8 ? parameters.bpp / 8 : clutFormat + 1;
+            parameters.colorSize = parameters.bpp > 8 ? parameters.bpp / 8 : (clutFormat&0x07) + 1;
 
             if (userDataSize > 0)
             {
