@@ -26,7 +26,7 @@ namespace nQuant
 
         public Image QuantizeImage(Bitmap image)
         {
-            return QuantizeImage(image, 10, 70);
+            return QuantizeImage(image, 0, 1);
         }
 
         public Image QuantizeImage(Bitmap image, int alphaThreshold, int alphaFader)
