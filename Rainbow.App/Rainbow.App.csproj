@@ -166,7 +166,7 @@
   </PropertyGroup>
   <Target Name="BeforeBuild">
     <Copy SourceFiles="$(ProjectDir)$(AssemblyInfoTemplate)" DestinationFiles="$(ProjectDir)$(AssemblyInfoOutput)" />
-	<Exec Command="git --git-dir &quot;$(SolutionDir).git&quot; describe --tags &gt; &quot;$(ProjectDir)$(GitVersionFile)&quot;"/>
+	<Exec Command="git --git-dir &quot;$(SolutionDir).git&quot; describe --always --tags &gt; &quot;$(ProjectDir)$(GitVersionFile)&quot;"/>
 	<ReadLinesFromFile File="$(ProjectDir)$(GitVersionFile)">
 	<Output TaskParameter="Lines" PropertyName="OutputGitVersion" />
 	</ReadLinesFromFile>
