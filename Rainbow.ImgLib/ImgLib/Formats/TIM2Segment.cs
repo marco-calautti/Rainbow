@@ -192,7 +192,7 @@ namespace Rainbow.ImgLib.Formats
             if (parameters.bpp > 8)
                 return;
 
-            int colors = 1 << parameters.bpp;
+            //int colors = 1 << parameters.bpp;
             int numberOfPalettes = paletteData.Length / ((int)colorEntries * parameters.colorSize); //(int)colorEntries / colors;
             int singlePaletteSize = paletteData.Length / numberOfPalettes;
 
