@@ -28,6 +28,17 @@ namespace Rainbow.ImgLib.Formats
 {
     public class TIM2Segment : TextureFormatBase
     {
+        private class TIM2ColorSorter : IComparer<Color>
+        {
+            public int Compare(Color x, Color y)
+            {
+                long c1 = (uint)(x.A<<24|x.B<<16|x.G<<8|x.R);
+                long c2 = (uint)(y.A << 24 | y.B << 16 | y.G << 8 | y.R);
+                long result = c1 - c2;
+                return result < 0 ? -1 : result > 0 ? 1 : 0;
+            }
+        }
+
         internal class TIM2SegmentParameters
         {
             //segment parameters
@@ -99,7 +110,7 @@ namespace Rainbow.ImgLib.Formats
                 imageData = GetColorEncoder(parameters.colorSize).EncodeColors(en.Current.GetColorArray()); //I love extension methods. Hurray!
             }else
             {
-                IndexedImageEncoder encoder=new IndexedImageEncoder(new List<Image>(images), 1 << parameters.bpp);
+                IndexedImageEncoder encoder=new IndexedImageEncoder(new List<Image>(images), 1 << parameters.bpp,new TIM2ColorSorter());
                 imageData = encoder.Encode();
                 palettes = new List<Color[]>(encoder.Palettes).ToArray();
             }
