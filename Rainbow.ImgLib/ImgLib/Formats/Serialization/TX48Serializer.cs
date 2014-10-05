@@ -62,7 +62,6 @@ namespace Rainbow.ImgLib.Formats.Serialization
             }
             finally
             {
-                metadata.ExitSection();
                 metadata.Rewind();
             }
             return true;

@@ -35,7 +35,8 @@ namespace Rainbow.ImgLib.Formats
         internal CommonTextureFormat(IList<byte[]> imgData, IList<byte[]> palData, int[] widths, int[] heights, int[] bpps)
         {
             imagesData = imgData;
-            palettes = palData.Select(data => PaletteDecoder().DecodeColors(data)).ToList();
+            int frame = 0;
+            palettes = palData.Select(data => PaletteDecoder(frame++).DecodeColors(data)).ToList();
             this.widths = widths;
             this.heights = heights;
             this.bpps = bpps;
@@ -93,7 +94,7 @@ namespace Rainbow.ImgLib.Formats
             return new IndexedImageDecoder(imagesData[activeFrame],
                                            widths[activeFrame],
                                            heights[activeFrame],
-                                           IndexRetriever(),
+                                           IndexRetriever(activeFrame),
                                            palettes[activeFrame]).DecodeImage();
         }
 
@@ -104,7 +105,8 @@ namespace Rainbow.ImgLib.Formats
 
         public virtual IList<byte[]> GetPaletteData()
         {
-            return palettes.Select( pal => PaletteEncoder().EncodeColors(pal)).ToList();
+            int frame = 0;
+            return palettes.Select(pal => PaletteEncoder(frame++).EncodeColors(pal)).ToList();
         }
 
         public virtual int[] GetWidths()
@@ -122,10 +124,10 @@ namespace Rainbow.ImgLib.Formats
             return bpps;
         }
 
-        protected abstract ColorDecoder PaletteDecoder();
-        protected abstract ColorEncoder PaletteEncoder();
+        protected abstract ColorDecoder PaletteDecoder(int activeFrame);
+        protected abstract ColorEncoder PaletteEncoder(int activeFrame);
 
-        protected abstract IndexRetriever IndexRetriever();
-        protected abstract IndexPacker IndexPacker();
+        protected abstract IndexRetriever IndexRetriever(int activeFrame);
+        protected abstract IndexPacker IndexPacker(int activeFrame);
     }
 }

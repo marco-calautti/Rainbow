@@ -45,30 +45,30 @@ namespace Rainbow.ImgLib.Formats
             get { return NAME; }
         }
 
-        protected override ColorDecoder PaletteDecoder()
+        protected override ColorDecoder PaletteDecoder(int activeFrame)
         {
             return ColorDecoder.DECODER_32BIT_RGBA;
         }
-        protected override ColorEncoder PaletteEncoder()
+        protected override ColorEncoder PaletteEncoder(int activeFrame)
         {
             return ColorEncoder.ENCODER_32BIT_RGBA;
         }
 
-        protected override IndexRetriever IndexRetriever()
+        protected override IndexRetriever IndexRetriever(int activeFrame)
         {
-            if (bpps[SelectedFrame] == 4)
+            if (bpps[activeFrame] == 4)
                 return new IndexRetriever4Bpp();
-            else if (bpps[SelectedFrame] == 8)
+            else if (bpps[activeFrame] == 8)
                 return new IndexRetriever8Bpp();
             else
                 throw new TextureFormatException("Illegal bpp value!");
         }
 
-        protected override IndexPacker IndexPacker()
+        protected override IndexPacker IndexPacker(int activeFrame)
         {
-            if (bpps[SelectedFrame] == 4)
+            if (bpps[activeFrame] == 4)
                 return new IndexPacker4Bpp();
-            else if (bpps[SelectedFrame] == 8)
+            else if (bpps[activeFrame] == 8)
                 return new IndexPacker8Bpp();
             else
                 throw new TextureFormatException("Illegal bpp value!");

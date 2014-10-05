@@ -76,11 +76,12 @@ namespace Rainbow.ImgLib.Formats.Serialization
                 metadata.EnterSection("PE3DAT");
             }catch(Exception)
             {
-                metadata.Rewind();
                 return false;
             }
-
-            metadata.Rewind();
+            finally
+            {
+                metadata.Rewind();
+            }
             return true;
         }
 
