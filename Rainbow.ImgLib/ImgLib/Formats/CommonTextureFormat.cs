@@ -10,7 +10,7 @@ namespace Rainbow.ImgLib.Formats
     public abstract class CommonTextureFormat : TextureFormatBase
     {
         protected IList<byte[]> imagesData;
-        protected IList<byte[]> palettesData;
+        protected IList<Color[]> palettes;
         protected int[] widths;
         protected int[] heights;
         protected int[] bpps;
@@ -18,12 +18,29 @@ namespace Rainbow.ImgLib.Formats
         internal CommonTextureFormat(IList<byte[]> imgData, IList<byte[]> palData, int[] widths, int[] heights, int[] bpps)
         {
             imagesData = imgData;
-            palettesData = palData;
+            palettes = palData.Select(data => PaletteDecoder().DecodeColors(data)).ToList();
             this.widths = widths;
             this.heights = heights;
             this.bpps = bpps;
         }
 
+        internal CommonTextureFormat(IList<Image> images,int[] bpps)
+        {
+            imagesData = new List<byte[]>(bpps.Length);
+            palettes = new List<Color[]>(bpps.Length);
+
+            this.bpps = bpps;
+            widths = images.Select(img => img.Width).ToArray();
+            heights = images.Select(img => img.Height).ToArray();
+
+            for (int i = 0; i < images.Count; i++)
+            {
+                Image img = images[i];
+                IndexedImageEncoder encoder = new IndexedImageEncoder(new List<Image> { img }, 1<<bpps[i]);
+                imagesData.Add(encoder.Encode());
+                palettes.Add(encoder.Palettes[0]);
+            }
+        }
         public override abstract string Name
         {
             get;
@@ -60,7 +77,32 @@ namespace Rainbow.ImgLib.Formats
                                            widths[activeFrame],
                                            heights[activeFrame],
                                            IndexRetriever(),
-                                           PaletteDecoder().DecodeColors(palettesData[activeFrame])).DecodeImage();
+                                           palettes[activeFrame]).DecodeImage();
+        }
+
+        public virtual IList<byte[]> GetImagesData()
+        {
+            return imagesData;
+        }
+
+        public virtual IList<byte[]> GetPaletteData()
+        {
+            return palettes.Select( pal => PaletteEncoder().EncodeColors(pal)).ToList();
+        }
+
+        public virtual int[] GetWidths()
+        {
+            return widths;
+        }
+
+        public virtual int[] GetHeights()
+        {
+            return heights;
+        }
+
+        public virtual int[] GetBpps()
+        {
+            return bpps;
         }
 
         protected abstract ColorDecoder PaletteDecoder();

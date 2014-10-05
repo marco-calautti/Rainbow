@@ -42,12 +42,10 @@ namespace Rainbow.App.GUI.Controls
             if (texture != null)
                 texture.TextureChanged -= OnTextureChanged;
 
-            Width = tex.Width;
-            Height = tex.Height;
+            texture = tex;
             originalWidth = tex.Width;
             originalHeight = tex.Height;
-            scaleFactor = 1.0f;
-            texture = tex;
+            Scale();
             texture.TextureChanged += OnTextureChanged;
             this.Invalidate();
         }
@@ -61,16 +59,19 @@ namespace Rainbow.App.GUI.Controls
         public static Color PreferredTransparencyColor { get { return Color.LightGray; } }
         public bool Chessboard { get { return chessboard; } set { chessboard = value; this.Invalidate(); } }
 
-        public void ScaleImage(float factor)
+        private void Scale()
         {
-            scaleFactor *= factor;
-            
-            int newWidth = (int)(originalWidth  * scaleFactor);
+            int newWidth = (int)(originalWidth * scaleFactor);
             int newHeight = (int)(originalHeight * scaleFactor);
 
             Width = newWidth;
             Height = newHeight;
+        }
 
+        public void ScaleImage(float factor)
+        {
+            scaleFactor *= factor;
+            Scale();
             this.Invalidate();
         }
 
@@ -116,7 +117,7 @@ namespace Rainbow.App.GUI.Controls
 
         private void OnTextureChanged(object sender, EventArgs e)
         {
-            this.Invalidate();
+            SetTexture((TextureFormat)sender);
         }
     }
 }

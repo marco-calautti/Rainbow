@@ -16,6 +16,13 @@ namespace Rainbow.ImgLib.Formats
         {
 
         }
+
+        internal TX48Texture(IList<Image> images,int[] bpps):
+             base(images,bpps)
+        {
+
+        }
+
         public override string Name
         {
             get { return NAME; }
