@@ -56,7 +56,8 @@ namespace Rainbow.ImgLib.Formats.Serialization
             try
             {
                 metadata.EnterSection("TX48Texture");
-            }catch(Exception)
+            }
+            catch (Exception)
             {
                 return false;
             }
@@ -69,59 +70,41 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
         public TextureFormat Open(System.IO.Stream formatData)
         {
-            long oldPos = formatData.Position;
-            formatData.Seek(0, SeekOrigin.End);
-            long inputEnd = formatData.Position;
 
-            formatData.Position = oldPos;
 
             BinaryReader reader = new BinaryReader(formatData);
-            
+
             try
             {
-                IList<byte[]> imagesData = new List<byte[]>();
-                IList<byte[]> palettesData = new List<byte[]>();
-                IList<int> widths = new List<int>(), heights = new List<int>();
-                IList<int> bpps = new List<int>();
 
-                while (formatData.Position < inputEnd)
-                {
-                    char[] magic = reader.ReadChars(MAGIC.Length);
-                    if (new string(magic) != MAGIC)
-                        throw new TextureFormatException("Not a valid TX48 Texture!");
+                char[] magic = reader.ReadChars(MAGIC.Length);
+                if (new string(magic) != MAGIC)
+                    throw new TextureFormatException("Not a valid TX48 Texture!");
 
-                    int bpp = reader.ReadInt32();
-                    if (bpp != 0 && bpp != 1)
-                        throw new TextureFormatException("Illegal Bit per pixel value!");
+                int bpp = reader.ReadInt32();
+                if (bpp != 0 && bpp != 1)
+                    throw new TextureFormatException("Illegal Bit per pixel value!");
 
-                    int width = reader.ReadInt32();
-                    int height = reader.ReadInt32();
-                    int paletteOffset = reader.ReadInt32();
-                    if (paletteOffset != 0x40)
-                        throw new TextureFormatException("TX48 Header is wrong!");
+                bpp = (bpp + 1) * 4;
 
-                    int paletteSize = reader.ReadInt32();
-                    int imageOffset = reader.ReadInt32();
-                    int imageSize = reader.ReadInt32();
-                    reader.BaseStream.Position += 0x20;
+                int width = reader.ReadInt32();
+                int height = reader.ReadInt32();
+                int paletteOffset = reader.ReadInt32();
+                if (paletteOffset != 0x40)
+                    throw new TextureFormatException("TX48 Header is wrong!");
 
-                    byte[] paletteData = reader.ReadBytes(paletteSize);
-                    byte[] imageData = reader.ReadBytes(imageSize);
+                int paletteSize = reader.ReadInt32();
+                int imageOffset = reader.ReadInt32();
+                int imageSize = reader.ReadInt32();
+                reader.BaseStream.Position += 0x20;
 
-                    imagesData.Add(imageData);
-                    palettesData.Add(paletteData);
-                    widths.Add(width);
-                    heights.Add(height);
-                    bpps.Add((bpp+1)*4);
+                byte[] paletteData = reader.ReadBytes(paletteSize);
+                byte[] imageData = reader.ReadBytes(imageSize);
 
-                    long skip = (0x800 - (reader.BaseStream.Position - oldPos  ) % 0x800) % 0x800;
+                return new TX48Texture(imageData, paletteData, width, height, bpp);
 
-                    reader.BaseStream.Position += skip;
-                }
-
-                return new TX48Texture(imagesData, palettesData, widths.ToArray(), heights.ToArray(),bpps.ToArray());
-
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 if (e is TextureFormatException)
                     throw e;
@@ -143,39 +126,27 @@ namespace Rainbow.ImgLib.Formats.Serialization
             int[] heights = texture.GetHeights();
             int[] bpps = texture.GetBpps();
 
-            for (int i = 0; i < bpps.Length;i++)
-            {
-                int total = 0;
-                byte[] pal = palettesData[i];
-                byte[] img = imagesData[i];
 
-                writer.Write(MAGIC.ToCharArray());
-                writer.Write(bpps[i] / 4 - 1);
+            byte[] pal = palettesData[0];
+            byte[] img = imagesData[0];
 
-                writer.Write(widths[i]);
-                writer.Write(heights[i]);
+            writer.Write(MAGIC.ToCharArray());
+            writer.Write(bpps[0] / 4 - 1);
 
-                writer.Write(0x40);
-                writer.Write(pal.Length);
+            writer.Write(widths[0]);
+            writer.Write(heights[0]);
 
-                writer.Write(0x40 + pal.Length);
-                writer.Write(img.Length);
+            writer.Write(0x40);
+            writer.Write(pal.Length);
 
-                for (int j = 0; j < 8; j++)
-                    writer.Write(0);
+            writer.Write(0x40 + pal.Length);
+            writer.Write(img.Length);
 
-                total += 0x40;
+            for (int j = 0; j < 8; j++)
+                writer.Write(0);
 
-                writer.Write(pal);
-                writer.Write(img);
-
-                total += pal.Length + img.Length;
-                int remainingBytes = (0x800 - total % 0x800) % 0x800;
-                for (int j = 0; j < remainingBytes; j++)
-                    writer.Write((byte)0);
-            }
-                
-            
+            writer.Write(pal);
+            writer.Write(img);
         }
 
         public void Export(TextureFormat txt, Metadata.MetadataWriter metadata, string directory, string basename)
@@ -186,25 +157,17 @@ namespace Rainbow.ImgLib.Formats.Serialization
             try
             {
                 metadata.BeginSection("TX48Texture");
-                metadata.PutAttribute("Textures", texture.FramesCount);
                 metadata.PutAttribute("Basename", basename);
 
-                int oldSelected = texture.SelectedFrame;
-                for (int i = 0; i < texture.FramesCount; i++)
-                {
-                    texture.SelectedFrame = i;
-
-                    metadata.BeginSection("TX48Segment");
-                    metadata.Put("Bpp", texture.Bpp);
-                    metadata.EndSection();
-
-                    texture.GetImage().Save(Path.Combine(directory, basename + "_" + i + ".png"));
-                }
-
-                texture.SelectedFrame = oldSelected;
+                metadata.BeginSection("TX48Segment");
+                metadata.Put("Bpp", texture.Bpp);
                 metadata.EndSection();
 
-            }catch(Exception e)
+                texture.GetImage().Save(Path.Combine(directory, basename + ".png"));
+                metadata.EndSection();
+
+            }
+            catch (Exception e)
             {
                 throw new TextureFormatException(e.Message, e);
             }
@@ -213,27 +176,16 @@ namespace Rainbow.ImgLib.Formats.Serialization
         public TextureFormat Import(Metadata.MetadataReader metadata, string directory, string bname)
         {
             metadata.EnterSection("TX48Texture");
-
-            int count = metadata.GetAttributeInt("Textures");
             string basename = metadata.GetAttributeString("Basename");
 
-            int[] bpps = new int[count];
-
-            IList<Image> images = new List<Image>(count);
-
-            for (int i = 0; i < count; i++)
-            {
-                metadata.EnterSection("TX48Segment");
-
-                bpps[i] = metadata.GetInt("Bpp");
-
-                Image img = Image.FromFile(Path.Combine(directory, basename + "_" + i + ".png"));
-                images.Add(img);
-                metadata.ExitSection();
-            }
+            metadata.EnterSection("TX48Segment");
+            int bpp = metadata.GetInt("Bpp");
+            Image img = Image.FromFile(Path.Combine(directory, basename + ".png"));
+            metadata.ExitSection();
 
             metadata.ExitSection();
-            return new TX48Texture(images, bpps);
+
+            return new TX48Texture(img, bpp);
         }
     }
 }

@@ -32,6 +32,11 @@ namespace Rainbow.ImgLib.Formats
         protected int[] heights;
         protected int[] bpps;
 
+        internal CommonTextureFormat(byte[] imgData,byte[] palData,int width, int height,int bpp):
+            this(new List<byte[]> { imgData }, new List<byte[]> { palData }, new int[] { width }, new int[] { height }, new int[] {bpp})
+        {
+
+        }
         internal CommonTextureFormat(IList<byte[]> imgData, IList<byte[]> palData, int[] widths, int[] heights, int[] bpps)
         {
             imagesData = imgData;
@@ -40,6 +45,12 @@ namespace Rainbow.ImgLib.Formats
             this.widths = widths;
             this.heights = heights;
             this.bpps = bpps;
+        }
+
+        internal CommonTextureFormat(Image image,int bpp):
+            this(new List<Image> { image }, new int[] {bpp})
+        {
+
         }
 
         internal CommonTextureFormat(IList<Image> images,int[] bpps)

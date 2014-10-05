@@ -28,12 +28,22 @@ namespace Rainbow.ImgLib.Formats
     {
         internal const string NAME = "TX48 (Super Robot Wars MX P)";
 
+        internal TX48Texture(byte[] imgData,byte[] palData,int width, int height,int bpp):
+            base(imgData,palData,width,height,bpp)
+        {
+
+        }
         internal TX48Texture(IList<byte[]> imageData, IList<byte[]> paletteData, int[] widths, int[] heights, int[] bpps):
              base(imageData, paletteData, widths, heights, bpps)
         {
 
         }
 
+        internal TX48Texture(Image image,int bpp):
+            base(image,bpp)
+        {
+
+        }
         internal TX48Texture(IList<Image> images,int[] bpps):
              base(images,bpps)
         {
