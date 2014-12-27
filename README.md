@@ -29,7 +29,7 @@ The tool currently supports TIM2*, TX48 (Super Robot Wars MX P) and DAT (generic
 How to use Rainbow
 =======
 
-* Use the "Open" menu to open any supported texture (currently TIM2).
+* Use the "Open" menu to open any supported texture.
 * Use the property grid on the left side to change some texture parameters (like swizzle).
 * The "Export" menu allows to save textures to a user editable format, like png.
 * The "Import" menu allows to import graphics in user editable format so that they can eventually be saved to the original format by means of the "Save" menu.
