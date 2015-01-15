@@ -6,7 +6,7 @@ Latest build status: [![Build Status](https://travis-ci.org/marco-calautti/Rainb
 If you want to contact me: marco.calautti [at] gmail [.] com. For bug/issues reports, please use the github page.
 
 Rainbow is a tool, written in C#, intended to handle different graphics formats from video games assets.
-Currently, Rainbow supports almost every variant of the TIM2 format.
+Currently, Rainbow supports almost every variant of the TIM2 format and some game specific formats (see the Feature section below).
 It requires the .NET framework v3.5+ or any version of mono supporting v3.5 (tested on mono 2.10.x).
 Download it here https://github.com/marco-calautti/Rainbow/releases
 
@@ -15,8 +15,7 @@ Download it here https://github.com/marco-calautti/Rainbow/releases
 Features
 =======
 
-* Almost complete support for TIM2 texture files usually found in PS2 and PSP games. The app supports multi-layer, multi-clut, swizzled (PSP)/unswizzled TIM2 images with both linear, interleaved palettes, and segments headers eventually
-extended with custom user data (usually used by programmers).
+The tool currently supports TIM2*, TX48 (Super Robot Wars MX P) and DAT (generic extension for textures found in The 3rd Birthday) textures
 * Can open textures in any format supported by the underlying image library.
 * Can open whole folders in search of supported texture formats. All known texture files are then displayed in a list.
 * Can export textures to an editable format (like png).
@@ -25,10 +24,12 @@ extended with custom user data (usually used by programmers).
 * Customizable background color for transparent and semi-transparent images with chessboard like pattern.
 * Finally, Rainbow supports parameters via command line: the first parameter is the name of a texture you would like to open.
 
+*TIM2 support is almost complete. The app supports multi-layer, multi-clut, swizzled (PSP)/unswizzled TIM2 images with both linear, interleaved palettes, and segments headers eventually extended with custom user data (usually used by programmers).
+
 How to use Rainbow
 =======
 
-* Use the "Open" menu to open any supported texture (currently TIM2).
+* Use the "Open" menu to open any supported texture.
 * Use the property grid on the left side to change some texture parameters (like swizzle).
 * The "Export" menu allows to save textures to a user editable format, like png.
 * The "Import" menu allows to import graphics in user editable format so that they can eventually be saved to the original format by means of the "Save" menu.
