@@ -203,8 +203,13 @@ namespace Rainbow.App.GUI
         {
             texture = tex;
             propertyGrid.SelectedObject = PropertyGridObjectFactory.Create(texture);
-
+            
             transparentPictureBox.SetTexture(texture);
+        }
+
+        private void OnPropertyChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            propertyGrid.Refresh();
         }
 
         private void SetFilename(string name)
