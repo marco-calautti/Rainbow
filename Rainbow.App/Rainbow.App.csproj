@@ -59,6 +59,14 @@
   <PropertyGroup>
     <ApplicationIcon>rainbow.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\v3.5\Debug\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -166,12 +174,12 @@
   </PropertyGroup>
   <Target Name="BeforeBuild">
     <Copy SourceFiles="$(ProjectDir)$(AssemblyInfoTemplate)" DestinationFiles="$(ProjectDir)$(AssemblyInfoOutput)" />
-	<Exec Command="git --git-dir &quot;$(SolutionDir).git&quot; describe --always --tags &gt; &quot;$(ProjectDir)$(GitVersionFile)&quot;"/>
-	<ReadLinesFromFile File="$(ProjectDir)$(GitVersionFile)">
-	<Output TaskParameter="Lines" PropertyName="OutputGitVersion" />
-	</ReadLinesFromFile>
-	<WriteLinesToFile File="$(ProjectDir)$(AssemblyInfoOutput)" Lines="[assembly: AssemblyInformationalVersion(&quot;$(OutputGitVersion)&quot;)]" Overwrite="false" />
-	<Delete Files="$(GitVersionFile)" />
+    <Exec Command="git --git-dir &quot;$(SolutionDir).git&quot; describe --always --tags &gt; &quot;$(ProjectDir)$(GitVersionFile)&quot;" />
+    <ReadLinesFromFile File="$(ProjectDir)$(GitVersionFile)">
+      <Output TaskParameter="Lines" PropertyName="OutputGitVersion" />
+    </ReadLinesFromFile>
+    <WriteLinesToFile File="$(ProjectDir)$(AssemblyInfoOutput)" Lines="[assembly: AssemblyInformationalVersion(&quot;$(OutputGitVersion)&quot;)]" Overwrite="false" />
+    <Delete Files="$(GitVersionFile)" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
