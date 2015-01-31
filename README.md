@@ -5,7 +5,7 @@ Latest build status: [![Build Status](https://travis-ci.org/marco-calautti/Rainb
 
 If you want to contact me: marco.calautti [at] gmail [.] com. For bug/issues reports, please use the github page.
 
-To **compile** Rainbow, please refer to this [wiki page](https://github.com/marco-calautti/Rainbow/wiki/How-to-build-Rainbow)
+If you want to **compile** Rainbow, please refer to this [wiki page](https://github.com/marco-calautti/Rainbow/wiki/How-to-build-Rainbow).
 
 Rainbow is a tool, written in C#, intended to handle different graphics formats from video games assets.
 Currently, Rainbow supports almost every variant of the TIM2 format and some game specific formats (see the Feature section below).
