@@ -16,53 +16,69 @@
 //http://github.com/marco-calautti/Rainbow
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Rainbow.ImgLib.Encoding
 {
-    public class IndexPacker8Bpp : IndexPacker
+
+    public class IndexCodec8Bpp : IndexCodec
     {
-        public override int BitDepth
+        public override int GetPixelIndex(byte[] pixelData, int width, int height, int x, int y)
         {
-            get { return 8; }
+            return pixelData[x + y * width];
         }
 
         public override byte[] PackIndexes(int[] indexes, int start, int length)
         {
             byte[] packed = new byte[length];
-            for(int i=start;i<length;i++)
+            for (int i = start; i < length; i++)
             {
                 if (indexes[i] > 255)
                     throw new Exception("Too big index!");
-                packed[i-start] = (byte)indexes[i];
+                packed[i - start] = (byte)indexes[i];
             }
             return packed;
         }
-    }
 
-    public class IndexPacker4Bpp : IndexPacker
-    {
         public override int BitDepth
         {
-            get { return 4; }
+            get { return 8; }
+        }
+    }
+
+    public class IndexCodec4Bpp : IndexCodec
+    {
+        public override int GetPixelIndex(byte[] pixelData, int width, int height, int x, int y)
+        {
+            int pos = x + y * width;
+            byte b = pixelData[pos / 2];
+
+            if(Endianess==ByteOrder.LittleEndian)
+                return pos % 2 == 0 ? b & 0xF : (b >> 4) & 0xF;
+            else
+                return pos % 2 != 0 ? b & 0xF : (b >> 4) & 0xF;
         }
 
         public override byte[] PackIndexes(int[] indexes, int start, int length)
         {
-            if(length%2!=0)
+            if (length % 2 != 0)
                 throw new Exception("Number of indexes must be odd!");
 
-            byte[] packed = new byte[length/2];
+            byte[] packed = new byte[length / 2];
             int k = 0;
-            for (int i = start; i < length; i+=2)
+            for (int i = start; i < length; i += 2)
             {
-                if (indexes[i] > 15 || indexes[i+1]>15)
+                if (indexes[i] > 15 || indexes[i + 1] > 15)
                     throw new Exception("Too big index!");
-                packed[k++] = (byte)((indexes[i+1]<<4) | indexes[i]);
+                if(Endianess==ByteOrder.LittleEndian)
+                    packed[k++] = (byte)((indexes[i + 1] << 4) | indexes[i]);
+                else
+                    packed[k++] = (byte)((indexes[i] << 4) | indexes[i+1]);
             }
             return packed;
+        }
+
+        public override int BitDepth
+        {
+            get { return 4; }
         }
     }
 }

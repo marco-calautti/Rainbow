@@ -64,24 +64,9 @@ namespace Rainbow.ImgLib.Formats
             return ColorEncoder.ENCODER_32BIT_RGBA;
         }
 
-        protected override IndexRetriever IndexRetriever(int activeFrame)
+        protected override IndexCodec GetIndexCodec(int activeFrame)
         {
-            if (bpps[activeFrame] == 4)
-                return new IndexRetriever4Bpp();
-            else if (bpps[activeFrame] == 8)
-                return new IndexRetriever8Bpp();
-            else
-                throw new TextureFormatException("Illegal bpp value!");
-        }
-
-        protected override IndexPacker IndexPacker(int activeFrame)
-        {
-            if (bpps[activeFrame] == 4)
-                return new IndexPacker4Bpp();
-            else if (bpps[activeFrame] == 8)
-                return new IndexPacker8Bpp();
-            else
-                throw new TextureFormatException("Illegal bpp value!");
+            return IndexCodec.FromBitPerPixel(bpps[activeFrame]);
         }
     }
 }

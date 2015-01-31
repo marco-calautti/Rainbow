@@ -66,10 +66,7 @@ namespace Rainbow.ImgLib.Formats
 
                 reader.Read(imageData,0,count);
 
-               
-                byte[] deSwizzled=new SwizzleFilter((int)widths[i], (int)heights[i], bpps[i]).Defilter(imageData);
-
-                imagesData.Add(deSwizzled);
+                imagesData.Add(imageData);
             }
         }
 
@@ -89,7 +86,7 @@ namespace Rainbow.ImgLib.Formats
                     throw new TextureFormatException("Illegal bpp value: "+bpps[i]);
 
                 Image img=images[i];
-                IndexedImageEncoder encoder = new IndexedImageEncoder(new List<Image> { img }, bpps[i] == 8 ? 256 : 16);
+                IndexedImageEncoder encoder = new IndexedImageEncoder(new List<Image> { img }, IndexCodec.FromBitPerPixel(bpps[i]));
                 imagesData.Add(encoder.Encode());
                 palettes.Add(encoder.Palettes[0]);
             }
@@ -140,26 +137,19 @@ namespace Rainbow.ImgLib.Formats
 
         protected override System.Drawing.Image GetImage(int activeFrame, int activePalette)
         {
-            IndexRetriever retriever = null;
-            if (bpps[activeFrame] == 8)
-                retriever = new IndexRetriever8Bpp();
-            else
-                retriever = new IndexRetriever4Bpp();
+            IndexCodec codec = IndexCodec.FromBitPerPixel(bpps[activeFrame]);
 
             IndexedImageDecoder decoder = new IndexedImageDecoder(imagesData[activeFrame],
                                                                   widths[activeFrame],
                                                                   heights[activeFrame],
-                                                                  retriever, palettes[activeFrame]);
+                                                                  codec, palettes[activeFrame],
+                                                                  new SwizzleFilter((int)widths[activeFrame], (int)heights[activeFrame], bpps[activeFrame]));
             return decoder.DecodeImage();
         }
 
         internal IList<byte[]> GetImagesData()
         {
-            IList<byte[]> result = new List<byte[]>(imagesData.Count);
-            for (int i = 0; i < imagesData.Count; i++)
-                result.Add(new SwizzleFilter(widths[i], heights[i], bpps[i]).ApplyFilter(imagesData[i]));
-
-            return result;
+            return imagesData;
         }
 
         internal IList<byte[]> GetPalettesData()

@@ -15,6 +15,7 @@
 //Official repository and contact information can be found at
 //http://github.com/marco-calautti/Rainbow
 
+using Rainbow.ImgLib.Filters;
 using System.Drawing;
 
 namespace Rainbow.ImgLib.Encoding
@@ -26,35 +27,40 @@ namespace Rainbow.ImgLib.Encoding
 
         protected int width, height;
 
-        protected IndexRetriever retriever;
+        protected IndexCodec indexCodec;
 
-        public IndexedImageDecoder(byte[] pixelData, int width, int height, IndexRetriever retriever, Color[] palette = null)
+        public IndexedImageDecoder(byte[] pixelData, int width, int height, IndexCodec codec, Color[] palette = null, ImageFilter imageFilter=null, PaletteFilter paletteFilter=null)
         {
             this.pixelData = pixelData;
+            if (imageFilter != null)
+                this.pixelData = imageFilter.Defilter(pixelData);
+
             this.width = width;
             this.height = height;
-            this.retriever = retriever;
-            if (palette == null)
+            this.indexCodec = codec;
+
+            if (paletteFilter != null && palette!=null)
+                Palette = paletteFilter.Defilter(palette);
+            else if (palette == null)
             {
-                palette = new Color[1 << retriever.BitDepth];
+                palette = new Color[1 << codec.BitDepth];
                 for (int i = 0; i < palette.Length; i++)
                     palette[i] = Color.FromArgb(255, i * (256/palette.Length), i * (256/palette.Length), i * (256/palette.Length));
-            }
-            
-            Palette = palette;
+                Palette = palette;
+            }else
+                Palette=(Color[])palette.Clone();
         }
 
         public Color[] Palette { get; set; }
 
-        public int BitDepth { get { return retriever.BitDepth; } }
+        public int BitDepth { get { return indexCodec.BitDepth; } }
 
         public Image DecodeImage()
         {
             Bitmap bmp = new Bitmap(width, height);
-
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
-                    bmp.SetPixel(x, y, Palette[retriever.GetPixelIndex(pixelData, width, height, x, y)]);
+                    bmp.SetPixel(x, y, Palette[indexCodec.GetPixelIndex(pixelData, width, height, x, y)]);
 
             return bmp;
         }

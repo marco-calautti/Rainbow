@@ -16,6 +16,7 @@
 //http://github.com/marco-calautti/Rainbow
 
 using Rainbow.ImgLib.Encoding;
+using Rainbow.ImgLib.Filters;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -28,6 +29,8 @@ namespace Rainbow.ImgLib.Formats
     {
         protected IList<byte[]> imagesData;
         protected IList<Color[]> palettes;
+        protected IList<byte[]> encodedPalettes;
+
         protected int[] widths;
         protected int[] heights;
         protected int[] bpps;
@@ -40,8 +43,16 @@ namespace Rainbow.ImgLib.Formats
         internal CommonTextureFormat(IList<byte[]> imgData, IList<byte[]> palData, int[] widths, int[] heights, int[] bpps)
         {
             imagesData = imgData;
-            int frame = 0;
-            palettes = palData.Select(data => PaletteDecoder(frame++).DecodeColors(data)).ToList();
+            encodedPalettes = palData;
+            palettes=new List<Color[]>(palData.Count);
+
+            for(int frame=0; frame<bpps.Length; frame++)
+            {
+                PaletteFilter filter=GetPaletteFilter(frame);
+                Color[] decoded=PaletteDecoder(frame).DecodeColors(palData[frame]);
+                palettes.Add(filter==null? decoded : filter.Defilter(decoded));
+            }
+
             this.widths = widths;
             this.heights = heights;
             this.bpps = bpps;
@@ -57,6 +68,7 @@ namespace Rainbow.ImgLib.Formats
         {
             imagesData = new List<byte[]>(bpps.Length);
             palettes = new List<Color[]>(bpps.Length);
+            encodedPalettes = new List<byte[]>(bpps.Length);
 
             this.bpps = bpps;
             widths = images.Select(img => img.Width).ToArray();
@@ -65,9 +77,15 @@ namespace Rainbow.ImgLib.Formats
             for (int i = 0; i < images.Count; i++)
             {
                 Image img = images[i];
-                IndexedImageEncoder encoder = new IndexedImageEncoder(new List<Image> { img }, 1<<bpps[i]);
+                IndexedImageEncoder encoder = new IndexedImageEncoder(new List<Image> { img }, 
+                                                                      IndexCodec.FromBitPerPixel(bpps[i]),
+                                                                      PixelComparer(i),
+                                                                      PaletteEncoder(i),
+                                                                      GetImageFilter(i),
+                                                                      GetPaletteFilter(i));
                 imagesData.Add(encoder.Encode());
                 palettes.Add(encoder.Palettes[0]);
+                encodedPalettes.Add(encoder.EncodedPalettes[0]);
             }
         }
         public override abstract string Name
@@ -105,19 +123,20 @@ namespace Rainbow.ImgLib.Formats
             return new IndexedImageDecoder(imagesData[activeFrame],
                                            widths[activeFrame],
                                            heights[activeFrame],
-                                           IndexRetriever(activeFrame),
-                                           palettes[activeFrame]).DecodeImage();
+                                           GetIndexCodec(activeFrame),
+                                           palettes[activeFrame],
+                                           GetImageFilter(activeFrame),
+                                           GetPaletteFilter(activeFrame)).DecodeImage();
         }
 
-        public virtual IList<byte[]> GetImagesData()
+        internal virtual IList<byte[]> GetImagesData()
         {
             return imagesData;
         }
 
-        public virtual IList<byte[]> GetPaletteData()
+        internal virtual IList<byte[]> GetPaletteData()
         {
-            int frame = 0;
-            return palettes.Select(pal => PaletteEncoder(frame++).EncodeColors(pal)).ToList();
+            return encodedPalettes;
         }
 
         public virtual int[] GetWidths()
@@ -138,7 +157,12 @@ namespace Rainbow.ImgLib.Formats
         protected abstract ColorDecoder PaletteDecoder(int activeFrame);
         protected abstract ColorEncoder PaletteEncoder(int activeFrame);
 
-        protected abstract IndexRetriever IndexRetriever(int activeFrame);
-        protected abstract IndexPacker IndexPacker(int activeFrame);
+        protected abstract IndexCodec GetIndexCodec(int activeFrame);
+
+        protected virtual ImageFilter GetImageFilter(int activeFrame){ return null; }
+        protected virtual PaletteFilter GetPaletteFilter(int activeFrame) { return null; }
+
+        protected virtual IComparer<Color> PixelComparer(int activeFrame) { return null; }
+
     }
 }

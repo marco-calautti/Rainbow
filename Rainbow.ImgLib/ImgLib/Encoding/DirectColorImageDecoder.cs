@@ -15,24 +15,29 @@
 //Official repository and contact information can be found at
 //http://github.com/marco-calautti/Rainbow
 
+using Rainbow.ImgLib.Filters;
 using System.Drawing;
 
 namespace Rainbow.ImgLib.Encoding
 {
-    public class TrueColorImageDecoder : ImageDecoder
+    public class DirectColorImageDecoder : ImageDecoder
     {
         protected byte[] pixelData;
         protected int width, height;
 
         protected ColorDecoder decoder;
 
-        public TrueColorImageDecoder(byte[] pixelData, int width, int height, ColorDecoder decoder)
+        public DirectColorImageDecoder(byte[] pixelData, int width, int height, ColorDecoder decoder, ImageFilter imageFilter=null)
         {
             this.pixelData = pixelData;
+            if (imageFilter != null)
+                this.pixelData = imageFilter.Defilter(pixelData);
+
             this.width = width;
             this.height = height;
             this.decoder = decoder;
         }
+
         public Image DecodeImage()
         {
             Color[] colors = decoder.DecodeColors(pixelData);

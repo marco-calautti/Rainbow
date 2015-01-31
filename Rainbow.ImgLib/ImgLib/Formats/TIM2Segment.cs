@@ -110,7 +110,7 @@ namespace Rainbow.ImgLib.Formats
                 imageData = GetColorEncoder(parameters.colorSize).EncodeColors(en.Current.GetColorArray()); //I love extension methods. Hurray!
             }else
             {
-                IndexedImageEncoder encoder=new IndexedImageEncoder(new List<Image>(images), 1 << parameters.bpp,new TIM2ColorSorter());
+                IndexedImageEncoder encoder=new IndexedImageEncoder(new List<Image>(images), IndexCodec.FromBitPerPixel(parameters.bpp),new TIM2ColorSorter());
                 imageData = encoder.Encode();
                 palettes = new List<Color[]>(encoder.Palettes).ToArray();
             }
@@ -185,12 +185,12 @@ namespace Rainbow.ImgLib.Formats
             {
                 decoder = new IndexedImageDecoder(imageData,
                                               parameters.width, parameters.height,
-                                              IndexRetriever.FromBitPerPixel(Bpp),
+                                              IndexCodec.FromBitPerPixel(Bpp),
                                               palettes[SelectedPalette]);
             }
             else //otherwise, we have a true color TIM2
             {
-                decoder = new TrueColorImageDecoder(imageData,
+                decoder = new DirectColorImageDecoder(imageData,
                                               parameters.width, parameters.height,
                                               GetColorDecoder(parameters.colorSize));
 

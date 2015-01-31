@@ -19,22 +19,34 @@ using System;
 
 namespace Rainbow.ImgLib.Encoding
 {
-    public abstract class IndexRetriever
+    public abstract class IndexCodec
     {
-        public abstract int GetPixelIndex(byte[] pixelData, int width, int height, int x, int y);
-        public abstract int BitDepth { get; }
+        public enum ByteOrder { LittleEndian, BigEndian }
 
-        public static IndexRetriever FromBitPerPixel(int bpp)
+        public IndexCodec() { Endianess = ByteOrder.LittleEndian; }
+
+        public abstract int GetPixelIndex(byte[] pixelData, int width, int height, int x, int y);
+        public abstract byte[] PackIndexes(int[] indexes, int start, int length);
+        public byte[] PackIndexes(int[] indexes)
         {
-            return FromNumberOfColors(1 << bpp);
+            return PackIndexes(indexes, 0, indexes.Length);
         }
 
-        public static IndexRetriever FromNumberOfColors(int colors)
+        public abstract int BitDepth { get; }
+
+        public ByteOrder Endianess { get; set; }
+
+        public static IndexCodec FromBitPerPixel(int bpp, ByteOrder order = ByteOrder.LittleEndian)
+        {
+            return FromNumberOfColors(1 << bpp, order);
+        }
+
+        public static IndexCodec FromNumberOfColors(int colors, ByteOrder order = ByteOrder.LittleEndian)
         {
             if (colors <= 16)
-                return new IndexRetriever4Bpp();
+                return new IndexCodec4Bpp { Endianess = order };
             else if (colors <= 256)
-                return new IndexRetriever8Bpp();
+                return new IndexCodec8Bpp { Endianess = order };
             else
                 throw new ArgumentException("Unsupported number of colors");
         }

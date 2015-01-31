@@ -38,7 +38,7 @@ namespace Rainbow.ImgLib.Formats
             width = 512;
             height = imageData.Length * 2 / width;
 
-            this.imageData = new SwizzleFilter(width, height, 4).Defilter(imageData);
+            this.imageData = imageData;
         }
 
         internal PE3SimpleDATTexture(byte[] rawHeader, Image img)
@@ -50,7 +50,9 @@ namespace Rainbow.ImgLib.Formats
             width = img.Width;
             height = img.Height;
 
-            IndexedImageEncoder encoder = new IndexedImageEncoder(new List<Image> { img }, 16);
+            IndexedImageEncoder encoder = new IndexedImageEncoder(new List<Image> { img }, 
+                                                                  IndexCodec.FromBitPerPixel(4), null, null, 
+                                                                  new SwizzleFilter(width, height, 4));
             imageData = encoder.Encode();
         }
         public override string Name
@@ -85,13 +87,16 @@ namespace Rainbow.ImgLib.Formats
 
         internal byte[] GetImageData()
         {
-            return new SwizzleFilter(Width,Height,4).ApplyFilter(imageData);
+            return imageData;
         }
 
         protected override System.Drawing.Image GetImage(int activeFrame, int activePalette)
         {
 
-            IndexedImageDecoder decoder = new IndexedImageDecoder(imageData, Width, Height, new IndexRetriever4Bpp());
+            IndexedImageDecoder decoder = new IndexedImageDecoder(imageData, 
+                                                                  Width, Height, 
+                                                                  IndexCodec.FromBitPerPixel(4), null,
+                                                                  new SwizzleFilter(Width, Height, 4));
             return decoder.DecodeImage();
         }
     }

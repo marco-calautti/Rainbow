@@ -17,13 +17,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
 namespace Rainbow.ImgLib.Filters
 {
     /// <summary>
-    /// A filter is any kind of object that arranges a given array of objects into another array of the same length.
+    /// A filter is any kind of object that arranges a given array of objects into another array of the same type.
     /// An example filter is a filter that gets a tiled array of pixels and returns a linear representation of such an array.
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -67,6 +68,16 @@ namespace Rainbow.ImgLib.Filters
         /// <returns></returns>
         public abstract T[] Defilter(T[] originalData, int index, int length);
 
+
+    }
+
+    public abstract class ImageFilter : Filter<byte>
+    {
+
+    }
+
+    public abstract class PaletteFilter : Filter<Color>
+    {
 
     }
 }

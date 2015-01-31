@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using Rainbow.ImgLib.Common;
+using Rainbow.ImgLib.Filters;
 
 
 namespace Rainbow.ImgLib.Encoding
@@ -39,14 +40,24 @@ namespace Rainbow.ImgLib.Encoding
         private IList<Image> images;
         private int colors;
         private int width, height;
+        private IndexCodec codec;
         private IComparer<Color> pixelSorter=new DefaultColorSorter();
+        private ColorEncoder colorEncoder;
+        private ImageFilter imageFilter;
+        private PaletteFilter paletteFilter;
 
-        public IndexedImageEncoder(IList<Image> images, int numberOfColors, IComparer<Color> pixelComparer=null)
+        public IndexedImageEncoder(IList<Image> images, IndexCodec codec, IComparer<Color> pixelComparer = null, ColorEncoder encoder=null, ImageFilter imageFilter = null, PaletteFilter paletteFilter = null)
         {
             this.images = images;
-            colors = numberOfColors;
+            this.codec=codec;
+            this.colorEncoder = encoder;
+
+            this.imageFilter = imageFilter;
+            this.paletteFilter = paletteFilter;
+            colors = 1<<codec.BitDepth;
+
             if (pixelComparer != null)
-                pixelSorter =pixelComparer;
+                pixelSorter = pixelComparer;
 
             if (images.Count == 0)
                 throw new ArgumentException("The image list cannot be empty!");
@@ -61,6 +72,7 @@ namespace Rainbow.ImgLib.Encoding
         }
 
         public IList<Color[]> Palettes { get; private set; }
+        public IList<byte[]> EncodedPalettes { get; private set; }
 
         public byte[] Encode()
         {
@@ -122,8 +134,16 @@ namespace Rainbow.ImgLib.Encoding
                     int idx = Array.BinarySearch(Palettes[0],pixel, pixelSorter);
                     indexes[k++] = idx;
                 }
-           
-            return IndexPacker.FromNumberOfColors(colors).PackIndexes(indexes);
+
+            if (colorEncoder != null)
+            {
+                EncodedPalettes = new List<byte[]>(Palettes.Count);
+                foreach (Color[] pal in Palettes)
+                {
+                    EncodedPalettes.Add(colorEncoder.EncodeColors(paletteFilter == null ? pal : paletteFilter.ApplyFilter(pal)));
+                }
+            }
+            return imageFilter == null ? codec.PackIndexes(indexes) : imageFilter.ApplyFilter(codec.PackIndexes(indexes));
         }
 
     }

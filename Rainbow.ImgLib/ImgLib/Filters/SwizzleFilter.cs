@@ -22,7 +22,7 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Filters
 {
-    public class SwizzleFilter : Filter<byte>
+    public class SwizzleFilter : ImageFilter
     {
         private int width,height,bitDepth;
 

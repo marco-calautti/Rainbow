@@ -23,7 +23,7 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Filters
 {
-    public class TIM2PaletteFilter : Filter<Color>
+    public class TIM2PaletteFilter : PaletteFilter
     {
         private int bitDepth;
         public TIM2PaletteFilter(int bitDepth)
