@@ -1,6 +1,6 @@
 Rainbow
 =======
-**Download latest dev build from [here](https://www.dropbox.com/s/3nmxe4ufy1bex02/rainbow_win32_bin_dev.zip?dl=1).**
+**Download latest dev build from [here](https://www.dropbox.com/s/3ljktg7eiyopgk4/deltapatcher_v2.0_win32_bin.zip?dl=1).**
 Latest build status: [![Build Status](https://travis-ci.org/marco-calautti/Rainbow.svg?branch=master)](https://travis-ci.org/marco-calautti/Rainbow).
 
 If you want to contact me: marco.calautti [at] gmail [.] com. For bug/issues reports, please use the github page.
