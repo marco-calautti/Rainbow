@@ -5,6 +5,7 @@ language: c
 cache: apt
 
 install:
+  - sudo apt-get update
   - sudo apt-get install mono-devel mono-gmcs nunit-console
 script:
   - xbuild /p:Configuration=Release Rainbow.sln
