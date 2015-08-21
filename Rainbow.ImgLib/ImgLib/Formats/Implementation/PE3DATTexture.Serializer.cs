@@ -17,15 +17,16 @@
 //
 // Parts of this code are inspired by...
 
-using Rainbow.ImgLib.Formats.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Rainbow.ImgLib.Formats.Serialization;
+using Rainbow.ImgLib.Formats.Serialization.Metadata;
 
-namespace Rainbow.ImgLib.Formats.Serialization
+namespace Rainbow.ImgLib.Formats.Implementation
 {
     public class PE3DATSerializer : TextureFormatSerializer
     {
@@ -69,7 +70,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             return true;
         }
 
-        public bool IsValidMetadataFormat(Metadata.MetadataReader metadata)
+        public bool IsValidMetadataFormat(MetadataReader metadata)
         {
             try
             {
@@ -154,7 +155,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             }
         }
 
-        public void Export(TextureFormat texture, Metadata.MetadataWriter metadata, string directory, string basename)
+        public void Export(TextureFormat texture, MetadataWriter metadata, string directory, string basename)
         {
             PE3DATTexture dat = texture as PE3DATTexture;
             if (dat == null)
@@ -181,7 +182,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             metadata.EndSection();
         }
 
-        public TextureFormat Import(Metadata.MetadataReader metadata, string directory, string b)
+        public TextureFormat Import(MetadataReader metadata, string directory, string b)
         {
             metadata.EnterSection("PE3DAT");
 

@@ -22,11 +22,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Rainbow.ImgLib.Formats.Serialization
+using Rainbow.ImgLib.Formats.Serialization;
+using Rainbow.ImgLib.Formats.Serialization.Metadata;
+
+namespace Rainbow.ImgLib.Formats.Implementation
 {
     public class TX48Serializer : TextureFormatSerializer
     {
         private const string MAGIC = "TX48";
+
         public string Name
         {
             get { return TX48Texture.NAME; }
@@ -51,7 +55,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             }
         }
 
-        public bool IsValidMetadataFormat(Metadata.MetadataReader metadata)
+        public bool IsValidMetadataFormat(MetadataReader metadata)
         {
             try
             {
@@ -101,7 +105,11 @@ namespace Rainbow.ImgLib.Formats.Serialization
                 byte[] paletteData = reader.ReadBytes(paletteSize);
                 byte[] imageData = reader.ReadBytes(imageSize);
 
-                return new TX48Texture(imageData, paletteData, width, height, bpp);
+                TX48Texture.Segment segment = new TX48Texture.Segment(imageData, paletteData, width, height, bpp);
+                TX48Texture texture = new TX48Texture();
+                texture.TextureFormats.Add(segment);
+
+                return texture;
 
             }
             catch (Exception e)
@@ -120,21 +128,21 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
             BinaryWriter writer = new BinaryWriter(outFormatData);
 
-            IList<byte[]> imagesData = texture.GetImagesData();
-            IList<byte[]> palettesData = texture.GetPaletteData();
-            int[] widths = texture.GetWidths();
-            int[] heights = texture.GetHeights();
-            int[] bpps = texture.GetBpps();
+            TX48Texture.Segment segment = texture.TextureFormats.First() as TX48Texture.Segment;
+            byte[] img = segment.GetImagesData();
 
+            byte[] pal = segment.GetPaletteData().First();
 
-            byte[] pal = palettesData[0];
-            byte[] img = imagesData[0];
+            int widths = segment.Width;
+            int heights = segment.Height;
+            int bpps = segment.Bpp;
+
 
             writer.Write(MAGIC.ToCharArray());
-            writer.Write(bpps[0] / 4 - 1);
+            writer.Write(bpps / 4 - 1);
 
-            writer.Write(widths[0]);
-            writer.Write(heights[0]);
+            writer.Write(widths);
+            writer.Write(heights);
 
             writer.Write(0x40);
             writer.Write(pal.Length);
@@ -149,7 +157,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             writer.Write(img);
         }
 
-        public void Export(TextureFormat txt, Metadata.MetadataWriter metadata, string directory, string basename)
+        public void Export(TextureFormat txt, MetadataWriter metadata, string directory, string basename)
         {
             TX48Texture texture = txt as TX48Texture;
             if (texture == null)
@@ -173,7 +181,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             }
         }
 
-        public TextureFormat Import(Metadata.MetadataReader metadata, string directory, string bname)
+        public TextureFormat Import(MetadataReader metadata, string directory, string bname)
         {
             metadata.EnterSection("TX48Texture");
             string basename = metadata.GetAttributeString("Basename");
@@ -185,7 +193,11 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
             metadata.ExitSection();
 
-            return new TX48Texture(img, bpp);
+            TX48Texture.Segment segment = new TX48Texture.Segment(img, bpp);
+            TX48Texture texture = new TX48Texture();
+            texture.TextureFormats.Add(segment);
+
+            return texture;
         }
     }
 }

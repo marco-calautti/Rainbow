@@ -23,6 +23,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using Rainbow.ImgLib.Formats.Implementation;
+
 namespace Rainbow.ImgLib.Formats.Serialization
 {
     /// <summary>
@@ -40,6 +42,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             RegisterSerializer(new PE3DATSerializer());
             RegisterSerializer(new PE3SimpleDATSerializer());
             RegisterSerializer(new TX48Serializer());
+            RegisterSerializer(new NUTTextureSerializer());
         }
 
         /// <summary>

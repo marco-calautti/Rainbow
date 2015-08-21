@@ -15,7 +15,6 @@
 //Official repository and contact information can be found at
 //http://github.com/marco-calautti/Rainbow
 
-using Rainbow.ImgLib.Encoding;
 using Rainbow.ImgLib.Formats.Serialization;
 using Rainbow.ImgLib.Formats.Serialization.Metadata;
 using System;
@@ -27,8 +26,166 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Rainbow.ImgLib.Formats.Serialization
+namespace Rainbow.ImgLib.Formats.Implementation
 {
+    public class TIM2TextureSerializer : TextureFormatSerializer
+    {
+
+        public string Name { get { return TIM2Texture.NAME;  } }
+
+        public string PreferredFormatExtension { get { return ".tm2";  } }
+
+        //public string PreferredMetadataExtension { get { return ".xml"; } }
+
+        public bool IsValidFormat(Stream format)
+        {
+            long oldPos = format.Position;
+
+            BinaryReader reader = new BinaryReader(format);
+
+            char[] magic = reader.ReadChars(4);
+            format.Position = oldPos;
+
+            return new string(magic) == "TIM2";
+        }
+
+        
+        public bool IsValidMetadataFormat(MetadataReader metadata)
+        {
+            try
+            {
+                metadata.EnterSection("TIM2");
+            }
+            catch (Exception)
+            {
+                metadata.Rewind();
+                return false;
+            }
+            metadata.ExitSection();
+            metadata.Rewind();
+            return true;
+        }
+
+        public TextureFormat Open(Stream formatData)
+        {
+            int version, textureCount;
+            ReadHeader(formatData, out version, out textureCount);
+
+            //construct images
+            List<TIM2Segment> imagesList = new List<TIM2Segment>();
+
+            for (int i = 0; i < textureCount; i++)
+            {
+                TextureFormatSerializer serializer = new TIM2SegmentSerializer();
+                TIM2Segment segment=(TIM2Segment)serializer.Open(formatData);
+                imagesList.Add(segment);
+            }
+
+            TIM2Texture tim = new TIM2Texture(imagesList);
+            tim.Version = version;
+            return tim;
+        }
+
+        public void Save(TextureFormat texture, Stream outFormatData)
+        {
+            TIM2Texture tim2 = texture as TIM2Texture;
+            if (tim2 == null)
+                throw new TextureFormatException("Not a valid TIM2Texture!");
+
+            BinaryWriter writer = new BinaryWriter(outFormatData);
+            writer.Write("TIM2".ToCharArray());
+            writer.Write((ushort)tim2.Version);
+            writer.Write((ushort)tim2.TIM2SegmentsList.Count);
+
+            for (int i = 0; i < 8; i++) writer.Write((byte)0);
+
+            TIM2SegmentSerializer serializer=new TIM2SegmentSerializer(tim2.Swizzled);
+            foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
+                serializer.Save(segment, outFormatData);
+        }
+
+        public void Export(TextureFormat texture, MetadataWriter metadata, string directory, string basename)
+        {
+
+            TIM2Texture tim2 = texture as TIM2Texture;
+            if (tim2 == null)
+                throw new TextureFormatException("Not a valid TIM2Texture!");
+
+
+            metadata.BeginSection("TIM2");
+            metadata.PutAttribute("Version", tim2.Version);
+            metadata.PutAttribute("Basename", basename);
+            metadata.PutAttribute("Swizzled", tim2.Swizzled);
+
+            metadata.PutAttribute("Textures", tim2.TIM2SegmentsList.Count);
+            int layer = 0;
+            foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
+            {
+                TextureFormatSerializer serializer = new TIM2SegmentSerializer();
+                serializer.Export(segment,metadata, directory, basename + "_layer" + layer++);
+            }
+
+            metadata.EndSection();
+        }
+
+        public TextureFormat Import(MetadataReader metadata, string directory,string bname)
+        {
+            TIM2Texture tim2=null;
+            try
+            {
+                metadata.EnterSection("TIM2");
+
+                int version = metadata.GetAttributeInt("Version");
+                string basename = metadata.GetAttributeString("Basename");
+                bool swizzled = metadata.GetAttributeBool("Swizzled");
+                int textureCount = metadata.GetAttributeInt("Textures");
+                
+                List<TIM2Segment> imagesList = new List<TIM2Segment>();
+
+                for (int i = 0; i < textureCount;i++)
+                {
+                    TIM2Segment segment = (TIM2Segment)new TIM2SegmentSerializer(swizzled).Import(metadata, directory, basename);
+                    imagesList.Add(segment);
+                }
+
+                metadata.ExitSection();
+                tim2 = new TIM2Texture(imagesList);
+                tim2.Version = version;
+            }
+            catch (FormatException e)
+            {
+                throw new TextureFormatException("Cannot parse value!\n"+e.Message, e);
+            }
+            catch (XmlException e)
+            {
+                throw new TextureFormatException("Not valid metadata!\n"+e.Message, e);
+            }
+            catch(TextureFormatException e)
+            {
+                throw new TextureFormatException(e.Message, e);
+            }
+            catch(Exception e)
+            {
+                throw new TextureFormatException("Error:\n"+e.Message, e);
+            }
+   
+            return tim2;
+        }
+
+        private void ReadHeader(Stream stream, out int version, out int textureCount)
+        {
+            BinaryReader reader = new BinaryReader(stream);
+
+            char[] magic = reader.ReadChars(4);
+            if (new string(magic) != "TIM2")
+                throw new TextureFormatException("Invalid TIM2 image!");
+
+            version = reader.ReadUInt16();
+            textureCount = reader.ReadUInt16();
+            reader.BaseStream.Position += 8;
+        }
+    }
+
     internal class TIM2SegmentSerializer : TextureFormatSerializer
     {
         private bool swizzled;
@@ -53,7 +210,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             throw new NotImplementedException();
         }
 
-        
+
         public bool IsValidMetadataFormat(MetadataReader metadata)
         {
             throw new NotImplementedException();
@@ -330,7 +487,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             parameters.linearPalette = (clutFormat & 0x80) != 0;
             clutFormat &= 0x7F;
 
-            parameters.colorSize = parameters.bpp > 8 ? parameters.bpp / 8 : (clutFormat&0x07) + 1;
+            parameters.colorSize = parameters.bpp > 8 ? parameters.bpp / 8 : (clutFormat & 0x07) + 1;
 
             if (userDataSize > 0)
             {

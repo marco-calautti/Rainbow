@@ -21,8 +21,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Rainbow.ImgLib.Formats.Serialization;
+using Rainbow.ImgLib.Formats.Serialization.Metadata;
 
-namespace Rainbow.ImgLib.Formats.Serialization
+namespace Rainbow.ImgLib.Formats.Implementation
 {
     public class PE3SimpleDATSerializer : TextureFormatSerializer
     {
@@ -50,7 +52,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             return data == 0x200 && data2 == 0x21 && data3==0x10;
         }
 
-        public bool IsValidMetadataFormat(Metadata.MetadataReader metadata)
+        public bool IsValidMetadataFormat(MetadataReader metadata)
         {
             try
             {
@@ -98,7 +100,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             outFormatData.Write(imageData, 0, imageData.Length);
         }
 
-        public void Export(TextureFormat t, Metadata.MetadataWriter metadata, string directory, string basename)
+        public void Export(TextureFormat t, MetadataWriter metadata, string directory, string basename)
         {
             PE3SimpleDATTexture texture = t as PE3SimpleDATTexture;
             if (texture == null)
@@ -113,7 +115,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             metadata.EndSection();
         }
 
-        public TextureFormat Import(Metadata.MetadataReader metadata, string directory, string unused)
+        public TextureFormat Import(MetadataReader metadata, string directory, string unused)
         {
             metadata.EnterSection("PE3SimpleDAT");
             string basename = metadata.GetAttributeString("Basename");

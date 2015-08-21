@@ -18,7 +18,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rainbow.ImgLib.Formats
+namespace Rainbow.ImgLib.Formats.Implementation
 {
     /// <summary>
     /// This class represents a TIM2 texture. It supports multi frame TIM2 images. Each frame can also have multiple cluts.

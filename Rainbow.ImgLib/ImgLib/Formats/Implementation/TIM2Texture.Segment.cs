@@ -24,7 +24,7 @@ using Rainbow.ImgLib.Encoding;
 using Rainbow.ImgLib.Common;
 using Rainbow.ImgLib.Filters;
 
-namespace Rainbow.ImgLib.Formats
+namespace Rainbow.ImgLib.Formats.Implementation
 {
     public class TIM2Segment : TextureFormatBase
     {

@@ -26,7 +26,7 @@ using Rainbow.ImgLib.Filters;
 
 using System.Drawing;
 
-namespace Rainbow.ImgLib.Formats
+namespace Rainbow.ImgLib.Formats.Implementation
 {
     public class PE3DATTexture : TextureFormatBase
     {

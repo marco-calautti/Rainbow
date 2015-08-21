@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace Rainbow.ImgLib.Formats
+namespace Rainbow.ImgLib.Formats.Implementation
 {
     public class PE3SimpleDATTexture : TextureFormatBase
     {
