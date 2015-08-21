@@ -16,6 +16,7 @@
 //http://github.com/marco-calautti/Rainbow
 
 using Rainbow.ImgLib.Formats;
+using Rainbow.ImgLib.Formats.Implementation;
 
 namespace Rainbow.App.GUI.Model
 {

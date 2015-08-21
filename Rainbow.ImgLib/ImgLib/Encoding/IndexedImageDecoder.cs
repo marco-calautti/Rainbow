@@ -44,8 +44,8 @@ namespace Rainbow.ImgLib.Encoding
 
             grayScale = new Color[1 << codec.BitDepth];
 
-            for (int i = 0; i < palette.Length; i++)
-                grayScale[i] = Color.FromArgb(255, i * (256 / palette.Length), i * (256 / palette.Length), i * (256 / palette.Length));
+            for (int i = 0; i < grayScale.Length; i++)
+                grayScale[i] = Color.FromArgb(255, i * (256 / grayScale.Length), i * (256 / grayScale.Length), i * (256 / grayScale.Length));
            
             if (paletteFilter != null && palette!=null)
                 Palette = paletteFilter.Defilter(palette);

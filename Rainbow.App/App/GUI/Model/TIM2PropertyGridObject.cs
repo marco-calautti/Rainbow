@@ -15,7 +15,7 @@
 //Official repository and contact information can be found at
 //http://github.com/marco-calautti/Rainbow
 
-using Rainbow.ImgLib.Formats;
+using Rainbow.ImgLib.Formats.Implementation;
 using System.ComponentModel;
 
 namespace Rainbow.App.GUI.Model
