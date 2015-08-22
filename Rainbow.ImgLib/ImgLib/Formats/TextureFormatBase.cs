@@ -37,6 +37,8 @@ namespace Rainbow.ImgLib.Formats
 
         public abstract int PalettesCount { get;  }
 
+        public abstract Image GetReferenceImage();
+
         public event EventHandler TextureChanged;
 
         public int SelectedFrame

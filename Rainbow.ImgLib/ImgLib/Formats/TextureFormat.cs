@@ -94,5 +94,13 @@ namespace Rainbow.ImgLib.Formats
         /// <returns></returns>
         Image GetImage();
 
+
+        /// <summary>
+        /// If the current frame contains more than one palette, this methods returns the gray scale Image representation of the currently selected active frame. 
+        /// Otherwise, null is returned.
+        /// </summary>
+        /// <returns></returns>
+        Image GetReferenceImage();
+
     }
 }

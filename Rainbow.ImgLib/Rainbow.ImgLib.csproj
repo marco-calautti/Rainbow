@@ -70,6 +70,7 @@
     <Compile Include="ImgLib\Formats\Implementation\NUTTexture.Serializer.cs" />
     <Compile Include="ImgLib\Formats\Implementation\PE3DATTexture.Serializer.cs" />
     <Compile Include="ImgLib\Formats\Implementation\PE3SimpleDATTexture.Serializer.cs" />
+    <Compile Include="ImgLib\Formats\Serialization\SimpleTextureFormatSerializer.cs" />
     <Compile Include="ImgLib\Formats\Serialization\TextureFormatSerializerProvider.cs" />
     <Compile Include="ImgLib\Formats\Implementation\TIM2Texture.Serializer.cs" />
     <Compile Include="ImgLib\Formats\Serialization\Metadata\XmlMetadataReader.cs" />

@@ -133,5 +133,10 @@ namespace Rainbow.ImgLib.Formats.Implementation
         }
 
         internal List<TIM2Segment> TIM2SegmentsList { get { return imagesList; } }
+
+        public override System.Drawing.Image GetReferenceImage()
+        {
+            return imagesList[SelectedFrame].GetReferenceImage();
+        }
     }
 }

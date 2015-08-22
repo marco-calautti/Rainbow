@@ -126,6 +126,19 @@ namespace Rainbow.ImgLib.Formats
             return encodedPalettes;
         }
 
+        public override Image GetReferenceImage()
+        {
+            if (PalettesCount <= 1)
+                return null;
+
+            return new IndexedImageDecoder(imageData,
+                                           width,
+                                           height,
+                                           GetIndexCodec(),
+                                           palettes[0],
+                                           GetImageFilter(),
+                                           GetPaletteFilter()).ReferenceImage;
+        }
 
         protected abstract ColorDecoder PaletteDecoder();
         protected abstract ColorEncoder PaletteEncoder();

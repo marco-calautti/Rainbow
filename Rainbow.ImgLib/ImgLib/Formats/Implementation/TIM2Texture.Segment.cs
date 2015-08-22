@@ -280,5 +280,16 @@ namespace Rainbow.ImgLib.Formats.Implementation
         }
 
         #endregion
+
+        public override Image GetReferenceImage()
+        {
+            IndexedImageDecoder iDecoder = decoder as IndexedImageDecoder;
+            if (iDecoder != null && PalettesCount > 1)
+            {
+                return iDecoder.ReferenceImage;
+            }
+
+            return null;
+        }
     }
 }

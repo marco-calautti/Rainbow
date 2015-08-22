@@ -45,5 +45,10 @@ namespace Rainbow.ImgLib.Formats
 
             return img;
         }
+
+        public override Image GetReferenceImage()
+        {
+            return textureFormats[SelectedFrame].GetReferenceImage();
+        }
     }
 }

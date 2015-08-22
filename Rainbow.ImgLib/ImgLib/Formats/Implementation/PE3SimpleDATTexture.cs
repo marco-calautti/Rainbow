@@ -99,5 +99,10 @@ namespace Rainbow.ImgLib.Formats.Implementation
                                                                   new SwizzleFilter(Width, Height, 4));
             return decoder.DecodeImage();
         }
+
+        public override Image GetReferenceImage()
+        {
+            return null;
+        }
     }
 }

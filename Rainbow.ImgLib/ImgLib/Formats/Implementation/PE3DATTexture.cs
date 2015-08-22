@@ -164,5 +164,10 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             return pal;
         }
+
+        public override Image GetReferenceImage()
+        {
+            return null;
+        }
     }
 }
