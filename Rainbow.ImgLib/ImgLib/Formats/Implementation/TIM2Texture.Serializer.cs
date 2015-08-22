@@ -128,7 +128,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             metadata.EndSection();
         }
 
-        public TextureFormat Import(MetadataReader metadata, string directory,string bname)
+        public TextureFormat Import(MetadataReader metadata, string directory)
         {
             TIM2Texture tim2=null;
             try
@@ -144,7 +144,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
                 for (int i = 0; i < textureCount;i++)
                 {
-                    TIM2Segment segment = (TIM2Segment)new TIM2SegmentSerializer(swizzled).Import(metadata, directory, basename);
+                    TIM2Segment segment = (TIM2Segment)new TIM2SegmentSerializer(swizzled).Import(metadata, directory);
                     imagesList.Add(segment);
                 }
 
@@ -263,7 +263,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             }
         }
 
-        public TextureFormat Import(MetadataReader metadata, string directory, string bname)
+        public TextureFormat Import(MetadataReader metadata, string directory)
         {
             TIM2Segment segment = null;
 

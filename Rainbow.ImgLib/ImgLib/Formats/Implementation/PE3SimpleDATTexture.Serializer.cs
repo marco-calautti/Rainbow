@@ -115,7 +115,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             metadata.EndSection();
         }
 
-        public TextureFormat Import(MetadataReader metadata, string directory, string unused)
+        public TextureFormat Import(MetadataReader metadata, string directory)
         {
             metadata.EnterSection("PE3SimpleDAT");
             string basename = metadata.GetAttributeString("Basename");

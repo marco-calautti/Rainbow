@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Formats
 {
-    internal abstract class PalettedTextureFormat : TextureFormatBase
+    internal class PalettedTextureFormat : TextureFormatBase
     {
         protected byte[] imageData;
         protected IList<Color[]> palettes;
@@ -20,64 +20,60 @@ namespace Rainbow.ImgLib.Formats
 
         private PalettedTextureFormat() { }
 
-        internal PalettedTextureFormat(byte[] imgData,byte[] palData,int width, int height,int bpp):
-            this(imgData, new List<byte[]> { palData },  width , height ,bpp)
+        private void Init(byte[] imgData,byte[] palData, int width, int height)
         {
-
+            Init(imgData, new List<byte[]> { palData }, width, height);
         }
 
-        internal PalettedTextureFormat(byte[] imgData, IList<byte[]> palData, int widths, int heights, int bpps)
+        private void Init(byte[] imgData, IList<byte[]> palData, int widths, int heights)
         {
             imageData = imgData;
             this.width = widths;
             this.height = heights;
-            this.bpp = bpps;
 
             encodedPalettes = palData;
             palettes=new List<Color[]>(palData.Count);
 
             for(int pal=0; pal<palData.Count; pal++)
             {
-                PaletteFilter filter=GetPaletteFilter();
-                Color[] decoded=PaletteDecoder().DecodeColors(palData[pal]);
+                PaletteFilter filter=PaletteFilter;
+                Color[] decoded=PaletteDecoder.DecodeColors(palData[pal]);
                 palettes.Add(filter==null? decoded : filter.Defilter(decoded));
             }
 
         }
 
 
-        internal PalettedTextureFormat(Image image,int bpp):
-            this(new List<Image>{image}, bpp)
+        private void Init(Image image)
         {
+            Init(new List<Image> { image });
 
         }
 
-        internal PalettedTextureFormat(IList<Image> images, int bpps)
+        private void Init(IList<Image> images)
         {
 
             encodedPalettes = new List<byte[]>(images.Count);
-
-            this.bpp = bpps;
 
             width = images.First().Width;
             height = images.First().Height;
 
 
             IndexedImageEncoder encoder = new IndexedImageEncoder(images, 
-                                                                      GetIndexCodec(),
-                                                                      PixelComparer(),
-                                                                      PaletteEncoder(),
-                                                                      GetImageFilter(),
-                                                                      GetPaletteFilter());
+                                                                  IndexCodec,
+                                                                  PixelComparer,
+                                                                  PaletteEncoder,
+                                                                  ImageFilter,
+                                                                  PaletteFilter);
                 imageData = encoder.Encode();
                 palettes = encoder.Palettes;
 
                 encodedPalettes = encoder.EncodedPalettes;
         }
 
-        public override abstract string Name
+        public override string Name
         {
-            get;
+            get { return "Paletted Texture Format"; }
         }
 
         public override int Width
@@ -92,7 +88,7 @@ namespace Rainbow.ImgLib.Formats
 
         public virtual int Bpp
         {
-            get { return bpp; }
+            get { return IndexCodec.BitDepth; }
         }
 
         public override int FramesCount
@@ -110,13 +106,13 @@ namespace Rainbow.ImgLib.Formats
             return new IndexedImageDecoder(imageData,
                                            width,
                                            height,
-                                           GetIndexCodec(),
+                                           IndexCodec,
                                            palettes[activePalette],
-                                           GetImageFilter(),
-                                           GetPaletteFilter()).DecodeImage();
+                                           ImageFilter,
+                                           PaletteFilter).DecodeImage();
         }
 
-        internal byte[] GetImagesData()
+        internal byte[] GetImageData()
         {
             return imageData;
         }
@@ -134,20 +130,86 @@ namespace Rainbow.ImgLib.Formats
             return new IndexedImageDecoder(imageData,
                                            width,
                                            height,
-                                           GetIndexCodec(),
+                                           IndexCodec,
                                            palettes[0],
-                                           GetImageFilter(),
-                                           GetPaletteFilter()).ReferenceImage;
+                                           ImageFilter,
+                                           PaletteFilter).ReferenceImage;
         }
 
-        protected abstract ColorDecoder PaletteDecoder();
-        protected abstract ColorEncoder PaletteEncoder();
+        public ColorDecoder PaletteDecoder { get; private set; }
+        public ColorEncoder PaletteEncoder { get; private set; }
 
-        protected abstract IndexCodec GetIndexCodec();
+        public IndexCodec IndexCodec { get; private set; }
 
-        protected virtual ImageFilter GetImageFilter(){ return null; }
-        protected virtual PaletteFilter GetPaletteFilter() { return null; }
+        public ImageFilter ImageFilter { get; private set; }
+        public PaletteFilter PaletteFilter { get; private set; }
 
-        protected virtual IComparer<Color> PixelComparer() { return null; }
+        public IComparer<Color> PixelComparer { get; private set; }
+
+
+
+        public sealed class Builder
+        {
+            private PalettedTextureFormat texture=new PalettedTextureFormat();
+            public Builder SetPaletteDecoder(ColorDecoder decoder)
+            {
+                texture.PaletteDecoder = decoder;
+                return this;
+            }
+
+            public Builder SetPaletteEncoder(ColorEncoder encoder)
+            {
+                texture.PaletteEncoder = encoder;
+                return this;
+            }
+
+            public Builder SetIndexCodec(IndexCodec codec)
+            {
+                texture.IndexCodec = codec;
+                return this;
+            }
+
+            public Builder SetImageFilter(ImageFilter filter)
+            {
+                texture.ImageFilter = filter;
+                return this;
+            }
+
+            public Builder SetPaletteFilter(PaletteFilter filter)
+            {
+                texture.PaletteFilter = filter;
+                return this;
+            }
+
+            public Builder SetPixelComparer(IComparer<Color> comparer)
+            {
+                texture.PixelComparer = comparer;
+                return this;
+            }
+
+            public PalettedTextureFormat Build(byte[] imgData, byte[] palData, int width, int height)
+            {
+                texture.Init(imgData, palData, width, height);
+                return texture;
+            }
+
+            public PalettedTextureFormat Build(byte[] imgData, IList<byte[]> palData, int width, int height)
+            {
+                texture.Init(imgData, palData, width, height);
+                return texture;
+            }
+
+            public PalettedTextureFormat Build(Image image)
+            {
+                texture.Init(image);
+                return texture;
+            }
+
+            public PalettedTextureFormat Build(IList<Image> images)
+            {
+                texture.Init(images);
+                return texture;
+            }
+        }
     }
 }

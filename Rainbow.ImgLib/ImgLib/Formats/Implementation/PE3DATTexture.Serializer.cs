@@ -182,7 +182,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             metadata.EndSection();
         }
 
-        public TextureFormat Import(MetadataReader metadata, string directory, string b)
+        public TextureFormat Import(MetadataReader metadata, string directory)
         {
             metadata.EnterSection("PE3DAT");
 

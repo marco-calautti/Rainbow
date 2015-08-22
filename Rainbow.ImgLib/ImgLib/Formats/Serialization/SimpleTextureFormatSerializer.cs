@@ -23,13 +23,13 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
         public abstract string MetadataID { get; }
 
-        protected abstract void OnAddGeneralTextureMetadata(T texture, Metadata.MetadataWriter metadata);
+        protected abstract void OnExportGeneralTextureMetadata(T texture, Metadata.MetadataWriter metadata);
 
-        protected abstract void OnAddFrameMetadata(T texture, int frame, Metadata.MetadataWriter metadata);
+        protected abstract void OnExportFrameMetadata(T texture, int frame, Metadata.MetadataWriter metadata);
 
-        protected abstract T OnReadGeneralTextureMetadata(Metadata.MetadataReader metadata);
+        protected abstract T OnImportGeneralTextureMetadata(Metadata.MetadataReader metadata);
 
-        protected abstract void OnReadFrameMetadata(T texture, Metadata.MetadataReader metadata, IList<Image> images, Image referenceImage);
+        protected abstract void OnImportFrameMetadata(T texture, int frame, Metadata.MetadataReader metadata, IList<Image> images, Image referenceImage);
 
 
         public bool IsValidFormat(System.IO.Stream inputFormat)
@@ -38,7 +38,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             try
             {
                 byte[] magic = new BinaryReader(inputFormat).ReadBytes(MagicID.Length);
-                return magic.Equals(MagicID);
+                return magic.SequenceEqual(MagicID);
             }
             finally
             {
@@ -74,7 +74,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             metadata.PutAttribute("Basename", basename);
 
                 metadata.BeginSection("GeneralMetadata");
-                OnAddGeneralTextureMetadata((T)texture,metadata);
+                OnExportGeneralTextureMetadata((T)texture,metadata);
                 metadata.EndSection();
 
                 int oldSelected=texture.SelectedFrame;
@@ -85,7 +85,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
                     metadata.BeginSection("FrameMetadata");
                     metadata.PutAttribute("PalettesCount", texture.PalettesCount);
 
-                    OnAddFrameMetadata((T)texture, frame, metadata);
+                    OnExportFrameMetadata((T)texture, frame, metadata);
                     metadata.EndSection();
 
                     int i = 0;
@@ -106,14 +106,14 @@ namespace Rainbow.ImgLib.Formats.Serialization
             metadata.EndSection();
         }
 
-        public TextureFormat Import(Metadata.MetadataReader metadata, string directory, string bname)
+        public TextureFormat Import(Metadata.MetadataReader metadata, string directory)
         {
             metadata.EnterSection(MetadataID);
                 int count = metadata.GetAttributeInt("Textures");
                 string basename = metadata.GetAttributeString("Basename");
 
                 metadata.EnterSection("GeneralMetadata");
-                    T texture=OnReadGeneralTextureMetadata(metadata);
+                    T texture=OnImportGeneralTextureMetadata(metadata);
                 metadata.ExitSection();
 
                 for (int frame = 0; frame < count;frame++ )
@@ -134,7 +134,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
                             referenceImage = Image.FromFile(Path.Combine(directory, basename + "_layer" + frame + "_reference.png"));
                         }
 
-                        OnReadFrameMetadata(texture, metadata, images, referenceImage);
+                        OnImportFrameMetadata(texture, frame, metadata, images, referenceImage);
 
                     metadata.ExitSection();
                 }

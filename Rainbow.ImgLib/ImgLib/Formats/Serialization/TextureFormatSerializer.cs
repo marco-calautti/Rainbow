@@ -99,13 +99,13 @@ namespace Rainbow.ImgLib.Formats.Serialization
         void Export(TextureFormat texture, MetadataWriter metadata, string directory, string basename);
 
         /// <summary>
-        /// Initializes a texture of the format implemented by this TextureFormatSerializer from a given metadata stream and a directory containing additional data
-        /// w.r.t. the given basename. What is stored in the given directory is specific to this serializer.
+        /// Initializes a texture of the format implemented by this TextureFormatSerializer from a given metadata stream and a directory containing additional data.
+        /// What is stored in the given directory is specific to this serializer.
         /// The method does not close the stream, but it does not restore the stream position.
         /// </summary>
         /// <exception cref="IOException">if any I/O exception occurs during reading the given stream.</exception>
         /// <param name="metadata"></param>
         /// <param name="directory"></param>
-        TextureFormat Import(MetadataReader metadata, string directory, string basename);
+        TextureFormat Import(MetadataReader metadata, string directory);
     }
 }

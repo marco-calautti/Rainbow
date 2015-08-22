@@ -19,10 +19,10 @@ using System;
 
 namespace Rainbow.ImgLib.Encoding
 {
+    public enum ByteOrder { LittleEndian, BigEndian }
+
     public abstract class IndexCodec
     {
-        public enum ByteOrder { LittleEndian, BigEndian }
-
         public IndexCodec() { Endianess = ByteOrder.LittleEndian; }
 
         public abstract int GetPixelIndex(byte[] pixelData, int width, int height, int x, int y);

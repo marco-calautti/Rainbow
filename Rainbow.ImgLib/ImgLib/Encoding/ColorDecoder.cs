@@ -30,6 +30,10 @@ namespace Rainbow.ImgLib.Encoding
         public static readonly ColorDecoder DECODER_32BIT_RGBA = new ColorDecoder32BitRGBA();
         public static readonly ColorDecoder DECODER_32BIT_BGRA = new ColorDecoder32BitBGRA();
         public static readonly ColorDecoder DECODER_16BITLE_ABGR = new ColorDecoder16BitLEABGR();
+        public static readonly ColorDecoder DECODER_16BITLE_RGB5A3 = new ColorDecoderRGB5A3(ByteOrder.LittleEndian);
+        public static readonly ColorDecoder DECODER_16BITBE_RGB5A3 = new ColorDecoderRGB5A3(ByteOrder.BigEndian);
+        public static readonly ColorDecoder DECODER_16BITLE_RGB565 = new ColorDecoderRGB565(ByteOrder.LittleEndian);
+        public static readonly ColorDecoder DECODER_16BITBE_RGB565 = new ColorDecoderRGB565(ByteOrder.BigEndian);
 
         /// <summary>
         /// Decodes an array of bytes, representing a sequence of color data in some format,

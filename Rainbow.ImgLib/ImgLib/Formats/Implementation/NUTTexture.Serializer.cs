@@ -7,51 +7,43 @@ using Rainbow.ImgLib.Common;
 
 using Rainbow.ImgLib.Formats.Serialization;
 using Rainbow.ImgLib.Formats.Serialization.Metadata;
+using Rainbow.ImgLib.Encoding;
+using Rainbow.ImgLib.Filters;
 
 namespace Rainbow.ImgLib.Formats.Implementation
 {
-    public class NUTTextureSerializer : TextureFormatSerializer
+    public class NUTTextureSerializer : SimpleTextureFormatSerializer<NUTTexture>
     {
 
-        public string Name
+        public override string Name
         {
             get { return NUTTexture.NAME; }
         }
 
-        public string PreferredFormatExtension
+        public override string PreferredFormatExtension
         {
             get { return ".nut"; }
         }
 
-        public bool IsValidFormat(System.IO.Stream inputFormat)
+        public override byte[] MagicID
         {
-            long oldPos = inputFormat.Position;
-            try
-            {
-                char[] magic = new BinaryReader(inputFormat).ReadChars(4);
-                return new string(magic) == "NUTC";
-            }
-            finally
-            {
-                inputFormat.Position = oldPos;
-            }
+            get { return ASCIIEncoding.ASCII.GetBytes("NUTC"); }
         }
 
-        public bool IsValidMetadataFormat(MetadataReader metadataStream)
+        public override string MetadataID
         {
-            throw new NotImplementedException();
+            get { return "NUTTexture"; }
         }
 
-        public TextureFormat Open(System.IO.Stream formatData)
+        public override TextureFormat Open(System.IO.Stream formatData)
         {
+            if(!IsValidFormat(formatData))
+            {
+                throw new TextureFormatException("Not a valid NUT Texture!");
+            }
+
             BinaryReader reader = new BinaryReader(formatData);
-            char[] magic=new char[4];
-            reader.Read(magic, 0, 4);
-
-            if (new string(magic) != "NUTC")
-            {
-                throw new TextureFormatException("Not a valid NUT texture!");
-            }
+            reader.BaseStream.Seek(4, SeekOrigin.Begin);
 
             ushort version = reader.ReadUInt16BE();
             if(version != 0x8002)
@@ -63,60 +55,45 @@ namespace Rainbow.ImgLib.Formats.Implementation
             reader.BaseStream.Position += 0x18;
 
             NUTTexture texture = new NUTTexture();
-            NUTSegmentSerializer serializer=new NUTSegmentSerializer();
+            texture.Version = version;
+            texture.FormatSpecificData.Put<int>("Version", version);
 
             for(int i=0;i<texturesCount;i++)
             {
-                texture.TextureFormats.Add(serializer.Open(formatData));
+                texture.TextureFormats.Add(ConstructSegment(reader));
             }
 
             return texture;
         }
 
-        public void Save(TextureFormat texture, System.IO.Stream outFormatData)
+        public override void Save(TextureFormat texture, System.IO.Stream outFormatData)
         {
             throw new NotImplementedException();
         }
 
-        public void Export(TextureFormat texture, MetadataWriter metadata, string directory, string basename)
+        protected override void OnExportGeneralTextureMetadata(NUTTexture texture, MetadataWriter metadata)
         {
-            throw new NotImplementedException();
+            InteropUtils.WriteTo(texture.FormatSpecificData, metadata);
         }
 
-        public TextureFormat Import(MetadataReader metadata, string directory, string basename)
+        protected override void OnExportFrameMetadata(NUTTexture texture, int frame, MetadataWriter metadata)
         {
-            throw new NotImplementedException();
-        }
-    }
-
-    internal class NUTSegmentSerializer : TextureFormatSerializer
-    {
-        public string Name
-        {
-            get { return "NUT Segment"; }
+            InteropUtils.WriteTo(texture.TextureFormats[frame].FormatSpecificData, metadata);
         }
 
-        public string PreferredFormatExtension
+        protected override NUTTexture OnImportGeneralTextureMetadata(MetadataReader metadata)
         {
-            get { throw new NotImplementedException(); }
+            NUTTexture texture = new NUTTexture();
+
+            return texture;
         }
 
-        public bool IsValidFormat(System.IO.Stream inputFormat)
+        protected override void OnImportFrameMetadata(NUTTexture texture, int frame, MetadataReader metadata, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
         {
-            throw new NotImplementedException();
         }
 
-        public bool IsValidMetadataFormat(MetadataReader metadataStream)
+        private TextureFormat ConstructSegment(BinaryReader reader)
         {
-            throw new NotImplementedException();
-        }
-
-        public TextureFormat Open(System.IO.Stream formatData)
-        {
-            BinaryReader reader = new BinaryReader(formatData);
-
-            NUTTexture.NUTSegmentParameters parameters = new NUTTexture.NUTSegmentParameters();
-
             uint totalSize = reader.ReadUInt32BE();
             uint paletteSize = reader.ReadUInt32BE();
             uint imageSize = reader.ReadUInt32BE();
@@ -136,65 +113,83 @@ namespace Rainbow.ImgLib.Formats.Implementation
             int width = reader.ReadUInt16BE();
             int height = reader.ReadUInt16BE();
 
-            reader.Read(parameters.data, 0, parameters.data.Length);
+            byte[] data=reader.ReadBytes(24);
 
-            parameters.width = width;
-            parameters.height = height;
-            parameters.format = format;
-            parameters.mipmapCount = mipmapsCount;
+            uint userDataSize = headerSize - 0x30;
 
+            byte[] userdata = null;
+            if (userDataSize > 0)
+                userdata = reader.ReadBytes((int)userDataSize);
+
+            byte[] imgData = reader.ReadBytes((int)imageSize);
+            byte[] palData = reader.ReadBytes((int)paletteSize);
+
+            int bpp = 0;
             switch (depth)
             {
+                case 5:
+                    bpp = 4;
+                    break;
                 case 6:
-                    parameters.bpp = 8;
+                    bpp = 8;
                     break;
                 default:
                     throw new TextureFormatException("Unsupported depth " + depth);
             }
 
-            switch (clutFormat)
+            ColorDecoder decoder = null;
+            switch(clutFormat)
             {
+                case 1:
+                    decoder = ColorDecoder.DECODER_16BITBE_RGB565;
+                    break;
+                case 2:
+                    decoder = new DXT1ColorDecoder(ByteOrder.BigEndian, width, height);
+                    break;
                 case 3:
-                    parameters.paletteFormat = NUTTexture.NUTSegmentParameters.PaletteFormat.RGB565;
+                    decoder = ColorDecoder.DECODER_16BITBE_RGB5A3;
                     break;
                 default:
                     throw new TextureFormatException("Unsupported clut format!");
             }
 
-            uint userDataSize = headerSize - 0x30;
+            TextureFormat segment = null;
 
-            if (userDataSize > 0)
-                parameters.userdata = reader.ReadBytes((int)userDataSize);
-
-            byte[] imgData = reader.ReadBytes((int)imageSize);
-            byte[] palData = reader.ReadBytes((int)paletteSize);
-
-            int numberOfPalettes = palData.Length / ((int)colorsCount * 2);
-            int singlePaletteSize = palData.Length / numberOfPalettes;
-
-            IList<byte[]> palettes = new List<byte[]>(numberOfPalettes);
-            for (int i = 0; i < numberOfPalettes; i++)
+            if (clutFormat != 2)
             {
-                palettes.Add(palData.Skip(i * singlePaletteSize).Take(singlePaletteSize).ToArray());
+           
+                int numberOfPalettes = palData.Length / ((int)colorsCount * 2);
+                int singlePaletteSize = palData.Length / numberOfPalettes;
+
+                IList<byte[]> palettes = new List<byte[]>(numberOfPalettes);
+                for (int i = 0; i < numberOfPalettes; i++)
+                {
+                    palettes.Add(palData.Skip(i * singlePaletteSize).Take(singlePaletteSize).ToArray());
+                }
+
+                PalettedTextureFormat.Builder builder = new PalettedTextureFormat.Builder();
+
+                builder.SetPaletteDecoder(decoder)
+                       .SetPaletteEncoder(ColorEncoder.ENCODER_16BITLE_ABGR)
+                       .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp, ByteOrder.BigEndian))
+                       .SetImageFilter(new TileFilter(bpp, 8, 4, width, height));
+
+                segment = builder.Build(imgData, palettes, width, height);
+            }else
+            {
+                GenericTextureFormat.Builder builder = new GenericTextureFormat.Builder();
+
+                segment = builder.SetColorDecoder(decoder)
+                                 .Build(imgData, width, height);
             }
+            segment.FormatSpecificData.Put<int>("Mipmap", mipmapsCount)
+                                      .Put<byte>("ClutFormat", clutFormat)
+                                      .Put<byte>("Format", format)
+                                      .Put<byte>("Depth",depth)
+                                      .Put<byte[]>("Data", data)
+                                      .Put<byte[]>("UserData", userdata);
 
-            NUTTexture.PalettedSegment segment = new NUTTexture.PalettedSegment(imgData, palettes, parameters);
             return segment;
-        }
-
-        public void Save(TextureFormat texture, System.IO.Stream outFormatData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Export(TextureFormat texture, MetadataWriter metadata, string directory, string basename)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TextureFormat Import(MetadataReader metadata, string directory, string basename)
-        {
-            throw new NotImplementedException();
         }
     }
 }

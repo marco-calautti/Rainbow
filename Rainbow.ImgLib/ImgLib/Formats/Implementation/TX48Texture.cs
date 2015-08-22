@@ -16,7 +16,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         public int Bpp
         {
-            get { return ((TX48Texture.Segment)TextureFormats.First()).Bpp;  }
+            get { return ((PalettedTextureFormat)TextureFormats.First()).Bpp;  }
         }
     }
 }

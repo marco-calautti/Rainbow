@@ -20,11 +20,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Rainbow.ImgLib.Common;
 
 namespace Rainbow.ImgLib.Formats
 {
     public abstract class TextureFormatBase : TextureFormat
     {
+        private GenericDictionary specificData = new GenericDictionary();
+
         private int activeFrame, activePalette;
 
         public abstract string Name { get;  }
@@ -79,6 +82,11 @@ namespace Rainbow.ImgLib.Formats
         public Image GetImage()
         {
             return GetImage(activeFrame, activePalette);
+        }
+
+        public GenericDictionary FormatSpecificData 
+        {
+            get { return specificData; }
         }
 
         protected abstract Image GetImage(int activeFrame, int activePalette);

@@ -24,6 +24,7 @@ using System.Text;
 
 using Rainbow.ImgLib.Formats.Serialization;
 using Rainbow.ImgLib.Formats.Serialization.Metadata;
+using Rainbow.ImgLib.Encoding;
 
 namespace Rainbow.ImgLib.Formats.Implementation
 {
@@ -105,7 +106,12 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 byte[] paletteData = reader.ReadBytes(paletteSize);
                 byte[] imageData = reader.ReadBytes(imageSize);
 
-                TX48Texture.Segment segment = new TX48Texture.Segment(imageData, paletteData, width, height, bpp);
+                PalettedTextureFormat.Builder builder = new PalettedTextureFormat.Builder();
+                builder.SetPaletteDecoder(ColorDecoder.DECODER_32BIT_RGBA)
+                       .SetPaletteEncoder(ColorEncoder.ENCODER_32BIT_RGBA)
+                       .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp));
+
+                PalettedTextureFormat segment = builder.Build(imageData, paletteData, width, height);
                 TX48Texture texture = new TX48Texture();
                 texture.TextureFormats.Add(segment);
 
@@ -128,8 +134,8 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             BinaryWriter writer = new BinaryWriter(outFormatData);
 
-            TX48Texture.Segment segment = texture.TextureFormats.First() as TX48Texture.Segment;
-            byte[] img = segment.GetImagesData();
+            PalettedTextureFormat segment = texture.TextureFormats.First() as PalettedTextureFormat;
+            byte[] img = segment.GetImageData();
 
             byte[] pal = segment.GetPaletteData().First();
 
@@ -181,7 +187,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             }
         }
 
-        public TextureFormat Import(MetadataReader metadata, string directory, string bname)
+        public TextureFormat Import(MetadataReader metadata, string directory)
         {
             metadata.EnterSection("TX48Texture");
             string basename = metadata.GetAttributeString("Basename");
@@ -193,7 +199,12 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             metadata.ExitSection();
 
-            TX48Texture.Segment segment = new TX48Texture.Segment(img, bpp);
+
+            PalettedTextureFormat segment = new PalettedTextureFormat.Builder()
+                                                                     .SetPaletteDecoder(ColorDecoder.DECODER_32BIT_RGBA)
+                                                                     .SetPaletteEncoder(ColorEncoder.ENCODER_32BIT_RGBA)
+                                                                     .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp))
+                                                                     .Build(img);
             TX48Texture texture = new TX48Texture();
             texture.TextureFormats.Add(segment);
 

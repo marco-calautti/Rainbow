@@ -15,6 +15,7 @@
 //Official repository and contact information can be found at
 //http://github.com/marco-calautti/Rainbow
 
+using Rainbow.ImgLib.Common;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,7 +30,6 @@ namespace Rainbow.ImgLib.Formats
 
         public TextureFormatException(string message, Exception e)
             : base(message, e) { }
-
     }
 
     /// <summary>
@@ -101,6 +101,8 @@ namespace Rainbow.ImgLib.Formats
         /// </summary>
         /// <returns></returns>
         Image GetReferenceImage();
+
+        GenericDictionary FormatSpecificData { get; }
 
     }
 }

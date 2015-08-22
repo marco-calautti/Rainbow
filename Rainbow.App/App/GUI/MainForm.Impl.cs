@@ -156,7 +156,7 @@ namespace Rainbow.App.GUI
                     SetTexture(curSerializer.Open(stream));
                     break;
                 case TextureFormatMode.Metadata:
-                    SetTexture(curSerializer.Import(reader, Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath)));
+                    SetTexture(curSerializer.Import(reader, Path.GetDirectoryName(fullPath)));
                     break;
                 default:
                     throw new Exception("Should never happen!");
