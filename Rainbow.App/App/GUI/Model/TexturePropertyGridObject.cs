@@ -107,6 +107,7 @@ namespace Rainbow.App.GUI.Model
             }
             set
             {
+
                 texture.SelectedPalette = value;
             }
         }

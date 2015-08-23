@@ -17,13 +17,13 @@
 
 using System;
 
+using Rainbow.ImgLib.Encoding.Implementation;
+using Rainbow.ImgLib.Common;
+
 namespace Rainbow.ImgLib.Encoding
 {
-    public enum ByteOrder { LittleEndian, BigEndian }
-
     public abstract class IndexCodec
     {
-        public IndexCodec() { Endianess = ByteOrder.LittleEndian; }
 
         public abstract int GetPixelIndex(byte[] pixelData, int width, int height, int x, int y);
         public abstract byte[] PackIndexes(int[] indexes, int start, int length);
@@ -34,8 +34,6 @@ namespace Rainbow.ImgLib.Encoding
 
         public abstract int BitDepth { get; }
 
-        public ByteOrder Endianess { get; set; }
-
         public static IndexCodec FromBitPerPixel(int bpp, ByteOrder order = ByteOrder.LittleEndian)
         {
             return FromNumberOfColors(1 << bpp, order);
@@ -44,9 +42,9 @@ namespace Rainbow.ImgLib.Encoding
         public static IndexCodec FromNumberOfColors(int colors, ByteOrder order = ByteOrder.LittleEndian)
         {
             if (colors <= 16)
-                return new IndexCodec4Bpp { Endianess = order };
+                return new IndexCodec4Bpp { ByteOrder = order };
             else if (colors <= 256)
-                return new IndexCodec8Bpp { Endianess = order };
+                return new IndexCodec8Bpp();
             else
                 throw new ArgumentException("Unsupported number of colors");
         }

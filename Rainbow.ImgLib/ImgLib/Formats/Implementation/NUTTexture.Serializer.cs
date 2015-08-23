@@ -8,6 +8,7 @@ using Rainbow.ImgLib.Common;
 using Rainbow.ImgLib.Formats.Serialization;
 using Rainbow.ImgLib.Formats.Serialization.Metadata;
 using Rainbow.ImgLib.Encoding;
+using Rainbow.ImgLib.Encoding.Implementation;
 using Rainbow.ImgLib.Filters;
 
 namespace Rainbow.ImgLib.Formats.Implementation
@@ -45,13 +46,13 @@ namespace Rainbow.ImgLib.Formats.Implementation
             BinaryReader reader = new BinaryReader(formatData);
             reader.BaseStream.Seek(4, SeekOrigin.Begin);
 
-            ushort version = reader.ReadUInt16BE();
+            ushort version = reader.ReadUInt16(ByteOrder.BigEndian);
             if(version != 0x8002)
             {
                 throw new TextureFormatException("Unsupported NUT version!");
             }
 
-            ushort texturesCount = reader.ReadUInt16BE();
+            ushort texturesCount = reader.ReadUInt16(ByteOrder.BigEndian);
             reader.BaseStream.Position += 0x18;
 
             NUTTexture texture = new NUTTexture();
@@ -71,14 +72,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
             throw new NotImplementedException();
         }
 
-        protected override void OnExportGeneralTextureMetadata(NUTTexture texture, MetadataWriter metadata)
+        protected override TextureFormat GetTextureFrame(NUTTexture texture, int frame)
         {
-            InteropUtils.WriteTo(texture.FormatSpecificData, metadata);
-        }
-
-        protected override void OnExportFrameMetadata(NUTTexture texture, int frame, MetadataWriter metadata)
-        {
-            InteropUtils.WriteTo(texture.TextureFormats[frame].FormatSpecificData, metadata);
+            return texture.TextureFormats[frame];
         }
 
         protected override NUTTexture OnImportGeneralTextureMetadata(MetadataReader metadata)
@@ -94,11 +90,11 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         private TextureFormat ConstructSegment(BinaryReader reader)
         {
-            uint totalSize = reader.ReadUInt32BE();
-            uint paletteSize = reader.ReadUInt32BE();
-            uint imageSize = reader.ReadUInt32BE();
-            uint headerSize = reader.ReadUInt16BE();
-            uint colorsCount = reader.ReadUInt16BE();
+            uint totalSize = reader.ReadUInt32(ByteOrder.BigEndian);
+            uint paletteSize = reader.ReadUInt32(ByteOrder.BigEndian);
+            uint imageSize = reader.ReadUInt32(ByteOrder.BigEndian);
+            uint headerSize = reader.ReadUInt16(ByteOrder.BigEndian);
+            uint colorsCount = reader.ReadUInt16(ByteOrder.BigEndian);
             byte format = reader.ReadByte();
             byte mipmapsCount = reader.ReadByte();
 
@@ -110,8 +106,8 @@ namespace Rainbow.ImgLib.Formats.Implementation
             byte clutFormat = reader.ReadByte();
             byte depth = reader.ReadByte();
 
-            int width = reader.ReadUInt16BE();
-            int height = reader.ReadUInt16BE();
+            int width = reader.ReadUInt16(ByteOrder.BigEndian);
+            int height = reader.ReadUInt16(ByteOrder.BigEndian);
 
             byte[] data=reader.ReadBytes(24);
 
@@ -127,35 +123,49 @@ namespace Rainbow.ImgLib.Formats.Implementation
             int bpp = 0;
             switch (depth)
             {
-                case 5:
+                case 4: //DXT1
                     bpp = 4;
                     break;
-                case 6:
+                case 5: //C4
+                    bpp = 4;
+                    break;
+                case 6: //C8
                     bpp = 8;
                     break;
                 default:
                     throw new TextureFormatException("Unsupported depth " + depth);
             }
 
-            ColorDecoder decoder = null;
+            ColorCodec decoder = null;
             switch(clutFormat)
             {
+                case 0:
+                    switch(depth)
+                    {
+                        case 4:
+                            decoder = new ColorCodecDXT1Gamecube(width, height);
+                            break;
+                        default:
+                            throw new TextureFormatException("Usupported unpalletted image format "+depth);
+                    }
+                    break;
                 case 1:
-                    decoder = ColorDecoder.DECODER_16BITBE_RGB565;
+                    decoder = ColorCodec.CODEC_16BITBE_RGB565;
                     break;
                 case 2:
-                    decoder = new DXT1ColorDecoder(ByteOrder.BigEndian, width, height);
+                    decoder = ColorCodec.CODEC_16BITBE_RGB5A3;
                     break;
                 case 3:
-                    decoder = ColorDecoder.DECODER_16BITBE_RGB5A3;
+                case 0xB:
+                    decoder = ColorCodec.CODEC_16BITBE_IA8;
                     break;
                 default:
-                    throw new TextureFormatException("Unsupported clut format!");
+                    throw new TextureFormatException("Unsupported clut format "+clutFormat);
             }
 
             TextureFormat segment = null;
 
-            if (clutFormat != 2)
+            if (clutFormat!=0)
             {
            
                 int numberOfPalettes = palData.Length / ((int)colorsCount * 2);
@@ -169,10 +179,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
                 PalettedTextureFormat.Builder builder = new PalettedTextureFormat.Builder();
 
-                builder.SetPaletteDecoder(decoder)
-                       .SetPaletteEncoder(ColorEncoder.ENCODER_16BITLE_ABGR)
+                builder.SetPaletteCodec(decoder)
                        .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp, ByteOrder.BigEndian))
-                       .SetImageFilter(new TileFilter(bpp, 8, 4, width, height));
+                       .SetImageFilter(new TileFilter(bpp, 8, 32/bpp, width, height));
 
                 segment = builder.Build(imgData, palettes, width, height);
             }else
@@ -180,7 +189,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 GenericTextureFormat.Builder builder = new GenericTextureFormat.Builder();
 
                 segment = builder.SetColorDecoder(decoder)
-                                 .SetImageFilter(new TileFilter(64,2,2,width/0x20,height))
                                  .Build(imgData, width, height);
             }
             segment.FormatSpecificData.Put<int>("Mipmap", mipmapsCount)

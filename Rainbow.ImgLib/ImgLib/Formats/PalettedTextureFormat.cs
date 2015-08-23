@@ -37,7 +37,7 @@ namespace Rainbow.ImgLib.Formats
             for(int pal=0; pal<palData.Count; pal++)
             {
                 PaletteFilter filter=PaletteFilter;
-                Color[] decoded=PaletteDecoder.DecodeColors(palData[pal]);
+                Color[] decoded=PaletteCodec.DecodeColors(palData[pal]);
                 palettes.Add(filter==null? decoded : filter.Defilter(decoded));
             }
 
@@ -62,7 +62,7 @@ namespace Rainbow.ImgLib.Formats
             IndexedImageEncoder encoder = new IndexedImageEncoder(images, 
                                                                   IndexCodec,
                                                                   PixelComparer,
-                                                                  PaletteEncoder,
+                                                                  PaletteCodec,
                                                                   ImageFilter,
                                                                   PaletteFilter);
                 imageData = encoder.Encode();
@@ -136,8 +136,7 @@ namespace Rainbow.ImgLib.Formats
                                            PaletteFilter).ReferenceImage;
         }
 
-        public ColorDecoder PaletteDecoder { get; private set; }
-        public ColorEncoder PaletteEncoder { get; private set; }
+        public ColorCodec PaletteCodec { get; private set; }
 
         public IndexCodec IndexCodec { get; private set; }
 
@@ -151,15 +150,9 @@ namespace Rainbow.ImgLib.Formats
         public sealed class Builder
         {
             private PalettedTextureFormat texture=new PalettedTextureFormat();
-            public Builder SetPaletteDecoder(ColorDecoder decoder)
+            public Builder SetPaletteCodec(ColorCodec decoder)
             {
-                texture.PaletteDecoder = decoder;
-                return this;
-            }
-
-            public Builder SetPaletteEncoder(ColorEncoder encoder)
-            {
-                texture.PaletteEncoder = encoder;
+                texture.PaletteCodec = decoder;
                 return this;
             }
 

@@ -42,11 +42,11 @@ namespace Rainbow.ImgLib.Encoding
         private int width, height;
         private IndexCodec codec;
         private IComparer<Color> pixelSorter=new DefaultColorSorter();
-        private ColorEncoder colorEncoder;
+        private ColorCodec colorEncoder;
         private ImageFilter imageFilter;
         private PaletteFilter paletteFilter;
 
-        public IndexedImageEncoder(IList<Image> images, IndexCodec codec, IComparer<Color> pixelComparer = null, ColorEncoder encoder=null, ImageFilter imageFilter = null, PaletteFilter paletteFilter = null)
+        public IndexedImageEncoder(IList<Image> images, IndexCodec codec, IComparer<Color> pixelComparer = null, ColorCodec encoder=null, ImageFilter imageFilter = null, PaletteFilter paletteFilter = null)
         {
             this.images = images;
             this.codec=codec;

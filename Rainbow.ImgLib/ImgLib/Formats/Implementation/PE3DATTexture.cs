@@ -62,7 +62,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 byte[] imageData = new byte[count];
 
                 reader.Read(paletteData, 0, paletteData.Length);
-                palettes.Add(ColorDecoder.DECODER_32BIT_RGBA.DecodeColors(paletteData));
+                palettes.Add(ColorCodec.CODEC_32BIT_RGBA.DecodeColors(paletteData));
 
                 reader.Read(imageData,0,count);
 
@@ -159,7 +159,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             
             foreach(Color[] palette in palettes)
             {
-                pal.Add(ColorEncoder.ENCODER_32BIT_RGBA.EncodeColors(palette));
+                pal.Add(ColorCodec.CODEC_32BIT_RGBA.EncodeColors(palette));
             }
 
             return pal;

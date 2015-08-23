@@ -25,9 +25,9 @@ namespace Rainbow.ImgLib.Encoding
         protected byte[] pixelData;
         protected int width, height;
 
-        protected ColorDecoder decoder;
+        protected ColorCodec decoder;
 
-        public DirectColorImageDecoder(byte[] pixelData, int width, int height, ColorDecoder decoder, ImageFilter imageFilter=null)
+        public DirectColorImageDecoder(byte[] pixelData, int width, int height, ColorCodec decoder, ImageFilter imageFilter=null)
         {
             this.pixelData = pixelData;
             if (imageFilter != null)

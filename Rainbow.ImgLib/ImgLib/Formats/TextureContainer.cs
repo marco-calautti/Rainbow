@@ -9,10 +9,11 @@ namespace Rainbow.ImgLib.Formats
     public abstract class TextureContainer : TextureFormatBase
     {
         private IList<TextureFormat> textureFormats = new List<TextureFormat>();
-
-        internal IList<TextureFormat> TextureFormats
+        
+        public IList<TextureFormat> TextureFormats
         {
             get { return textureFormats; }
+            set { textureFormats = value; }
         }
 
         public override int Width

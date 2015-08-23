@@ -107,8 +107,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 byte[] imageData = reader.ReadBytes(imageSize);
 
                 PalettedTextureFormat.Builder builder = new PalettedTextureFormat.Builder();
-                builder.SetPaletteDecoder(ColorDecoder.DECODER_32BIT_RGBA)
-                       .SetPaletteEncoder(ColorEncoder.ENCODER_32BIT_RGBA)
+                builder.SetPaletteCodec(ColorCodec.CODEC_32BIT_RGBA)
                        .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp));
 
                 PalettedTextureFormat segment = builder.Build(imageData, paletteData, width, height);
@@ -201,8 +200,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
 
             PalettedTextureFormat segment = new PalettedTextureFormat.Builder()
-                                                                     .SetPaletteDecoder(ColorDecoder.DECODER_32BIT_RGBA)
-                                                                     .SetPaletteEncoder(ColorEncoder.ENCODER_32BIT_RGBA)
+                                                                     .SetPaletteCodec(ColorCodec.CODEC_32BIT_RGBA)
                                                                      .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp))
                                                                      .Build(img);
             TX48Texture texture = new TX48Texture();

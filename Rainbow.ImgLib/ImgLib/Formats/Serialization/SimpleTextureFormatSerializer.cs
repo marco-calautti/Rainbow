@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rainbow.ImgLib.Common;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -23,14 +24,22 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
         public abstract string MetadataID { get; }
 
-        protected abstract void OnExportGeneralTextureMetadata(T texture, Metadata.MetadataWriter metadata);
+        protected void OnExportGeneralTextureMetadata(T texture, Metadata.MetadataWriter metadata)
+        {
+            InteropUtils.WriteTo(texture.FormatSpecificData, metadata);
+        }
 
-        protected abstract void OnExportFrameMetadata(T texture, int frame, Metadata.MetadataWriter metadata);
+        protected void OnExportFrameMetadata(T texture, int frame, Metadata.MetadataWriter metadata)
+        {
+            TextureFormat tFrame = GetTextureFrame(texture, frame);
+            InteropUtils.WriteTo(tFrame.FormatSpecificData, metadata);
+        }
+
+        protected abstract TextureFormat GetTextureFrame(T texture, int frame);
 
         protected abstract T OnImportGeneralTextureMetadata(Metadata.MetadataReader metadata);
 
         protected abstract void OnImportFrameMetadata(T texture, int frame, Metadata.MetadataReader metadata, IList<Image> images, Image referenceImage);
-
 
         public bool IsValidFormat(System.IO.Stream inputFormat)
         {

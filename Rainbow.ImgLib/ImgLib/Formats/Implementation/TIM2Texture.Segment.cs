@@ -107,7 +107,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                     throw new TextureFormatException("Too many images for this true color segment!");
 
                 IEnumerator<Image> en = images.GetEnumerator(); en.MoveNext();
-                imageData = GetColorEncoder(parameters.colorSize).EncodeColors(en.Current.GetColorArray()); //I love extension methods. Hurray!
+                imageData = GetColorCodec(parameters.colorSize).EncodeColors(en.Current.GetColorArray()); //I love extension methods. Hurray!
             }else
             {
                 IndexedImageEncoder encoder=new IndexedImageEncoder(new List<Image>(images), IndexCodec.FromBitPerPixel(parameters.bpp),new TIM2ColorSorter());
@@ -192,7 +192,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             {
                 decoder = new DirectColorImageDecoder(imageData,
                                               parameters.width, parameters.height,
-                                              GetColorDecoder(parameters.colorSize));
+                                              GetColorCodec(parameters.colorSize));
 
             }
         }
@@ -213,36 +213,21 @@ namespace Rainbow.ImgLib.Formats.Implementation
             for (int i = 0; i < numberOfPalettes; i++)
             {
 
-                palettes[i] = GetColorDecoder(parameters.colorSize).DecodeColors(paletteData, start, singlePaletteSize);
+                palettes[i] = GetColorCodec(parameters.colorSize).DecodeColors(paletteData, start, singlePaletteSize);
                 start += singlePaletteSize;
             }
         }
 
-        private ColorDecoder GetColorDecoder(int pixelSize)
+        private ColorCodec GetColorCodec(int pixelSize)
         {
             switch (pixelSize)
             {
                 case 2:
-                    return ColorDecoder.DECODER_16BITLE_ABGR;
+                    return ColorCodec.CODEC_16BITLE_ABGR;
                 case 3:
-                    return ColorDecoder.DECODER_24BIT_RGB;
+                    return ColorCodec.CODEC_24BIT_RGB;
                 case 4:
-                    return ColorDecoder.DECODER_32BIT_RGBA;
-                default:
-                    throw new TextureFormatException("Illegal Pixel size!");
-            }
-        }
-
-        private ColorEncoder GetColorEncoder(int pixelSize)
-        {
-            switch (pixelSize)
-            {
-                case 2:
-                    return ColorEncoder.ENCODER_16BITLE_ABGR;
-                case 3:
-                    return ColorEncoder.ENCODER_24BIT_RGB;
-                case 4:
-                    return ColorEncoder.ENCODER_32BIT_RGBA;
+                    return ColorCodec.CODEC_32BIT_RGBA;
                 default:
                     throw new TextureFormatException("Illegal Pixel size!");
             }
@@ -260,7 +245,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
         internal byte[] GetPaletteData()
         {
 
-            ColorEncoder encoder = GetColorEncoder(parameters.colorSize);
+            ColorCodec encoder = GetColorCodec(parameters.colorSize);
 
             MemoryStream stream = new MemoryStream();
             foreach(Color[] palette in palettes)

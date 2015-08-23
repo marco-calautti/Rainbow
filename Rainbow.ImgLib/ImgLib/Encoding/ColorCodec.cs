@@ -17,6 +17,9 @@
 
 using System.Drawing;
 
+using Rainbow.ImgLib.Encoding.Implementation;
+using Rainbow.ImgLib.Common;
+
 namespace Rainbow.ImgLib.Encoding
 {
 
@@ -24,16 +27,18 @@ namespace Rainbow.ImgLib.Encoding
     /// Base class for implementing color decoders. A color decoder is an object that converts a byte array of raw color data into a sequence of Colors.
     /// One example of implementation is ColorDecoder32BitRGBA, that converts quadruples of bytes representing the four components RGBA.
     /// </summary>
-    public abstract class ColorDecoder
+    public abstract class ColorCodec
     {
-        public static readonly ColorDecoder DECODER_24BIT_RGB = new ColorDecoder24BitRGB();
-        public static readonly ColorDecoder DECODER_32BIT_RGBA = new ColorDecoder32BitRGBA();
-        public static readonly ColorDecoder DECODER_32BIT_BGRA = new ColorDecoder32BitBGRA();
-        public static readonly ColorDecoder DECODER_16BITLE_ABGR = new ColorDecoder16BitLEABGR();
-        public static readonly ColorDecoder DECODER_16BITLE_RGB5A3 = new ColorDecoderRGB5A3(ByteOrder.LittleEndian);
-        public static readonly ColorDecoder DECODER_16BITBE_RGB5A3 = new ColorDecoderRGB5A3(ByteOrder.BigEndian);
-        public static readonly ColorDecoder DECODER_16BITLE_RGB565 = new ColorDecoderRGB565(ByteOrder.LittleEndian);
-        public static readonly ColorDecoder DECODER_16BITBE_RGB565 = new ColorDecoderRGB565(ByteOrder.BigEndian);
+        public static readonly ColorCodec CODEC_24BIT_RGB = new ColorCodec24BitRGB();
+        public static readonly ColorCodec CODEC_32BIT_RGBA = new ColorCodec32BitRGBA();
+        public static readonly ColorCodec CODEC_32BIT_BGRA = new ColorCodec32BitBGRA();
+        public static readonly ColorCodec CODEC_16BITLE_ABGR = new ColorCodec16BitLEABGR();
+        public static readonly ColorCodec CODEC_16BITLE_RGB5A3 = new ColorCodecRGB5A3(ByteOrder.LittleEndian);
+        public static readonly ColorCodec CODEC_16BITBE_RGB5A3 = new ColorCodecRGB5A3(ByteOrder.BigEndian);
+        public static readonly ColorCodec CODEC_16BITLE_RGB565 = new ColorCodecRGB565(ByteOrder.LittleEndian);
+        public static readonly ColorCodec CODEC_16BITBE_RGB565 = new ColorCodecRGB565(ByteOrder.BigEndian);
+        public static readonly ColorCodec CODEC_16BITLE_IA8 = new ColorCodecIA8(ByteOrder.LittleEndian);
+        public static readonly ColorCodec CODEC_16BITBE_IA8 = new ColorCodecIA8(ByteOrder.BigEndian);
 
         /// <summary>
         /// Decodes an array of bytes, representing a sequence of color data in some format,
@@ -51,6 +56,24 @@ namespace Rainbow.ImgLib.Encoding
         public virtual Color[] DecodeColors(byte[] colors)
         {
             return DecodeColors(colors, 0, colors.Length);
+        }
+
+        /// <summary>
+        /// Encodes an array of colors into an array of bytes, following the encoding of this object.
+        /// </summary>
+        /// <param name="colors">The array of colors to be encoded.</param>
+        /// <param name="start">The position of the first color to be encoded.</param>
+        /// <param name="length">How many colors need to be encoded.</param>
+        public abstract byte[] EncodeColors(Color[] colors, int start, int length);
+
+        /// <summary>
+        /// See byte[] EncodeColors(Color[] colors, int start, int length) documentation.
+        /// </summary>
+        /// <param name="colors"></param>
+        /// <returns></returns>
+        public virtual byte[] EncodeColors(Color[] colors)
+        {
+            return EncodeColors(colors, 0, colors.Length);
         }
 
         /// <summary>

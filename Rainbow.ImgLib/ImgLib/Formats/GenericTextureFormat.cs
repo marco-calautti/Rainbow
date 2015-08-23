@@ -34,7 +34,7 @@ namespace Rainbow.ImgLib.Formats
             return imageData;
         }
 
-        public ColorDecoder ColorDecoder
+        public ColorCodec ColorDecoder
         {
             get;
             private set;
@@ -85,7 +85,7 @@ namespace Rainbow.ImgLib.Formats
         {
             private GenericTextureFormat texture = new GenericTextureFormat();
 
-            public Builder SetColorDecoder(ColorDecoder decoder)
+            public Builder SetColorDecoder(ColorCodec decoder)
             {
                 texture.ColorDecoder = decoder;
                 return this;
