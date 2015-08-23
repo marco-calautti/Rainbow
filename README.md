@@ -7,6 +7,7 @@ If you want to contact me: marco.calautti [at] gmail [.] com. For bug/issues rep
 
 If you want to **compile** Rainbow, please refer to this [wiki page](https://github.com/marco-calautti/Rainbow/wiki/How-to-build-Rainbow).
 
+
 Rainbow is a tool, written in C#, intended to handle different graphics formats from video games assets.
 Currently, Rainbow supports almost every variant of the TIM2 format and some game specific formats (see the Feature section below).
 It requires the .NET framework v3.5+ or any version of mono supporting v3.5 (tested on mono 2.10.x).
@@ -42,6 +43,16 @@ When a multi-clut TIM2 is exported, instead, a png file for each clut is created
 
 To-do
 =======
+
+**Currently working on**
+* Fix DXT1Decoder.
+* Reverse engineer NUT encodings.
+* Complete GenericTextureFormat to be constructible from Image, ColorEncoder ecc.
+* Fix export/import for multiclut TIM2 imags using reference image.
+* Let IndexedImageEncoders to be constructed using a reference gray scale image.
+* Add missing copyright snippet to new files.
+
+**Future work**
 * Add support to mipmap TIM2 textures. They are rare and usually used just for materials.
 * Add support to GIM textures (eventually through GimSharp).
 * Add scanning of textures inside other files in order to extract and reinsert textures with one click. Actually, there is a tool from Vash that allows to achieve such a task http://www.romhacking.net/utilities/659/.
