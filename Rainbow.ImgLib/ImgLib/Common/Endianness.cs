@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Common
 {
+    public enum ByteOrder { LittleEndian, BigEndian }
+
     public interface EndiannessDependent
     {
         ByteOrder ByteOrder { get; set; }

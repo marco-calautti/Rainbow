@@ -7,8 +7,11 @@ using Rainbow.ImgLib.Common;
 
 namespace Rainbow.ImgLib.Encoding.Implementation
 {
-    public class IndexCodec4Bpp : IndexCodec, EndiannessDependent
+    public class IndexCodec4Bpp : IndexCodecEndiannessDependent
     {
+        public IndexCodec4Bpp(ByteOrder order):
+            base(order) { }
+
         public override int GetPixelIndex(byte[] pixelData, int width, int height, int x, int y)
         {
             int pos = x + y * width;
@@ -43,7 +46,5 @@ namespace Rainbow.ImgLib.Encoding.Implementation
         {
             get { return 4; }
         }
-
-        public ByteOrder ByteOrder { get; set; }
     }
 }

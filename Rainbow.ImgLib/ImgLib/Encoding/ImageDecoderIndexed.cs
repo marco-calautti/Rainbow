@@ -21,7 +21,7 @@ using System.Drawing;
 
 namespace Rainbow.ImgLib.Encoding
 {
-    public class IndexedImageDecoder : ImageDecoder
+    public class ImageDecoderIndexed : ImageDecoder
     {
 
         protected byte[] pixelData;
@@ -32,7 +32,7 @@ namespace Rainbow.ImgLib.Encoding
 
         protected Color[] grayScale;
 
-        public IndexedImageDecoder(byte[] pixelData, int width, int height, IndexCodec codec, Color[] palette = null, ImageFilter imageFilter=null, PaletteFilter paletteFilter=null)
+        public ImageDecoderIndexed(byte[] pixelData, int width, int height, IndexCodec codec, Color[] palette = null, ImageFilter imageFilter=null, PaletteFilter paletteFilter=null)
         {
             this.pixelData = pixelData;
             if (imageFilter != null)

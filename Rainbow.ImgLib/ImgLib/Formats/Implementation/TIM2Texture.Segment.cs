@@ -110,7 +110,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 imageData = GetColorCodec(parameters.colorSize).EncodeColors(en.Current.GetColorArray()); //I love extension methods. Hurray!
             }else
             {
-                IndexedImageEncoder encoder=new IndexedImageEncoder(new List<Image>(images), IndexCodec.FromBitPerPixel(parameters.bpp),new TIM2ColorSorter());
+                ImageEncoderIndexed encoder=new ImageEncoderIndexed(new List<Image>(images), IndexCodec.FromBitPerPixel(parameters.bpp),new TIM2ColorSorter());
                 imageData = encoder.Encode();
                 palettes = new List<Color[]>(encoder.Palettes).ToArray();
             }
@@ -171,7 +171,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         protected override Image GetImage(int activeFrame,int activePalette)
         {
-            IndexedImageDecoder iDecoder = decoder as IndexedImageDecoder;
+            ImageDecoderIndexed iDecoder = decoder as ImageDecoderIndexed;
             if (iDecoder != null)
                 iDecoder.Palette = palettes[activePalette];
 
@@ -183,14 +183,14 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             if (Bpp <= 8) //here we have an Indexed TIM2
             {
-                decoder = new IndexedImageDecoder(imageData,
+                decoder = new ImageDecoderIndexed(imageData,
                                               parameters.width, parameters.height,
                                               IndexCodec.FromBitPerPixel(Bpp),
                                               palettes[SelectedPalette]);
             }
             else //otherwise, we have a true color TIM2
             {
-                decoder = new DirectColorImageDecoder(imageData,
+                decoder = new ImageDecoderDirectColor(imageData,
                                               parameters.width, parameters.height,
                                               GetColorCodec(parameters.colorSize));
 
@@ -268,7 +268,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         public override Image GetReferenceImage()
         {
-            IndexedImageDecoder iDecoder = decoder as IndexedImageDecoder;
+            ImageDecoderIndexed iDecoder = decoder as ImageDecoderIndexed;
             if (iDecoder != null && PalettesCount > 1)
             {
                 return iDecoder.ReferenceImage;

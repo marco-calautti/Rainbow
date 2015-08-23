@@ -42,7 +42,7 @@ namespace Rainbow.ImgLib.Encoding
         public static IndexCodec FromNumberOfColors(int colors, ByteOrder order = ByteOrder.LittleEndian)
         {
             if (colors <= 16)
-                return new IndexCodec4Bpp { ByteOrder = order };
+                return new IndexCodec4Bpp(order);
             else if (colors <= 256)
                 return new IndexCodec8Bpp();
             else

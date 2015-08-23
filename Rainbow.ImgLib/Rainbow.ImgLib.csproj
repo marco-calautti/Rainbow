@@ -47,10 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ImgLib\Common\BinaryReaderExtensions.cs" />
-    <Compile Include="ImgLib\Common\EndiannessDependent.cs" />
+    <Compile Include="ImgLib\Common\Endianness.cs" />
     <Compile Include="ImgLib\Common\GenericDictionary.cs" />
     <Compile Include="ImgLib\Common\ImageExtensions.cs" />
     <Compile Include="ImgLib\Common\InteropUtils.cs" />
+    <Compile Include="ImgLib\Encoding\ColorCodecEndiannessDependent.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodecDXT1.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodec16BitLEABGR.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodec24BitRGB.cs" />
@@ -62,11 +63,12 @@
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodecDXT1Gamecube.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\IndexCodec4Bpp.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\IndexCodec8Bpp.cs" />
+    <Compile Include="ImgLib\Encoding\IndexCodecEndiannessDependent.cs" />
     <Compile Include="ImgLib\Filters\Filter.cs" />
     <Compile Include="ImgLib\Filters\SwizzleFilter.cs" />
     <Compile Include="ImgLib\Filters\TileFilter.cs" />
     <Compile Include="ImgLib\Filters\TIM2PaletteFilter.cs" />
-    <Compile Include="ImgLib\Encoding\IndexedImageEncoder.cs" />
+    <Compile Include="ImgLib\Encoding\ImageEncoderIndexed.cs" />
     <Compile Include="ImgLib\Encoding\IndexCodec.cs" />
     <Compile Include="ImgLib\Encoding\ImageDecoder.cs" />
     <Compile Include="ImgLib\Encoding\ImageEncoder.cs" />
@@ -91,7 +93,7 @@
     <Compile Include="ImgLib\Formats\Implementation\TX48Texture.Serializer.cs" />
     <Compile Include="ImgLib\Formats\TextureContainer.cs" />
     <Compile Include="ImgLib\Formats\TextureFormat.cs" />
-    <Compile Include="ImgLib\Encoding\IndexedImageDecoder.cs" />
+    <Compile Include="ImgLib\Encoding\ImageDecoderIndexed.cs" />
     <Compile Include="ImgLib\Encoding\ColorCodec.cs" />
     <Compile Include="ImgLib\Formats\Serialization\TextureFormatSerializer.cs" />
     <Compile Include="ImgLib\Formats\TextureFormatBase.cs" />
@@ -99,7 +101,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ImgLib\Formats\Implementation\TIM2Texture.cs" />
     <Compile Include="ImgLib\Formats\Implementation\TIM2Texture.Segment.cs" />
-    <Compile Include="ImgLib\Encoding\DirectColorImageDecoder.cs" />
+    <Compile Include="ImgLib\Encoding\ImageDecoderDirectColor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nQuant.Core\nQuant.Core.csproj">

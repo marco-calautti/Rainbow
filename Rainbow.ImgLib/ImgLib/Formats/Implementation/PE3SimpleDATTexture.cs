@@ -50,7 +50,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             width = img.Width;
             height = img.Height;
 
-            IndexedImageEncoder encoder = new IndexedImageEncoder(new List<Image> { img }, 
+            ImageEncoderIndexed encoder = new ImageEncoderIndexed(new List<Image> { img }, 
                                                                   IndexCodec.FromBitPerPixel(4), null, null, 
                                                                   new SwizzleFilter(width, height, 4));
             imageData = encoder.Encode();
@@ -93,7 +93,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
         protected override System.Drawing.Image GetImage(int activeFrame, int activePalette)
         {
 
-            IndexedImageDecoder decoder = new IndexedImageDecoder(imageData, 
+            ImageDecoderIndexed decoder = new ImageDecoderIndexed(imageData, 
                                                                   Width, Height, 
                                                                   IndexCodec.FromBitPerPixel(4), null,
                                                                   new SwizzleFilter(Width, Height, 4));

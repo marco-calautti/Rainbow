@@ -59,7 +59,7 @@ namespace Rainbow.ImgLib.Formats
             height = images.First().Height;
 
 
-            IndexedImageEncoder encoder = new IndexedImageEncoder(images, 
+            ImageEncoderIndexed encoder = new ImageEncoderIndexed(images, 
                                                                   IndexCodec,
                                                                   PixelComparer,
                                                                   PaletteCodec,
@@ -103,7 +103,7 @@ namespace Rainbow.ImgLib.Formats
 
         protected override System.Drawing.Image GetImage(int activeFrame, int activePalette)
         {
-            return new IndexedImageDecoder(imageData,
+            return new ImageDecoderIndexed(imageData,
                                            width,
                                            height,
                                            IndexCodec,
@@ -127,7 +127,7 @@ namespace Rainbow.ImgLib.Formats
             if (PalettesCount <= 1)
                 return null;
 
-            return new IndexedImageDecoder(imageData,
+            return new ImageDecoderIndexed(imageData,
                                            width,
                                            height,
                                            IndexCodec,

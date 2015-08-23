@@ -26,7 +26,7 @@ namespace Rainbow.ImgLib.Formats
             this.width=width;
             this.height=height;
 
-            decoder = new DirectColorImageDecoder(imageData, width, height, ColorDecoder, ImageFilter);
+            decoder = new ImageDecoderDirectColor(imageData, width, height, ColorDecoder, ImageFilter);
         }
 
         internal byte[] GetImageData()

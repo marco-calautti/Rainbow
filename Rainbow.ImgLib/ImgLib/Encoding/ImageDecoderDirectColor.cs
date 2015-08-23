@@ -20,14 +20,14 @@ using System.Drawing;
 
 namespace Rainbow.ImgLib.Encoding
 {
-    public class DirectColorImageDecoder : ImageDecoder
+    public class ImageDecoderDirectColor : ImageDecoder
     {
         protected byte[] pixelData;
         protected int width, height;
 
         protected ColorCodec decoder;
 
-        public DirectColorImageDecoder(byte[] pixelData, int width, int height, ColorCodec decoder, ImageFilter imageFilter=null)
+        public ImageDecoderDirectColor(byte[] pixelData, int width, int height, ColorCodec decoder, ImageFilter imageFilter=null)
         {
             this.pixelData = pixelData;
             if (imageFilter != null)

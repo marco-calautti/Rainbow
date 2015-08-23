@@ -26,7 +26,7 @@ using Rainbow.ImgLib.Filters;
 
 namespace Rainbow.ImgLib.Encoding
 {
-    public class IndexedImageEncoder : ImageEncoder
+    public class ImageEncoderIndexed : ImageEncoder
     {
         private class DefaultColorSorter : IComparer<Color>
         {
@@ -46,7 +46,7 @@ namespace Rainbow.ImgLib.Encoding
         private ImageFilter imageFilter;
         private PaletteFilter paletteFilter;
 
-        public IndexedImageEncoder(IList<Image> images, IndexCodec codec, IComparer<Color> pixelComparer = null, ColorCodec encoder=null, ImageFilter imageFilter = null, PaletteFilter paletteFilter = null)
+        public ImageEncoderIndexed(IList<Image> images, IndexCodec codec, IComparer<Color> pixelComparer = null, ColorCodec encoder=null, ImageFilter imageFilter = null, PaletteFilter paletteFilter = null)
         {
             this.images = images;
             this.codec=codec;

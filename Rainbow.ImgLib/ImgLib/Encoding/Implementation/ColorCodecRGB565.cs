@@ -9,13 +9,11 @@ using Rainbow.ImgLib.Common;
 
 namespace Rainbow.ImgLib.Encoding.Implementation
 {
-    public class ColorCodecRGB565 : ColorCodec, EndiannessDependent
+    public class ColorCodecRGB565 : ColorCodecEndiannessDependent
     {
 
-        public ColorCodecRGB565(ByteOrder order)
-        {
-            ByteOrder = order;
-        }
+        public ColorCodecRGB565(ByteOrder order):
+            base(order) { }
 
         public override Color[] DecodeColors(byte[] colors, int start, int length)
         {
@@ -44,8 +42,6 @@ namespace Rainbow.ImgLib.Encoding.Implementation
         {
             get { return 16; }
         }
-
-        public ByteOrder ByteOrder {get; set;}
 
         public override byte[] EncodeColors(Color[] colors, int start, int length)
         {

@@ -6,7 +6,6 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Common
 {
-    public enum ByteOrder { LittleEndian, BigEndian }
 
     public static class BinaryReaderExtensions
     {

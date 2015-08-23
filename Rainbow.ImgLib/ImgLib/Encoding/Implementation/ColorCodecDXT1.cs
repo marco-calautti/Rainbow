@@ -10,14 +10,14 @@ using Rainbow.ImgLib.Filters;
 
 namespace Rainbow.ImgLib.Encoding.Implementation
 {
-    public class ColorCodecDXT1 : ColorCodec, EndiannessDependent
+    public class ColorCodecDXT1 : ColorCodecEndiannessDependent
     {
         private int width, height;
         private static Color[] clut = new Color[4];
 
-        public ColorCodecDXT1(ByteOrder order, int width, int height)
+        public ColorCodecDXT1(ByteOrder order, int width, int height):
+            base(order)
         {
-            ByteOrder = order;
             this.width = width;
             this.height = height;
         }
@@ -65,8 +65,6 @@ namespace Rainbow.ImgLib.Encoding.Implementation
         {
             get { return 4; }
         }
-
-        public ByteOrder ByteOrder { get; set; }
 
         protected void DecodeDXT1Block(BinaryReader reader, Color[] tile)
         {

@@ -8,12 +8,10 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Encoding.Implementation
 {
-    public class ColorCodecIA8 : ColorCodec, EndiannessDependent
+    public class ColorCodecIA8 : ColorCodecEndiannessDependent
     {
-        public ColorCodecIA8(ByteOrder order)
-        {
-            ByteOrder = order;
-        }
+        public ColorCodecIA8(ByteOrder order):
+            base(order) { }
 
         public override Color[] DecodeColors(byte[] colors, int start, int length)
         {
@@ -40,7 +38,5 @@ namespace Rainbow.ImgLib.Encoding.Implementation
         {
             get { return 16; }
         }
-
-        public ByteOrder ByteOrder { get; set; }
     }
 }
