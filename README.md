@@ -45,7 +45,7 @@ To-do
 =======
 
 **Currently working on**
-* Fix DXT1Decoder.
+* ~~Fix DXT1Decoder~~.
 * Reverse engineer NUT encodings.
 * Complete GenericTextureFormat to be constructible from Image, ColorEncoder ecc.
 * Fix export/import for multiclut TIM2 imags using reference image.
