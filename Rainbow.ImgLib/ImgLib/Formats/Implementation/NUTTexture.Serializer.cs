@@ -180,6 +180,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 GenericTextureFormat.Builder builder = new GenericTextureFormat.Builder();
 
                 segment = builder.SetColorDecoder(decoder)
+                                 .SetImageFilter(new TileFilter(64,2,2,width/0x20,height))
                                  .Build(imgData, width, height);
             }
             segment.FormatSpecificData.Put<int>("Mipmap", mipmapsCount)
