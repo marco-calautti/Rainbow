@@ -98,11 +98,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
             byte format = reader.ReadByte();
             byte mipmapsCount = reader.ReadByte();
 
-            if (mipmapsCount != 1)
-            {
-                throw new TextureFormatException("Mipmaps not supported!");
-            }
-
             byte clutFormat = reader.ReadByte();
             byte depth = reader.ReadByte();
 
@@ -117,57 +112,54 @@ namespace Rainbow.ImgLib.Formats.Implementation
             if (userDataSize > 0)
                 userdata = reader.ReadBytes((int)userDataSize);
 
-            byte[] imgData = reader.ReadBytes((int)imageSize);
+            int totalPixels = 0;
+            for(int i=0;i<mipmapsCount;i++)
+            {
+                totalPixels += ImageUtils.GetMipmapWidth(width, i) * ImageUtils.GetMipmapHeight(height, i);
+            }
+
+            int firstImageSize = mipmapsCount!=0? (int)((width * height * imageSize) / totalPixels) : 0;
+
+            byte[] imgData = reader.ReadBytes(firstImageSize);
+            //we don't need to load the mipmaps, since they can be generated as needed.
+            //just skip the mipmaps
+            reader.BaseStream.Position += (imageSize - firstImageSize);
+
             byte[] palData = reader.ReadBytes((int)paletteSize);
 
-            int bpp = 0;
-            switch (depth)
-            {
-                case 4: //DXT1
-                    bpp = 4;
-                    break;
-                case 5: //C4
-                    bpp = 4;
-                    break;
-                case 6: //C8
-                    bpp = 8;
-                    break;
-                default:
-                    throw new TextureFormatException("Unsupported depth " + depth);
-            }
-
             ColorCodec decoder = null;
-            switch(clutFormat)
-            {
-                case 0:
-                    switch(depth)
-                    {
-                        case 4:
-                            decoder = new ColorCodecDXT1Gamecube(width, height);
-                            break;
-                        default:
-                            throw new TextureFormatException("Usupported unpalletted image format "+depth);
-                    }
-                    break;
-                case 1:
-                    decoder = ColorCodec.CODEC_16BITBE_RGB565;
-                    break;
-                case 2:
-                    decoder = ColorCodec.CODEC_16BITBE_RGB5A3;
-                    break;
-                case 3:
-                case 0xB:
-                    decoder = ColorCodec.CODEC_16BITBE_IA8;
-                    break;
-                default:
-                    throw new TextureFormatException("Unsupported clut format "+clutFormat);
-            }
-
             TextureFormat segment = null;
 
-            if (clutFormat!=0)
+            if(clutFormat!=0)
             {
-           
+                int bpp;
+                switch (depth)
+                {
+                    case 5: //C4
+                        bpp = 4;
+                        break;
+                    case 6: //C8
+                        bpp = 8;
+                        break;
+                    default:
+                        throw new TextureFormatException("Unsupported depth " + depth);
+                }
+                switch (clutFormat)
+                {
+                    case 1:
+                        decoder = ColorCodec.CODEC_16BITBE_RGB565;
+                        break;
+                    case 2:
+                        decoder = ColorCodec.CODEC_16BITBE_RGB5A3;
+                        break;
+                    case 3:
+                    case 0xB: //not sure about this (FIX)
+                        decoder = ColorCodec.CODEC_16BITBE_IA8;
+                        break;
+                    default:
+                        throw new TextureFormatException("Unsupported clut format " + clutFormat);
+                }
+
                 int numberOfPalettes = palData.Length / ((int)colorsCount * 2);
                 int singlePaletteSize = palData.Length / numberOfPalettes;
 
@@ -180,17 +172,43 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 PalettedTextureFormat.Builder builder = new PalettedTextureFormat.Builder();
 
                 builder.SetPaletteCodec(decoder)
+                       .SetMipmapsCount(mipmapsCount)
                        .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp, ByteOrder.BigEndian))
-                       .SetImageFilter(new TileFilter(bpp, 8, 32/bpp, width, height));
+                       .SetImageFilter(new TileFilter(bpp, 8, 32 / bpp, width, height));
 
                 segment = builder.Build(imgData, palettes, width, height);
+
             }else
             {
                 GenericTextureFormat.Builder builder = new GenericTextureFormat.Builder();
+                switch (depth)
+                {
+                    case 3: //RGBA 32bit?
+                        decoder = ColorCodec.CODEC_32BIT_BGRA;
+                        builder.SetImageFilter(new TileFilter(32, 4, 4, width, height));
+                        break;
+                    case 4: //DXT1
+                        decoder = new ColorCodecDXT1Gamecube(width, height);
+                        break;
+                    case 0xA: // I8
+                        decoder = ColorCodec.CODEC_8BIT_I8;
+                        builder.SetImageFilter(new TileFilter(8, 8, 4, width, height));
+                        break;
+                    case 0xB: // IA8
+                        decoder=ColorCodec.CODEC_16BITBE_IA8;
+                        builder.SetImageFilter(new TileFilter(16, 4, 4, width, height));
+                        break;
+                    default:
+                        throw new TextureFormatException("Usupported unpalletted image format " + depth);
+                }
 
-                segment = builder.SetColorDecoder(decoder)
+                
+                segment = builder.SetColorCodec(decoder)
+                                 .SetMipmapsCount(mipmapsCount)
                                  .Build(imgData, width, height);
             }
+
+            
             segment.FormatSpecificData.Put<int>("Mipmap", mipmapsCount)
                                       .Put<byte>("ClutFormat", clutFormat)
                                       .Put<byte>("Format", format)

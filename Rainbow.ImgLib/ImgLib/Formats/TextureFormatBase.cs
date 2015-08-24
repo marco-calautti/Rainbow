@@ -30,6 +30,8 @@ namespace Rainbow.ImgLib.Formats
 
         private int activeFrame, activePalette;
 
+        private int mipmapsCount;
+
         public abstract string Name { get;  }
         
         public abstract int Width{ get; }
@@ -40,7 +42,25 @@ namespace Rainbow.ImgLib.Formats
 
         public abstract int PalettesCount { get;  }
 
+        public virtual int MipmapsCount { get { return mipmapsCount; }}
+
+        public TextureFormatBase(int mipmapsCount=1)
+        {
+            this.mipmapsCount = mipmapsCount;
+        }
+
         public abstract Image GetReferenceImage();
+
+        public Image GetMipmap(int i)
+        {
+            if (i < 0 || i >= MipmapsCount)
+                throw new IndexOutOfRangeException();
+
+            Image img = GetImage();
+
+
+            return img.GetMipmap(i);
+        }
 
         public event EventHandler TextureChanged;
 

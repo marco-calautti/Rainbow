@@ -32,6 +32,7 @@ namespace Rainbow.ImgLib.Encoding
         public static readonly ColorCodec CODEC_24BIT_RGB = new ColorCodec24BitRGB();
         public static readonly ColorCodec CODEC_32BIT_RGBA = new ColorCodec32BitRGBA();
         public static readonly ColorCodec CODEC_32BIT_BGRA = new ColorCodec32BitBGRA();
+        public static readonly ColorCodec CODEC_32BIT_ARGB = new ColorCodec32BitARGB();
         public static readonly ColorCodec CODEC_16BITLE_ABGR = new ColorCodec16BitLEABGR();
         public static readonly ColorCodec CODEC_16BITLE_RGB5A3 = new ColorCodecRGB5A3(ByteOrder.LittleEndian);
         public static readonly ColorCodec CODEC_16BITBE_RGB5A3 = new ColorCodecRGB5A3(ByteOrder.BigEndian);
@@ -39,6 +40,10 @@ namespace Rainbow.ImgLib.Encoding
         public static readonly ColorCodec CODEC_16BITBE_RGB565 = new ColorCodecRGB565(ByteOrder.BigEndian);
         public static readonly ColorCodec CODEC_16BITLE_IA8 = new ColorCodecIA8(ByteOrder.LittleEndian);
         public static readonly ColorCodec CODEC_16BITBE_IA8 = new ColorCodecIA8(ByteOrder.BigEndian);
+        public static readonly ColorCodec CODEC_8BITLE_IA4 = new ColorCodecIA4(ByteOrder.LittleEndian);
+        public static readonly ColorCodec CODEC_8BITBE_IA4 = new ColorCodecIA4(ByteOrder.BigEndian);
+        public static readonly ColorCodec CODEC_8BIT_I8 = new ColorCodecI8();
+
 
         /// <summary>
         /// Decodes an array of bytes, representing a sequence of color data in some format,

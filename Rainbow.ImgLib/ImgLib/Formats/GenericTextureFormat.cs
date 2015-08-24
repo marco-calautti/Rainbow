@@ -15,10 +15,8 @@ namespace Rainbow.ImgLib.Formats
         protected int width;
         protected int height;
 
-        private GenericTextureFormat()
-        {
-
-        }
+        private GenericTextureFormat(int mipmaps=1):
+            base(mipmaps){}
 
         private void Init(byte[] imgData, int width, int height)
         {
@@ -26,15 +24,15 @@ namespace Rainbow.ImgLib.Formats
             this.width=width;
             this.height=height;
 
-            decoder = new ImageDecoderDirectColor(imageData, width, height, ColorDecoder, ImageFilter);
+            decoder = new ImageDecoderDirectColor(imageData, width, height, ColorCodec, ImageFilter);
         }
 
-        internal byte[] GetImageData()
+        public byte[] GetImageData()
         {
             return imageData;
         }
 
-        public ColorCodec ColorDecoder
+        public ColorCodec ColorCodec
         {
             get;
             private set;
@@ -83,24 +81,41 @@ namespace Rainbow.ImgLib.Formats
 
         public class Builder
         {
-            private GenericTextureFormat texture = new GenericTextureFormat();
+            private GenericTextureFormat texture;
+            private ColorCodec decoder;
+            private ImageFilter filter;
+            private int mipmaps = 1;
 
-            public Builder SetColorDecoder(ColorCodec decoder)
+            public Builder SetColorCodec(ColorCodec decoder)
             {
-                texture.ColorDecoder = decoder;
+                this.decoder = decoder;
                 return this;
             }
 
             public Builder SetImageFilter(ImageFilter filter)
             {
-                texture.ImageFilter = filter;
+                this.filter = filter;
+                return this;
+            }
+
+            public Builder SetMipmapsCount(int mipmaps)
+            {
+                this.mipmaps = mipmaps;
                 return this;
             }
 
             public GenericTextureFormat Build(byte[] imgData, int width, int height)
             {
+                CreateTexture();
                 texture.Init(imgData, width, height);
                 return texture;
+            }
+
+            private void CreateTexture()
+            {
+                texture= new GenericTextureFormat(mipmaps);
+                texture.ImageFilter = filter;
+                texture.ColorCodec = decoder;
             }
         }
     }

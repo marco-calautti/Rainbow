@@ -36,6 +36,11 @@ namespace Rainbow.ImgLib.Formats
             get { return textureFormats[SelectedFrame].PalettesCount; }
         }
 
+        public override int MipmapsCount
+        {
+            get { return textureFormats[SelectedFrame].MipmapsCount; }
+        }
+
         protected override System.Drawing.Image GetImage(int activeFrame, int activePalette)
         {
             TextureFormat format = textureFormats[activeFrame];

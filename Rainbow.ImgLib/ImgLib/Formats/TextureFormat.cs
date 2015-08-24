@@ -70,6 +70,11 @@ namespace Rainbow.ImgLib.Formats
         /// </summary>
         int PalettesCount { get; }
 
+        /// <summary>
+        /// The number of color mipmaps used by the currently selected frame.
+        /// A frame of a TextureFormat may have one mipmap (being the image itself) or more mipmaps.
+        /// <returns></returns>
+        int MipmapsCount { get; }
 
         /// <summary>
         /// Selects the active frame.
@@ -101,6 +106,13 @@ namespace Rainbow.ImgLib.Formats
         /// </summary>
         /// <returns></returns>
         Image GetReferenceImage();
+
+        /// <summary>
+        /// Returns the i-th mipmaps image of the currently selected frame.
+        /// The mipmap 0 coincides with the image itself.
+        /// </summary>
+        /// <returns></returns>
+        Image GetMipmap(int i);
 
         GenericDictionary FormatSpecificData { get; }
 

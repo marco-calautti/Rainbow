@@ -80,6 +80,17 @@ namespace Rainbow.App.GUI.Model
         }
 
         [CategoryAttribute(CATEGORY_GENERAL)]
+        [DescriptionAttribute("The total number of mipmaps associated to the currently selected frame.")]
+        [DisplayName("Total Mipmaps")]
+        public int MipmapsCount
+        {
+            get
+            {
+                return texture.MipmapsCount;
+            }
+        }
+
+        [CategoryAttribute(CATEGORY_GENERAL)]
         [TypeConverter(typeof(RangedTypeConveterFrames))]
         [DescriptionAttribute("Selects the desired frame.")]
         [DisplayName("Select Frame")]

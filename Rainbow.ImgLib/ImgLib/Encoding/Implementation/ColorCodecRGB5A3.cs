@@ -29,17 +29,17 @@ namespace Rainbow.ImgLib.Encoding.Implementation
                 int red, green, blue, alpha;
                 if ((color & 0x8000) != 0) //no alpha
                 {
-                    red = ((color >> 10) & 0x1F) * 8;
-                    green = ((color >> 5) & 0x1F) * 8;
-                    blue = ((color) & 0x1F) * 8;
+                    red = ImageUtils.Conv5To8((color >> 10) & 0x1F);
+                    green = ImageUtils.Conv5To8((color >> 5) & 0x1F);
+                    blue = ImageUtils.Conv5To8((color) & 0x1F);
                     alpha = 255;
                 }
                 else // with alpha
                 {
-                    alpha = ((color >> 12) & 0x7) * 32;
-                    red = ((color >> 8) & 0xf) * 16;
-                    green = ((color >> 4) & 0xf) * 16;
-                    blue = ((color) & 0xf) * 16;
+                    alpha = ImageUtils.Conv3To8((color >> 12) & 0x7);
+                    red = ImageUtils.Conv4To8((color >> 8) & 0xf);
+                    green = ImageUtils.Conv4To8((color >> 4) & 0xf);
+                    blue = ImageUtils.Conv4To8((color) & 0xf);
                 }
 
                 encoded[i] = Color.FromArgb(alpha, red, green, blue);

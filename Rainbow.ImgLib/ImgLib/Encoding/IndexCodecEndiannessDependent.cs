@@ -15,6 +15,6 @@ namespace Rainbow.ImgLib.Encoding
         }
 
 
-        public ByteOrder ByteOrder { get { return order; } set { order = value; } }
+        public ByteOrder ByteOrder { get { return order; } }
     }
 }

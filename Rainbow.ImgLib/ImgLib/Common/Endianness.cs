@@ -9,6 +9,6 @@ namespace Rainbow.ImgLib.Common
 
     public interface EndiannessDependent
     {
-        ByteOrder ByteOrder { get; set; }
+        ByteOrder ByteOrder { get; }
     }
 }

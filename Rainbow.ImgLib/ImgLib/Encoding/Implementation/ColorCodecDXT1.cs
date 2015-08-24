@@ -76,12 +76,12 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 
             table = reader.ReadBytes(4);
 
-            int blue1 = (color1 & 0x1F)*8;
-	        int blue2 = (color2 & 0x1F)*8;
-	        int green1 = ((color1 >> 5) & 0x3F)*4;
-	        int green2 = ((color2 >> 5) & 0x3F)*4;
-	        int red1 = ((color1 >> 11) & 0x1F)*8;
-	        int red2 = ((color2 >> 11) & 0x1F)*8;
+            int blue1 = ImageUtils.Conv5To8(color1 & 0x1F);
+            int blue2 = ImageUtils.Conv5To8(color2 & 0x1F);
+            int green1 = ImageUtils.Conv6To8((color1 >> 5) & 0x3F);
+            int green2 = ImageUtils.Conv6To8((color2 >> 5) & 0x3F);
+            int red1 = ImageUtils.Conv5To8((color1 >> 11) & 0x1F);
+            int red2 = ImageUtils.Conv5To8((color2 >> 11) & 0x1F);
 
 	        clut[0] = Color.FromArgb(255,red1, green1, blue1);
             clut[1] = Color.FromArgb(255, red2, green2, blue2);

@@ -18,7 +18,8 @@ namespace Rainbow.ImgLib.Formats
         protected int height;
         protected int bpp;
 
-        private PalettedTextureFormat() { }
+        private PalettedTextureFormat(int mipmapsCount) :
+            base(mipmapsCount) { }
 
         private void Init(byte[] imgData,byte[] palData, int width, int height)
         {
@@ -112,12 +113,12 @@ namespace Rainbow.ImgLib.Formats
                                            PaletteFilter).DecodeImage();
         }
 
-        internal byte[] GetImageData()
+        public byte[] GetImageData()
         {
             return imageData;
         }
 
-        internal IList<byte[]> GetPaletteData()
+        public IList<byte[]> GetPaletteData()
         {
             return encodedPalettes;
         }
@@ -149,59 +150,91 @@ namespace Rainbow.ImgLib.Formats
 
         public sealed class Builder
         {
-            private PalettedTextureFormat texture=new PalettedTextureFormat();
+            private PalettedTextureFormat texture;
+            private ColorCodec decoder;
+            private IndexCodec codec;
+            private ImageFilter imgFilter;
+            private PaletteFilter palFilter;
+            private IComparer<Color> comparer;
+            private int mipmaps=1;
+
             public Builder SetPaletteCodec(ColorCodec decoder)
             {
-                texture.PaletteCodec = decoder;
+                //texture.PaletteCodec = decoder;
+                this.decoder = decoder;
                 return this;
             }
 
             public Builder SetIndexCodec(IndexCodec codec)
             {
-                texture.IndexCodec = codec;
+                //texture.IndexCodec = codec;
+                this.codec = codec;
                 return this;
             }
 
             public Builder SetImageFilter(ImageFilter filter)
             {
-                texture.ImageFilter = filter;
+                //texture.ImageFilter = filter;
+                imgFilter = filter;
                 return this;
             }
 
             public Builder SetPaletteFilter(PaletteFilter filter)
             {
-                texture.PaletteFilter = filter;
+                //texture.PaletteFilter = filter;
+                palFilter = filter;
                 return this;
             }
 
             public Builder SetPixelComparer(IComparer<Color> comparer)
             {
-                texture.PixelComparer = comparer;
+                //texture.PixelComparer = comparer;
+                this.comparer = comparer;
+                return this;
+            }
+
+            public Builder SetMipmapsCount(int mipmaps)
+            {
+                this.mipmaps = mipmaps;
                 return this;
             }
 
             public PalettedTextureFormat Build(byte[] imgData, byte[] palData, int width, int height)
             {
+                CreateTexture();
                 texture.Init(imgData, palData, width, height);
                 return texture;
             }
 
             public PalettedTextureFormat Build(byte[] imgData, IList<byte[]> palData, int width, int height)
             {
+                CreateTexture();
                 texture.Init(imgData, palData, width, height);
                 return texture;
             }
 
             public PalettedTextureFormat Build(Image image)
             {
+                CreateTexture();
                 texture.Init(image);
                 return texture;
             }
 
             public PalettedTextureFormat Build(IList<Image> images)
             {
+                CreateTexture();
                 texture.Init(images);
                 return texture;
+            }
+
+            private void CreateTexture()
+            {
+                texture = new PalettedTextureFormat(mipmaps);
+                texture.PaletteCodec = decoder;
+                texture.IndexCodec = codec;
+                texture.ImageFilter = imgFilter;
+                texture.PaletteFilter = palFilter;
+                texture.PixelComparer = comparer;
             }
         }
     }

@@ -22,19 +22,13 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Filters
 {
-    public class SwizzleFilter : ImageFilter
+    public class SwizzleFilter : TileFilter
     {
-        private int width,height,bitDepth;
-
-        public SwizzleFilter(int width,int height,int bitDepth)
-        {
-            this.width=width;
-            this.height = height;
-            this.bitDepth = bitDepth;
-        }
+        public SwizzleFilter(int width,int height,int bitDepth):
+            base(bitDepth,16,8,width,height){}
 
 
-        public override byte[] ApplyFilter(byte[] originalData, int index, int length)
+        /*public override byte[] ApplyFilter(byte[] originalData, int index, int length)
         {
             byte[] Buf = new byte[length];
             int val = 16;
@@ -102,6 +96,6 @@ namespace Rainbow.ImgLib.Filters
                 Buf[i] = originalData[i + index];
 
             return Buf;
-        }
+        }*/
     }
 }

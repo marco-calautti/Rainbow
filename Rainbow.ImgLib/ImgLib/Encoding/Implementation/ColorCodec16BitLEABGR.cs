@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rainbow.ImgLib.Common;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -25,7 +26,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
                 int blue = data & 0x1F;
                 int alpha = data == 0 ? 0 : 255;
 
-                pal.Add(Color.FromArgb(alpha, red * 8, green * 8, blue * 8));
+                pal.Add(Color.FromArgb(alpha, ImageUtils.Conv5To8(red), ImageUtils.Conv5To8(green), ImageUtils.Conv5To8(blue)));
             }
 
             return pal.ToArray();
@@ -39,7 +40,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             {
                 ushort data = (ushort)(colors[i].A > 127 ? 0x8000 : 0);
 
-                data |= (ushort)(((colors[i].B >> 3) << 10) | ((colors[i].G >> 3) << 5) | ((colors[i].R >> 3) & 0x1F));
+                data |= (ushort)((ImageUtils.Conv8To5(colors[i].B) << 10) | (ImageUtils.Conv8To5(colors[i].G) << 5) | (ImageUtils.Conv8To5(colors[i].R) & 0x1F));
                 palette[(i - start) * 2] = (byte)(data & 0xFF);
                 palette[(i - start) * 2 + 1] = (byte)(data >> 8);
             }

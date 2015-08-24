@@ -28,9 +28,9 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 
 
                 int red, green, blue;
-                red = ((color >> 11) & 0x1f) * 8;
-                green = ((color >> 5) & 0x3f) * 4;
-                blue = ((color) & 0x1f) * 8;
+                red = ImageUtils.Conv5To8((color >> 11) & 0x1f);
+                green = ImageUtils.Conv6To8((color >> 5) & 0x3f);
+                blue = ImageUtils.Conv5To8((color) & 0x1f);
 
                 encoded[i] = Color.FromArgb(255, red, green, blue);
             }
