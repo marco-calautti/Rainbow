@@ -153,6 +153,8 @@ namespace Rainbow.ImgLib.Formats.Implementation
                         decoder = ColorCodec.CODEC_16BITBE_RGB5A3;
                         break;
                     case 3:
+                        decoder = ColorCodec.CODEC_16BITBE_IA8;
+                        break;
                     case 0xB: //not sure about this (FIX)
                         decoder = ColorCodec.CODEC_16BITBE_IA8;
                         break;
@@ -184,8 +186,11 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 switch (depth)
                 {
                     case 3: //RGBA 32bit?
-                        decoder = ColorCodec.CODEC_32BIT_BGRA;
-                        builder.SetImageFilter(new TileFilter(32, 4, 4, width, height));
+                        decoder = ColorCodec.CODEC_32BIT_ARGB;
+                        ImageFilterComposer composer = new ImageFilterComposer 
+                        { new GamecubePlanarFilter(), new TileFilter(32, 4, 4, width, height) };
+
+                        builder.SetImageFilter(composer);
                         break;
                     case 4: //DXT1
                         decoder = new ColorCodecDXT1Gamecube(width, height);

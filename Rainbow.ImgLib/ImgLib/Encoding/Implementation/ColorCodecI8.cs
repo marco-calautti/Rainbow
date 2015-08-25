@@ -21,7 +21,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
                 int intensity = reader.ReadByte();
                 decoded[i] = Color.FromArgb(255, intensity, intensity, intensity);
             }
-
+            reader.Close();
             return decoded;
         }
 

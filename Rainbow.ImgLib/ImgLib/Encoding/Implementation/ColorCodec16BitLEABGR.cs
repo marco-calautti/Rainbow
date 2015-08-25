@@ -29,6 +29,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
                 pal.Add(Color.FromArgb(alpha, ImageUtils.Conv5To8(red), ImageUtils.Conv5To8(green), ImageUtils.Conv5To8(blue)));
             }
 
+            reader.Close();
             return pal.ToArray();
         }
 

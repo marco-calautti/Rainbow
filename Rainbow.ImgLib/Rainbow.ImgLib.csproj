@@ -70,6 +70,8 @@
     <Compile Include="ImgLib\Encoding\Implementation\IndexCodec8Bpp.cs" />
     <Compile Include="ImgLib\Encoding\IndexCodecEndiannessDependent.cs" />
     <Compile Include="ImgLib\Filters\Filter.cs" />
+    <Compile Include="ImgLib\Filters\FilterComposer.cs" />
+    <Compile Include="ImgLib\Filters\GamecubePlanarFilter.cs" />
     <Compile Include="ImgLib\Filters\SwizzleFilter.cs" />
     <Compile Include="ImgLib\Filters\TileFilter.cs" />
     <Compile Include="ImgLib\Filters\TIM2PaletteFilter.cs" />

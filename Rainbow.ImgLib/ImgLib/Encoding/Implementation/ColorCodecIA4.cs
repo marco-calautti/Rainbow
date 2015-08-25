@@ -29,7 +29,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
                 intensity = ImageUtils.Conv4To8(intensity);
                 decoded[i] = Color.FromArgb(alpha, intensity, intensity, intensity);
             }
-
+            reader.Close();
             return decoded;
         }
 

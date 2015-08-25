@@ -53,6 +53,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
                 }
             }
 
+            reader.Close();
             return decoded;
         }
 

@@ -44,7 +44,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 
                 encoded[i] = Color.FromArgb(alpha, red, green, blue);
             }
-
+            reader.Close();
             return encoded;
         }
 
