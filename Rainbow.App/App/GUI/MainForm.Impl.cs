@@ -235,5 +235,10 @@ namespace Rainbow.App.GUI
         {
             transparentPictureBox.ScaleImage(factor);
         }
+
+        private void SetScaleFactor(float factor)
+        {
+            transparentPictureBox.SetScaleFactor(factor);
+        }
     }
 }

@@ -20,14 +20,13 @@ namespace Rainbow.ImgLib.Formats.Implementation
             specificName = name;
         }
 
-        public int Version { get; internal set; }
+        public string Version { get { return GetTextureSpecificData(NamcoTextureSerializer.VERSION_KEY); } }
 
         public string ClutFormat 
         { 
             get 
             { 
-                string key=NamcoTextureSerializer.CLUTFORMAT_KEY;
-                return TextureFormats[SelectedFrame].FormatSpecificData.Get(key);
+                return GetCurrentFrameSpecificData(NamcoTextureSerializer.CLUTFORMAT_KEY);
             } 
         }
 
@@ -35,8 +34,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             get
             {
-                string key = NamcoTextureSerializer.FORMAT_KEY;
-                return TextureFormats[SelectedFrame].FormatSpecificData.Get(key);
+                return GetCurrentFrameSpecificData(NamcoTextureSerializer.FORMAT_KEY);
             }
         }
 
@@ -44,8 +42,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             get
             {
-                string key = NamcoTextureSerializer.DEPTH_KEY;
-                return TextureFormats[SelectedFrame].FormatSpecificData.Get(key);
+                return GetCurrentFrameSpecificData(NamcoTextureSerializer.DEPTH_KEY);
             }
         }
     }

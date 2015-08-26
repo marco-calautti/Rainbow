@@ -75,6 +75,13 @@ namespace Rainbow.App.GUI.Controls
             this.Invalidate();
         }
 
+        public void SetScaleFactor(float factor)
+        {
+            scaleFactor = factor;
+            Scale();
+            this.Invalidate();
+        }
+
         protected override void OnPaint(PaintEventArgs pe)
         {
             

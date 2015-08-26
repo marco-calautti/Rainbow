@@ -104,5 +104,10 @@ namespace Rainbow.App.GUI
             else
                 return;
         }
+
+        private void OnOriginalSizeMenuItem(object sender, EventArgs e)
+        {
+            SetScaleFactor(1.0f);
+        }
     }
 }

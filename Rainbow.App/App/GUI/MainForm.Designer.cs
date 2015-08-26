@@ -72,6 +72,7 @@ namespace Rainbow.App.GUI
             this.ItemSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.transparentPictureBox = new Rainbow.App.GUI.Controls.TransparentPictureBox();
+            this.originalSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -181,7 +182,8 @@ namespace Rainbow.App.GUI
             // 
             this.zoomInToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.zoomPlusToolStripMenuItem,
-            this.zoomMinusToolStripMenuItem});
+            this.zoomMinusToolStripMenuItem,
+            this.originalSizeToolStripMenuItem});
             this.zoomInToolStripMenuItem.Name = "zoomInToolStripMenuItem";
             this.zoomInToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
             this.zoomInToolStripMenuItem.Text = "Zoom";
@@ -334,6 +336,14 @@ namespace Rainbow.App.GUI
             this.transparentPictureBox.Size = new System.Drawing.Size(370, 317);
             this.transparentPictureBox.TabIndex = 0;
             // 
+            // originalSizeToolStripMenuItem
+            // 
+            this.originalSizeToolStripMenuItem.Name = "originalSizeToolStripMenuItem";
+            this.originalSizeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D0)));
+            this.originalSizeToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.originalSizeToolStripMenuItem.Text = "Original size";
+            this.originalSizeToolStripMenuItem.Click += new System.EventHandler(this.OnOriginalSizeMenuItem);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -386,5 +396,6 @@ namespace Rainbow.App.GUI
         private System.Windows.Forms.ToolStripMenuItem zoomInToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomPlusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomMinusToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem originalSizeToolStripMenuItem;
     }
 }

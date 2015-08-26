@@ -86,7 +86,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             reader.BaseStream.Position += padding;
 
             NamcoTexture texture = new NamcoTexture();
-            texture.Version = version;
+
             texture.SetName(this.Name);
 
             texture.FormatSpecificData.Put<int>(VERSION_KEY, version);

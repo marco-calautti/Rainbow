@@ -15,7 +15,7 @@ namespace Rainbow.App.GUI.Model
         [CategoryAttribute(CATEGORY_SPECIFIC)]
         [DescriptionAttribute("The version number of this texture.")]
         [DisplayName("Version")]
-        public int Version
+        public string Version
         {
             get
             {

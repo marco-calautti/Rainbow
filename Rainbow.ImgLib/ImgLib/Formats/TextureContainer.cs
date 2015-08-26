@@ -56,5 +56,15 @@ namespace Rainbow.ImgLib.Formats
         {
             return textureFormats[SelectedFrame].GetReferenceImage();
         }
+
+        protected string GetCurrentFrameSpecificData(string key)
+        {
+            return TextureFormats[SelectedFrame].FormatSpecificData.Get(key);
+        }
+
+        protected string GetTextureSpecificData(string key)
+        {
+            return FormatSpecificData.Get(key);
+        }
     }
 }

@@ -13,5 +13,20 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             get { return NAME; }
         }
+
+        public string Format
+        {
+            get { return GetCurrentFrameSpecificData(TPLTextureSerializer.FORMAT_KEY);  }
+        }
+
+        public string PaletteFormat
+        {
+            get { return GetCurrentFrameSpecificData(TPLTextureSerializer.PALETTEFORMAT_KEY); }
+        }
+
+        public string UnknownParameter
+        {
+            get { return GetCurrentFrameSpecificData(TPLTextureSerializer.UNKNOWN_KEY); }
+        }
     }
 }

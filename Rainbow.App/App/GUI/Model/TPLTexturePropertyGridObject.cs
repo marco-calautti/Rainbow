@@ -19,7 +19,7 @@ namespace Rainbow.App.GUI.Model
         {
             get
             {
-                return ((TPLTexture)texture).TextureFormats[texture.SelectedFrame].FormatSpecificData.Get(TPLTextureSerializer.FORMAT_KEY);
+                return ((TPLTexture)texture).Format;
             }
         }
 
@@ -30,7 +30,7 @@ namespace Rainbow.App.GUI.Model
         {
             get
             {
-                return ((TPLTexture)texture).TextureFormats[texture.SelectedFrame].FormatSpecificData.Get(TPLTextureSerializer.PALETTEFORMAT_KEY);
+                return ((TPLTexture)texture).PaletteFormat;
             }
         }
 
@@ -41,7 +41,7 @@ namespace Rainbow.App.GUI.Model
         {
             get
             {
-                return ((TPLTexture)texture).TextureFormats[texture.SelectedFrame].FormatSpecificData.Get(TPLTextureSerializer.UNKNOWN_KEY);
+                return ((TPLTexture)texture).UnknownParameter;
             }
         }
     }
