@@ -15,10 +15,18 @@ Download it here https://github.com/marco-calautti/Rainbow/releases
 
 ![ScreenShot](http://i.imgur.com/FsrZ2SY.png)
 
+File Formats
+============
+* TIM2 (full support*)
+* Super Robot Wars MX P TX48 (full support)
+* The 3rd Birthday DAT (full support)
+* NUT (partial support, only Open and export to png)
+* TPL (partial support, only Open and export to png)
+
+*TIM2 support is almost complete. The app supports multi-layer, multi-clut, swizzled (PSP)/unswizzled TIM2 images with both linear, interleaved palettes, and segments headers eventually extended with custom user data (usually used by programmers).
+
 Features
 =======
-
-The tool currently supports TIM2*, TX48 (Super Robot Wars MX P) and DAT (generic extension for textures found in The 3rd Birthday) textures
 * Can open textures in any format supported by the underlying image library.
 * Can open whole folders in search of supported texture formats. All known texture files are then displayed in a list.
 * Can export textures to an editable format (like png).
@@ -27,7 +35,7 @@ The tool currently supports TIM2*, TX48 (Super Robot Wars MX P) and DAT (generic
 * Customizable background color for transparent and semi-transparent images with chessboard like pattern.
 * Finally, Rainbow supports parameters via command line: the first parameter is the name of a texture you would like to open.
 
-*TIM2 support is almost complete. The app supports multi-layer, multi-clut, swizzled (PSP)/unswizzled TIM2 images with both linear, interleaved palettes, and segments headers eventually extended with custom user data (usually used by programmers).
+
 
 How to use Rainbow
 =======
