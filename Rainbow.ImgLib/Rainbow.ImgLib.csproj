@@ -80,7 +80,10 @@
     <Compile Include="ImgLib\Encoding\ImageDecoder.cs" />
     <Compile Include="ImgLib\Encoding\ImageEncoder.cs" />
     <Compile Include="ImgLib\Formats\GenericTextureFormat.cs" />
-    <Compile Include="ImgLib\Formats\Implementation\NUTTexture.cs" />
+    <Compile Include="ImgLib\Formats\Implementation\NamcoTexture.cs" />
+    <Compile Include="ImgLib\Formats\Implementation\NUTTexture.Serializer.cs" />
+    <Compile Include="ImgLib\Formats\Implementation\TPLTexture.cs" />
+    <Compile Include="ImgLib\Formats\Implementation\TPLTexture.Serializer.cs" />
     <Compile Include="ImgLib\Formats\PalettedTextureFormat.cs" />
     <Compile Include="ImgLib\Formats\Implementation\PE3DATTexture.cs" />
     <Compile Include="ImgLib\Formats\Implementation\PE3SimpleDATTexture.cs" />
@@ -89,7 +92,7 @@
     <Compile Include="ImgLib\Formats\Serialization\Metadata\MetadataReaderBase.cs" />
     <Compile Include="ImgLib\Formats\Serialization\Metadata\MetadataWriter.cs" />
     <Compile Include="ImgLib\Formats\Serialization\Metadata\MetadataWriterBase.cs" />
-    <Compile Include="ImgLib\Formats\Implementation\NUTTexture.Serializer.cs" />
+    <Compile Include="ImgLib\Formats\Implementation\NamcoTexture.Serializer.cs" />
     <Compile Include="ImgLib\Formats\Implementation\PE3DATTexture.Serializer.cs" />
     <Compile Include="ImgLib\Formats\Implementation\PE3SimpleDATTexture.Serializer.cs" />
     <Compile Include="ImgLib\Formats\Serialization\SimpleTextureFormatSerializer.cs" />

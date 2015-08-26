@@ -9,6 +9,16 @@ namespace Rainbow.ImgLib.Common
     {
         private IDictionary<string, object> dict=new Dictionary<string,object>();
 
+        /// <summary>
+        /// String representation of value with key "key".
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string Get(string key)
+        {
+            return Get<object>(key).ToString();
+        }
+
         public T Get<T>(string key)
         {
             return (T)dict[key];

@@ -16,7 +16,6 @@ namespace Rainbow.ImgLib.Formats
 
         protected int width;
         protected int height;
-        protected int bpp;
 
         private PalettedTextureFormat(int mipmapsCount) :
             base(mipmapsCount) { }

@@ -5,20 +5,13 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Formats.Implementation
 {
-    public partial class NUTTexture : TextureContainer
+    public class TPLTexture : TextureContainer
     {
-        internal static readonly string NAME = "Gamecube NUT Archive";
+        internal static readonly string NAME = "TPL Texture";
 
         public override string Name
         {
             get { return NAME; }
-        }
-
-        public int Version
-        {
-            get;
-
-            internal set;
         }
     }
 }

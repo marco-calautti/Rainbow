@@ -28,6 +28,10 @@ namespace Rainbow.App.GUI.Model
                 return new TIM2PropertyGridObject((TIM2Texture)texture);
             else if (texture.GetType() == typeof(PE3DATTexture))
                 return new PE3DATPropertyGridObject((PE3DATTexture)texture);
+            else if (texture.GetType() == typeof(NamcoTexture))
+                return new NamcoTexturePropertyGridObject((NamcoTexture)texture);
+            else if (texture.GetType() == typeof(TPLTexture))
+                return new TPLTexturePropertyGridObject((TPLTexture)texture);
             else
                 return new TexturePropertyGridObject(texture);
         }

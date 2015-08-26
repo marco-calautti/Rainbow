@@ -43,6 +43,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             RegisterSerializer(new PE3SimpleDATSerializer());
             RegisterSerializer(new TX48Serializer());
             RegisterSerializer(new NUTTextureSerializer());
+            RegisterSerializer(new TPLTextureSerializer());
         }
 
         /// <summary>

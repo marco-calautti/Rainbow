@@ -35,26 +35,38 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             else
                 reader = new BinaryReader(new MemoryStream(colors, start, length));
 
-            Color[] decoded = new Color[length * 2];
+            Color[] decoded = new Color[FullWidth * FullHeight];
             Color[] tile = new Color[4 * 4];
 
-            int block = 0;
-            for (int y = 0; y < height; y += 4)
+            for (int y = 0; y < FullHeight; y += 4)
             {
-                for (int x = 0; x < width; x += 4)
+                for (int x = 0; x < FullWidth; x += 4)
                 {
                     DecodeDXT1Block(reader, tile);
                     for (int line = 0; line < 4; line++)
                     {
-                        Array.Copy(tile, line * 4, decoded, width * (y + line) + x, 4);
+                        Array.Copy(tile, line * 4, decoded, FullWidth * (y + line) + x, 4);
 
                     }
-                    block++;
                 }
             }
 
             reader.Close();
-            return decoded;
+
+
+            if(FullWidth==width && FullHeight==height)
+                return decoded;
+
+
+            Color[] decodedRealSize = new Color[width * height];
+
+            int k = 0;
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                    decodedRealSize[k++] = decoded[y * FullWidth + x];
+
+            return decodedRealSize;
+
         }
 
         public override byte[] EncodeColors(Color[] colors, int start, int length)
@@ -65,6 +77,21 @@ namespace Rainbow.ImgLib.Encoding.Implementation
         public override int BitDepth
         {
             get { return 4; }
+        }
+
+        public virtual int FullWidth
+        {
+            get { return width % 4 !=0? (width/4)*4 + 4  : width; }
+        }
+
+        public virtual int FullHeight
+        {
+            get { return height % 4 != 0 ? (height/4)*4 + 4 : height; }
+        }
+
+        public virtual int GetBytesRequired()
+        {
+            return FullWidth * FullHeight * BitDepth / 8;
         }
 
         protected void DecodeDXT1Block(BinaryReader reader, Color[] tile)
