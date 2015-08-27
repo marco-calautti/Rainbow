@@ -24,12 +24,12 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
         public abstract string MetadataID { get; }
 
-        protected void OnExportGeneralTextureMetadata(T texture, Metadata.MetadataWriter metadata)
+        protected virtual void OnExportGeneralTextureMetadata(T texture, Metadata.MetadataWriter metadata)
         {
             InteropUtils.WriteTo(texture.FormatSpecificData, metadata);
         }
 
-        protected void OnExportFrameMetadata(T texture, int frame, Metadata.MetadataWriter metadata)
+        protected virtual void OnExportFrameMetadata(T texture, int frame, Metadata.MetadataWriter metadata)
         {
             TextureFormat tFrame = GetTextureFrame(texture, frame);
             InteropUtils.WriteTo(tFrame.FormatSpecificData, metadata);

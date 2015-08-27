@@ -22,22 +22,16 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             return filter;
         }
 
-        public override int FullWidth
+        protected override int GetFullWidth(int width)
         {
-            get
-            {
-                int oldWidth=base.FullWidth;
-                return oldWidth % 8 != 0 ? (oldWidth/8)*8 + 8 : oldWidth;
-            }
+            int oldWidth=base.GetFullWidth(width);
+            return oldWidth % 8 != 0 ? (oldWidth/8)*8 + 8 : oldWidth;
         }
 
-        public override int FullHeight
+        protected override int GetFullHeight(int height)
         {
-            get
-            {
-                int oldHeight = base.FullHeight;
-                return oldHeight % 8 != 0 ? (oldHeight/8)*8 + 8  : oldHeight;
-            }
+            int oldHeight = base.GetFullHeight(height);
+            return oldHeight % 8 != 0 ? (oldHeight/8)*8 + 8  : oldHeight;
         }
     }
 }

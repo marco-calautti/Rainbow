@@ -35,6 +35,7 @@ namespace Rainbow.App.GUI.Controls
         {
             Chessboard = true;
             color = PreferredTransparencyColor;
+            SetStyle(ControlStyles.OptimizedDoubleBuffer,true);
         }
 
         public void SetTexture(TextureFormat tex)

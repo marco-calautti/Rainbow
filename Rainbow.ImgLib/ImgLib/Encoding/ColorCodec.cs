@@ -43,6 +43,8 @@ namespace Rainbow.ImgLib.Encoding
         public static readonly ColorCodec CODEC_8BITLE_IA4 = new ColorCodecIA4(ByteOrder.LittleEndian);
         public static readonly ColorCodec CODEC_8BITBE_IA4 = new ColorCodecIA4(ByteOrder.BigEndian);
         public static readonly ColorCodec CODEC_8BIT_I8 = new ColorCodecI8();
+        public static readonly ColorCodec CODEC_4BITLE_I4 = new ColorCodecI4(ByteOrder.LittleEndian);
+        public static readonly ColorCodec CODEC_4BITBE_I4 = new ColorCodecI4(ByteOrder.BigEndian);
 
 
         /// <summary>
@@ -85,6 +87,20 @@ namespace Rainbow.ImgLib.Encoding
         /// Returns the size in bit of one color encoded in the format implemented by this ColorDecoder.
         /// </summary>
         public abstract int BitDepth { get; }
+
+        /// <summary>
+        /// Returns the number of bytes needed to encode a sequence of pixels organized in a matrix
+        /// defined by the "width" and "height".
+        /// Subclasses are encouraged to override this method whenever the number of bytes needed
+        /// might not be equal to just the number of total pixels weighted w.r.t. the bit depth.
+        /// </summary>
+        public virtual int GetBytesNeededForEncode(int width, int height)
+        {
+            int totalPixel = width * height;
+            int bytes = totalPixel * BitDepth / 8;
+            int remainder = (totalPixel * BitDepth) % 8;
+            return remainder == 0 ? bytes : bytes+1;
+        }
     }
 
 }

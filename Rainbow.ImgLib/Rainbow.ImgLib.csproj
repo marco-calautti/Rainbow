@@ -60,6 +60,7 @@
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodec24BitRGB.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodec32BitBGRA.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodec32BitRGBA.cs" />
+    <Compile Include="ImgLib\Encoding\Implementation\ColorCodecI4.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodecI8.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodecIA4.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodecIA8.cs" />

@@ -79,19 +79,19 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             get { return 4; }
         }
 
-        public virtual int FullWidth
+        public int FullWidth
         {
-            get { return width % 4 !=0? (width/4)*4 + 4  : width; }
+            get { return GetFullWidth(width); }
         }
 
-        public virtual int FullHeight
+        public int FullHeight
         {
-            get { return height % 4 != 0 ? (height/4)*4 + 4 : height; }
+            get { return GetFullHeight(height); }
         }
 
-        public virtual int GetBytesRequired()
+        public override int GetBytesNeededForEncode(int width, int height)
         {
-            return FullWidth * FullHeight * BitDepth / 8;
+            return GetFullWidth(width) * GetFullHeight(height) * BitDepth / 8;
         }
 
         protected void DecodeDXT1Block(BinaryReader reader, Color[] tile)
@@ -150,6 +150,16 @@ namespace Rainbow.ImgLib.Encoding.Implementation
         protected virtual ImageFilter GetImageFilter()
         {
             return null;
+        }
+
+        protected virtual int GetFullWidth(int width)
+        {
+            return width % 4 != 0 ? (width / 4) * 4 + 4 : width;
+        }
+
+        protected virtual int GetFullHeight(int height)
+        {
+            return height % 4 != 0 ? (height / 4) * 4 + 4 : height;
         }
     }
 }

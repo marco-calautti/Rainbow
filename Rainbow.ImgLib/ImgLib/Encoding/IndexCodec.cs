@@ -48,5 +48,13 @@ namespace Rainbow.ImgLib.Encoding
             else
                 throw new ArgumentException("Unsupported number of colors");
         }
+
+        public virtual int GetBytesNeededForEncode(int width, int height)
+        {
+            int totalPixel = width * height;
+            int bytes = totalPixel * BitDepth / 8;
+            int remainder = (totalPixel * BitDepth) % 8;
+            return remainder == 0 ? bytes : bytes + 1;
+        }
     }
 }

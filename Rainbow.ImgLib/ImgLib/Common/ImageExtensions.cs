@@ -57,6 +57,9 @@ namespace Rainbow.ImgLib.Common
             int newWidth = ImageUtils.GetMipmapWidth(img.Width, i);
             int newHeight = ImageUtils.GetMipmapHeight(img.Height, i);
 
+            if (newWidth == 0 || newHeight == 0)
+                return null;
+
             var destRect = new Rectangle(0, 0, newWidth, newHeight);
             var destImage = new Bitmap(newWidth, newHeight);
 

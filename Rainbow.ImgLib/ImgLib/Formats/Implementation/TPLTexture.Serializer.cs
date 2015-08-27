@@ -69,7 +69,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 ImageFilter imgFilter=null;
 
                 ushort entryCount=0;
-                ushort unknown=0;
+                ushort unknown=0;//this might be a set of flags denoting whether the palette is internal to the tpl image or external.
                 uint paletteFormat=0;
                 uint palDataOffset=0;
                 bool isIndexed = false;
@@ -80,36 +80,38 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 switch (format)
                 {
                     case 0: //I4
-                        throw new TextureFormatException("I4 not implemented yet!");
+                        colorCodec = ColorCodec.CODEC_4BITBE_I4;
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
+                        imgFilter = new TileFilter(4, 8, 8, width, height);
                         break;
                     case 1: //I8
-                        imgDataSize = width * height;
                         colorCodec = ColorCodec.CODEC_8BIT_I8;
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(8, 8, 4, width, height);
                         break;
                     case 2: //IA4
-                        imgDataSize = width * height;
                         colorCodec = ColorCodec.CODEC_8BITBE_IA4;
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(8, 8, 4, width, height);
                         break;
                     case 3: //IA8
-                        imgDataSize = width * height*2;
                         colorCodec = ColorCodec.CODEC_16BITBE_IA8;
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(16, 4, 4, width, height);
                         break;
                     case 4: //RGB565
-                        imgDataSize = width * height*2;
                         colorCodec = ColorCodec.CODEC_16BITBE_RGB565;
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(16, 4, 4, width, height);
                         break;
                     case 5: //RGB5A3
-                        imgDataSize = width * height*2;
                         colorCodec = ColorCodec.CODEC_16BITBE_RGB5A3;
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(16, 4, 4, width, height);
                         break;
                     case 6: //RGBA32 2 planes
-                        imgDataSize = width * height*4;
                         colorCodec = ColorCodec.CODEC_32BIT_ARGB;
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new ImageFilterComposer{ new GamecubePlanarFilter(),
                                                            new TileFilter(32,4,4,width,height)};
                         break;
@@ -123,7 +125,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
                         paletteFormat = reader.ReadUInt32(order);
                         palDataOffset = reader.ReadUInt32(order);
 
-                        palDataSize = entryCount * 2;
                         switch (paletteFormat)
                         {
                             case 0:
@@ -138,26 +139,27 @@ namespace Rainbow.ImgLib.Formats.Implementation
                             default:
                                 throw new TextureFormatException("Unsupported palette format " + paletteFormat);
                         }
+                        palDataSize = colorCodec.GetBytesNeededForEncode(entryCount, 1);
+
                         if (format == 8)
                         {
-                            imgDataSize = width * height/2;
-                            
                             idxCodec = IndexCodec.FromBitPerPixel(4, order);
                             imgFilter = new TileFilter(4, 8, 8, width, height);
                         }
                         else
                         {
-                            imgDataSize = width * height;
                             idxCodec = IndexCodec.FromBitPerPixel(8, order);
                             imgFilter = new TileFilter(8, 8, 4, width, height);
                         }
+
+                        imgDataSize = idxCodec.GetBytesNeededForEncode(width, height);
                         break;
                     case 0xA: //C14X2
                         throw new TextureFormatException("C14X2 not implemented yet!");
                         break;
                     case 0xE: //DXT1 (aka CMPR)
                         colorCodec = new ColorCodecDXT1Gamecube(width, height);
-                        imgDataSize = ((ColorCodecDXT1)colorCodec).GetBytesRequired();
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         break;
                     default:
                         throw new TextureFormatException("Unsupported TPL image format " + format);
