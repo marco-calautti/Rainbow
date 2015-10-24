@@ -25,7 +25,10 @@ namespace Rainbow.ImgLib.Filters
     public class SwizzleFilter : TileFilter
     {
         public SwizzleFilter(int width,int height,int bitDepth):
-            base(bitDepth,16,8,width,height){}
+            base(bitDepth,16,8,width,height)
+        {
+            TileDimensionsAsBytes = true;
+        }
 
 
         /*public override byte[] ApplyFilter(byte[] originalData, int index, int length)

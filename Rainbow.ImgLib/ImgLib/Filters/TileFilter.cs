@@ -36,6 +36,7 @@ namespace Rainbow.ImgLib.Filters
             this.tileHeight = tileHeight;
             this.width = width;
             this.height = height;
+            TileDimensionsAsBytes = false;
         }
 
         public override byte[] ApplyFilter(byte[] originalData, int index, int length)
@@ -65,7 +66,8 @@ namespace Rainbow.ImgLib.Filters
 
             byte[] Buf = new byte[length];
             int w = (this.width * bpp) / 8;
-            int lineSize = (tileWidth * bpp) / 8;
+
+            int lineSize = TileDimensionsAsBytes? tileWidth : (tileWidth * bpp) / 8;
             int tileSize = lineSize * tileHeight;
 
             int rowblocks = w / lineSize;
@@ -86,7 +88,7 @@ namespace Rainbow.ImgLib.Filters
                     }
                 }
 
-            int start = totalBlocksy * rowblocks * lineSize * 8;
+            int start = totalBlocksy * rowblocks * lineSize * tileHeight;
             for (int i = start; i < length; i++)
                 Buf[i] = originalData[i + index];
 
@@ -120,7 +122,7 @@ namespace Rainbow.ImgLib.Filters
 
             byte[] Buf = new byte[length];
             int w = (this.width * bpp) / 8;
-            int lineSize = (tileWidth * bpp) / 8;
+            int lineSize = TileDimensionsAsBytes ? tileWidth : (tileWidth * bpp) / 8;
             int tileSize = lineSize * tileHeight;
 
             int rowblocks = w / lineSize;
@@ -141,11 +143,17 @@ namespace Rainbow.ImgLib.Filters
                     }
                 }
 
-            int start = totalBlocksy * rowblocks * lineSize * 8;
+            int start = totalBlocksy * rowblocks * lineSize * tileHeight;
             for (int i = start; i < length; i++)
                 Buf[i] = originalData[i + index];
 
             return Buf;
+        }
+
+        public bool TileDimensionsAsBytes
+        {
+            get;
+            set;
         }
     }
 }
