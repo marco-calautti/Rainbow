@@ -39,7 +39,7 @@ namespace Rainbow.ImgLib.Filters
         public override byte[] ApplyFilter(byte[] originalData, int index, int length)
         {
             byte[] data = originalData;
-            foreach(var filter in filters)
+            foreach(var filter in filters.Reverse())
             {
                 data = filter.ApplyFilter(data,index,length);
             }
