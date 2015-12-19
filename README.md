@@ -1,7 +1,7 @@
 Rainbow
 =======
 **Download latest dev build from [here](https://www.dropbox.com/s/gid080j6anqnbsb/rainbow_win32_bin_dev.zip?dl=1).**
-Latest build status: [![Build Status](https://travis-ci.org/marco-calautti/Rainbow.svg?branch=master)](https://travis-ci.org/marco-calautti/Rainbow).
+Latest build status: [![Build Status](https://travis-ci.org/marco-calautti/Rainbow.svg?branch=master)](https://travis-ci.org/marco-calautti/Rainbow) [![Coverity](https://scan.coverity.com/projects/7331/badge.svg)](https://scan.coverity.com/projects/marco-calautti-rainbow").
 
 If you want to contact me: marco.calautti [at] gmail [.] com. For bug/issues reports, please use the github page.
 
