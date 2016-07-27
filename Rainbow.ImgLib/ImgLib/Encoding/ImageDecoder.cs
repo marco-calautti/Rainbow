@@ -26,7 +26,8 @@ namespace Rainbow.ImgLib.Encoding
     public interface ImageDecoder
     {
         /// <summary>
-        /// Constructs an Image object associated to this ImageEncoder
+        /// Constructs an Image object associated to this ImageEncoder. If either the witdh or the height of the image
+        /// is zero, null is returned.
         /// </summary>
         /// <returns></returns>
         Image DecodeImage();
