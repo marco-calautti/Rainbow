@@ -40,6 +40,9 @@ namespace Rainbow.ImgLib.Encoding
 
         public Image DecodeImage()
         {
+            if (width == 0 || height == 0)
+                return null;
+
             Color[] colors = decoder.DecodeColors(pixelData);
             Bitmap bmp = new Bitmap(width, height);
 

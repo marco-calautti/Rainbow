@@ -73,6 +73,9 @@ namespace Rainbow.ImgLib.Encoding
 
         private Image DecodeImage(Color[] pal)
         {
+            if (width == 0 || height == 0)
+                return null;
+
             Bitmap bmp = new Bitmap(width, height);
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
