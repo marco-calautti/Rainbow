@@ -58,7 +58,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
         protected abstract void OnImportFrameMetadata(T texture, int frame, Metadata.MetadataReader metadata, IList<Image> images, Image referenceImage);
 
-        public bool IsValidFormat(System.IO.Stream inputFormat)
+        public virtual bool IsValidFormat(System.IO.Stream inputFormat)
         {
             long oldPos = inputFormat.Position;
             try

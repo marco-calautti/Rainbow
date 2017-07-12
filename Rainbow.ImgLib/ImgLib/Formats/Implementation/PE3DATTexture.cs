@@ -86,7 +86,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                     throw new TextureFormatException("Illegal bpp value: "+bpps[i]);
 
                 Image img=images[i];
-                ImageEncoderIndexed encoder = new ImageEncoderIndexed(new List<Image> { img }, IndexCodec.FromBitPerPixel(bpps[i]));
+                ImageEncoderIndexed encoder = new ImageEncoderIndexed(img, IndexCodec.FromBitPerPixel(bpps[i]));
                 imagesData.Add(encoder.Encode());
                 palettes.Add(encoder.Palettes[0]);
             }
@@ -145,6 +145,11 @@ namespace Rainbow.ImgLib.Formats.Implementation
                                                                   codec, palettes[activeFrame],
                                                                   new SwizzleFilter((int)widths[activeFrame], (int)heights[activeFrame], bpps[activeFrame]));
             return decoder.DecodeImage();
+        }
+
+        protected override Color[] GetPalette(int activePalette)
+        {
+            return palettes[activePalette];
         }
 
         internal IList<byte[]> GetImagesData()

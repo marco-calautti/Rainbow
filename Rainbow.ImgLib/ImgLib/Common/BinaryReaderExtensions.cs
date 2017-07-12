@@ -87,5 +87,15 @@ namespace Rainbow.ImgLib.Common
             Array.Reverse(buf, 0, 8);
             return BitConverter.ToInt64(buf, 0);
         }
+
+        public static float ReadSingle(this BinaryReader reader, ByteOrder order)
+        {
+            if (order == ByteOrder.LittleEndian)
+                return reader.ReadSingle();
+
+            reader.Read(buf, 0, 4);
+            Array.Reverse(buf, 0, 4);
+            return BitConverter.ToSingle(buf, 0);
+        }
     }
 }

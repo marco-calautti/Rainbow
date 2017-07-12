@@ -38,6 +38,8 @@ namespace Rainbow.ImgLib.Encoding
         }
 
         private IList<Image> images;
+        private Image referenceImage;
+
         private int colors;
         private int width, height;
         private IndexCodec codec;
@@ -46,18 +48,35 @@ namespace Rainbow.ImgLib.Encoding
         private ImageFilter imageFilter;
         private PaletteFilter paletteFilter;
 
-        public ImageEncoderIndexed(IList<Image> images, IndexCodec codec, IComparer<Color> pixelComparer = null, ColorCodec encoder=null, ImageFilter imageFilter = null, PaletteFilter paletteFilter = null)
+        private bool fromReference;
+
+        public ImageEncoderIndexed(IList<Color[]> palettes, Image referenceImage, IndexCodec codec, ColorCodec encoder = null, ImageFilter imageFilter = null, PaletteFilter paletteFilter = null)
         {
-            this.images = images;
-            this.codec=codec;
-            this.colorEncoder = encoder;
+            fromReference = true;
+            Palettes = palettes;
+            this.referenceImage = referenceImage;
 
-            this.imageFilter = imageFilter;
-            this.paletteFilter = paletteFilter;
-            colors = 1<<codec.BitDepth;
+            width = referenceImage.Width;
+            height = referenceImage.Height;
 
-            if (pixelComparer != null)
-                pixelSorter = pixelComparer;
+            if (!IsGreyScale(referenceImage))
+                throw new ArgumentException("The reference image must be in grey scale!");
+
+            Init(codec, null, encoder, imageFilter, paletteFilter);
+
+
+        }
+
+        public ImageEncoderIndexed(Image image, IndexCodec codec, IComparer<Color> pixelComparer = null, ColorCodec encoder = null, ImageFilter imageFilter = null, PaletteFilter paletteFilter = null)
+        : this(new List<Image>() { image}, codec,pixelComparer, encoder, imageFilter,paletteFilter)
+        {
+
+        }
+
+
+        private ImageEncoderIndexed(IList<Image> images, IndexCodec codec, IComparer<Color> pixelComparer = null, ColorCodec encoder = null, ImageFilter imageFilter = null, PaletteFilter paletteFilter = null)
+        {
+            fromReference = false;
 
             if (images.Count == 0)
                 throw new ArgumentException("The image list cannot be empty!");
@@ -69,6 +88,27 @@ namespace Rainbow.ImgLib.Encoding
                 if (img.Width != width || img.Height != height)
                     throw new ArgumentException("The images are not of the same size!");
 
+            this.images = images;
+
+            Init(codec,pixelComparer,encoder,imageFilter,paletteFilter);
+        }
+
+        private void Init(IndexCodec codec, IComparer<Color> pixelComparer, ColorCodec encoder, ImageFilter imageFilter, PaletteFilter paletteFilter)
+        {
+            this.codec = codec;
+            this.colorEncoder = encoder;
+
+            this.imageFilter = imageFilter;
+            this.paletteFilter = paletteFilter;
+            colors = 1 << codec.BitDepth;
+
+            if (pixelComparer != null)
+                pixelSorter = pixelComparer;
+        }
+
+        private bool IsGreyScale(Image referenceImage)
+        {
+            return referenceImage.GetColorArray().All((c) => c.R == c.G && c.R == c.B);
         }
 
         public IList<Color[]> Palettes { get; private set; }
@@ -76,8 +116,34 @@ namespace Rainbow.ImgLib.Encoding
 
         public byte[] Encode()
         {
+            if(fromReference)
+            {
+                return EncodeFromReference();
+            }else
+            {
+                return EncodeFromImages();
+            }
+        }
+
+        private byte[] EncodeFromReference()
+        {
+            int[] indexes = referenceImage.GetColorArray().Select((c) => (int)c.R).ToArray();
+
+            if (colorEncoder != null)
+            {
+                EncodedPalettes = new List<byte[]>(Palettes.Count);
+                foreach (Color[] pal in Palettes)
+                {
+                    EncodedPalettes.Add(colorEncoder.EncodeColors(paletteFilter == null ? pal : paletteFilter.ApplyFilter(pal)));
+                }
+            }
+            return imageFilter == null ? codec.PackIndexes(indexes) : imageFilter.ApplyFilter(codec.PackIndexes(indexes));
+        }
+
+        private byte[] EncodeFromImages()
+        {
             List<Bitmap> bitmaps = null;
-            if(images.Count==1) // We can quantize a single palette image
+            if (images.Count == 1) // We can quantize a single palette image
             {
                 Image img = images.First();
                 if (img.ColorsCount() > colors)
@@ -89,11 +155,11 @@ namespace Rainbow.ImgLib.Encoding
 
             }
             else //for multi palette images, quantization may break the pixel structure of the images. We must trust the work of the graphics editor.
-                bitmaps = new List<Image>(images).ConvertAll(x => new Bitmap(x)); 
+                bitmaps = new List<Image>(images).ConvertAll(x => new Bitmap(x));
 
             var indexes = new int[width * height];
 
-            
+
             Palettes = new List<Color[]>();
 
             for (int i = 0; i < bitmaps.Count; i++)
@@ -124,14 +190,14 @@ namespace Rainbow.ImgLib.Encoding
                 palette.Sort(pixelSorter);
                 Palettes[i] = palette.ToArray();
             }
-            
+
 
             int k = 0;
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
                 {
-                    Color pixel=bitmaps[0].GetPixel(x, y);
-                    int idx = Array.BinarySearch(Palettes[0],pixel, pixelSorter);
+                    Color pixel = bitmaps[0].GetPixel(x, y);
+                    int idx = Array.BinarySearch(Palettes[0], pixel, pixelSorter);
                     indexes[k++] = idx;
                 }
 
@@ -143,8 +209,8 @@ namespace Rainbow.ImgLib.Encoding
                     EncodedPalettes.Add(colorEncoder.EncodeColors(paletteFilter == null ? pal : paletteFilter.ApplyFilter(pal)));
                 }
             }
+            
             return imageFilter == null ? codec.PackIndexes(indexes) : imageFilter.ApplyFilter(codec.PackIndexes(indexes));
         }
-
     }
 }

@@ -16,35 +16,21 @@
 //http://github.com/marco-calautti/Rainbow
 
 using System;
-using System.Drawing;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-using Rainbow.ImgLib.Common;
-using Rainbow.ImgLib.Filters;
-
-namespace Rainbow.ImgLib.Encoding
+namespace Rainbow.ImgLib.Formats.Implementation
 {
-    public class ImageEncoderDirectColor : ImageEncoder
+    public class TacticsOgreEFXTexture : TextureContainer
     {
-        private Image image;
-        private ImageFilter filter;
-        private ColorCodec codec;
+        public static readonly string NAME = "Tactics Ogre EFX";
 
-        public ImageEncoderDirectColor(Image image, ColorCodec codec, ImageFilter filter=null)
+        public override string Name
         {
-            this.image = image;
-            this.codec = codec;
-            this.filter = filter;
-        }
-
-        public byte[] Encode()
-        {
-            byte[] data = codec.EncodeColors(image.GetColorArray());
-
-            if (filter != null)
-                data = filter.ApplyFilter(data);
-            
-            return data;
+            get {
+                return NAME;    
+            }
         }
     }
 }
-

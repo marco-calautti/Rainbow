@@ -21,9 +21,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 namespace Rainbow.ImgLib.Formats
 {
+    /// <summary>
+    /// This TextureFormat represents image data without palettes. To construct an instance,
+    /// use the inner Builder class. It allows to properly set the image color codec, an (optional) image filter
+    /// and the (optional) mipmap count. 
+    /// </summary>
     public class GenericTextureFormat : TextureFormatBase
     {
         private ImageDecoder decoder;
@@ -42,6 +48,17 @@ namespace Rainbow.ImgLib.Formats
             this.height=height;
 
             decoder = new ImageDecoderDirectColor(imageData, width, height, ColorCodec, ImageFilter);
+        }
+
+        private void Init(Image image)
+        {
+            ImageEncoder encoder = new ImageEncoderDirectColor(image, ColorCodec, ImageFilter);
+            Init(encoder.Encode(), image.Width, image.Height);
+        }
+
+        protected override Color[] GetPalette(int paletteIndex)
+        {
+            return null;
         }
 
         public byte[] GetImageData()
@@ -125,6 +142,13 @@ namespace Rainbow.ImgLib.Formats
             {
                 CreateTexture();
                 texture.Init(imgData, width, height);
+                return texture;
+            }
+
+            public GenericTextureFormat Build(Image image)
+            {
+                CreateTexture();
+                texture.Init(image);
                 return texture;
             }
 

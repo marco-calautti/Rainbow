@@ -25,6 +25,13 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Formats
 {
+    /// <summary>
+    /// This TextureFormat represents image data with palettes. To construct an instance,
+    /// use the inner Builder class. It allows to properly set the image index codec,
+    /// palette color codec, an (optional) image filter, an (optional) palette filter, 
+    /// an (optional) pixel comparer for ordering the palettes colors when rebuilding the texture
+    /// to raw form, and the (optional) mipmap count.
+    /// </summary>
     internal class PalettedTextureFormat : TextureFormatBase
     {
         protected byte[] imageData;
@@ -37,7 +44,7 @@ namespace Rainbow.ImgLib.Formats
         private PalettedTextureFormat(int mipmapsCount) :
             base(mipmapsCount) { }
 
-        private void Init(byte[] imgData,byte[] palData, int width, int height)
+        private void Init(byte[] imgData, byte[] palData, int width, int height)
         {
             Init(imgData, new List<byte[]> { palData }, width, height);
         }
@@ -63,29 +70,37 @@ namespace Rainbow.ImgLib.Formats
 
         private void Init(Image image)
         {
-            Init(new List<Image> { image });
+            width = image.Width;
+            height = image.Height;
 
-        }
-
-        private void Init(IList<Image> images)
-        {
-
-            encodedPalettes = new List<byte[]>(images.Count);
-
-            width = images.First().Width;
-            height = images.First().Height;
-
-
-            ImageEncoderIndexed encoder = new ImageEncoderIndexed(images, 
+            ImageEncoderIndexed encoder = new ImageEncoderIndexed(image, 
                                                                   IndexCodec,
                                                                   PixelComparer,
                                                                   PaletteCodec,
                                                                   ImageFilter,
                                                                   PaletteFilter);
-                imageData = encoder.Encode();
-                palettes = encoder.Palettes;
+             imageData = encoder.Encode();
+             palettes = encoder.Palettes;
 
-                encodedPalettes = encoder.EncodedPalettes;
+             encodedPalettes = encoder.EncodedPalettes;
+        }
+
+        private void Init(Image referenceImage, IList<Color[]> palettes)
+        {
+            width = referenceImage.Width;
+            height = referenceImage.Height;
+
+            ImageEncoderIndexed encoder = new ImageEncoderIndexed(palettes, 
+                                                                  referenceImage,
+                                                                  IndexCodec,
+                                                                  PaletteCodec,
+                                                                  ImageFilter,
+                                                                  PaletteFilter);
+            imageData = encoder.Encode();
+            palettes = encoder.Palettes;
+
+            encodedPalettes = encoder.EncodedPalettes;
+
         }
 
         public override string Name
@@ -127,6 +142,11 @@ namespace Rainbow.ImgLib.Formats
                                            palettes[activePalette],
                                            ImageFilter,
                                            PaletteFilter).DecodeImage();
+        }
+
+        protected override Color[] GetPalette(int activePalette)
+        {
+            return palettes[activePalette];
         }
 
         public byte[] GetImageData()
@@ -236,10 +256,10 @@ namespace Rainbow.ImgLib.Formats
                 return texture;
             }
 
-            public PalettedTextureFormat Build(IList<Image> images)
+            public PalettedTextureFormat Build(Image referenceImage, IList<Color[]> palettes)
             {
                 CreateTexture();
-                texture.Init(images);
+                texture.Init(referenceImage,palettes);
                 return texture;
             }
 

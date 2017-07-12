@@ -65,6 +65,21 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         void Put(string key, long value);
 
         /// <summary>
+        /// Adds the given float associated to the given key into the current section.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void Put(string key, float value);
+
+        /// <summary>
+        /// Adds the given double associated to the given key into the current section.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void Put(string key, double value);
+
+        /// <summary>
         /// Adds the given array of bytes associated to the given key into the current section.
         /// </summary>
         /// <exception cref="MetadataException"></exception>
@@ -110,6 +125,22 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         /// <exception cref="MetadataException"></exception>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        void PutAttribute(string key,bool value);
+        void PutAttribute(string key, bool value);
+
+        /// <summary>
+        /// Adds the given float associated to the given key as a special section attribute.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void PutAttribute(string key, float value);
+
+        /// <summary>
+        /// Adds the given double associated to the given key as a special section attribute.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void PutAttribute(string key, double value);
     }
 }

@@ -44,6 +44,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
             RegisterSerializer(new TX48Serializer());
             RegisterSerializer(new NUTTextureSerializer());
             RegisterSerializer(new TPLTextureSerializer());
+            RegisterSerializer(new TacticsOgreEFXTextureSerializer());
         }
 
         /// <summary>

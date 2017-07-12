@@ -23,6 +23,13 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Formats
 {
+    /// <summary>
+    /// This class acts as a container for multiple TextureFormats.
+    /// This is usually used as a collector for each frame of a specific file format.
+    /// A frame TextureFormat can be added to the TextureContainer
+    /// by adding the frame to the TextureFormats property.
+    /// Users of this class should create a subclass for it, by overriding the Name/get property.
+    /// </summary>
     public abstract class TextureContainer : TextureFormatBase
     {
         private IList<TextureFormat> textureFormats = new List<TextureFormat>();
@@ -67,6 +74,16 @@ namespace Rainbow.ImgLib.Formats
             format.SelectedPalette = oldPal;
 
             return img;
+        }
+
+        protected override Color[] GetPalette(int activePalette)
+        {
+            TextureFormat format = textureFormats[SelectedFrame];
+            int oldPal = format.SelectedPalette;
+            format.SelectedPalette = activePalette;
+            Color[] palette = format.Palette;
+            format.SelectedPalette = oldPal;
+            return palette;
         }
 
         public override Image GetReferenceImage()

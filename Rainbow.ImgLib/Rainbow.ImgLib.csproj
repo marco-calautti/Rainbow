@@ -3,14 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C4117527-926B-4588-BDE3-53EC241E62B4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rainbow</RootNamespace>
     <AssemblyName>Rainbow.ImgLib</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -22,8 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,9 +29,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -83,6 +79,7 @@
     <Compile Include="ImgLib\Formats\GenericTextureFormat.cs" />
     <Compile Include="ImgLib\Formats\Implementation\NamcoTexture.cs" />
     <Compile Include="ImgLib\Formats\Implementation\NUTTexture.Serializer.cs" />
+    <Compile Include="ImgLib\Formats\Implementation\TacticsOgreEFXTexture.cs" />
     <Compile Include="ImgLib\Formats\Implementation\TPLTexture.cs" />
     <Compile Include="ImgLib\Formats\Implementation\TPLTexture.Serializer.cs" />
     <Compile Include="ImgLib\Formats\PalettedTextureFormat.cs" />
@@ -113,12 +110,17 @@
     <Compile Include="ImgLib\Formats\Implementation\TIM2Texture.cs" />
     <Compile Include="ImgLib\Formats\Implementation\TIM2Texture.Segment.cs" />
     <Compile Include="ImgLib\Encoding\ImageDecoderDirectColor.cs" />
+    <Compile Include="ImgLib\Formats\DummyTexture.cs" />
+    <Compile Include="ImgLib\Encoding\ImageEncoderDirectColor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nQuant.Core\nQuant.Core.csproj">
       <Project>{A59307EA-FCB0-4110-BC42-0417871C24C4}</Project>
       <Name>nQuant.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ImgLib\Formats\Implementation\TacticsOgreEFXTexture.Serializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

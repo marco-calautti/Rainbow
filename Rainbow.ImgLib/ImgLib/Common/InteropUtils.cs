@@ -89,5 +89,15 @@ namespace Rainbow.ImgLib.Common
         {
             dictionary.Put<ulong>(key, (ulong)metadata.GetLong(key));
         }
+
+        public static void ReadSingleFrom(MetadataReader metadata, GenericDictionary dictionary, string key)
+        {
+            dictionary.Put<float>(key, (float)metadata.GetDouble(key));
+        }
+
+        public static void ReadDoubleFrom(MetadataReader metadata, GenericDictionary dictionary, string key)
+        {
+            dictionary.Put<double>(key, metadata.GetDouble(key));
+        }
     }
 }

@@ -1,0 +1,13 @@
+﻿<Properties StartupItem="Rainbow.App/Rainbow.App.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Rainbow.ImgLib/ImgLib/Formats/Serialization/SimpleTextureFormatSerializer.cs">
+    <Files>
+      <File FileName="Rainbow.ImgLib/ImgLib/Formats/Implementation/TacticsOgreEFXTexture.Serializer.cs" Line="1" Column="1" />
+      <File FileName="Rainbow.ImgLib/ImgLib/Formats/Serialization/SimpleTextureFormatSerializer.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

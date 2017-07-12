@@ -104,12 +104,22 @@ namespace Rainbow.ImgLib.Formats
             return GetImage(activeFrame, activePalette);
         }
 
+        public Color[] Palette
+        {
+            get
+            {
+                return PalettesCount == 0? null : GetPalette(activePalette);
+            }
+        }
+
         public GenericDictionary FormatSpecificData 
         {
             get { return specificData; }
         }
 
         protected abstract Image GetImage(int activeFrame, int activePalette);
+
+        protected abstract Color[] GetPalette(int paletteIndex);
 
         protected void OnTextureChanged()
         {

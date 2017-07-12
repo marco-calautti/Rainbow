@@ -57,6 +57,14 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         int GetInt(string key);
 
         /// <summary>
+        /// Retrieves the double value of the given key:
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        double GetDouble(string key);
+
+        /// <summary>
         /// Retrieves the long value of the given key:
         /// </summary>
         /// <exception cref="MetadataException"></exception>
@@ -111,6 +119,14 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         /// <param name="key"></param>
         /// <returns></returns>
         bool GetAttributeBool(string key);
+
+        /// <summary>
+        /// Retrieves the double value of the given attribute key:
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        double GetAttributeDouble(string key);
 
         void Rewind();
     }

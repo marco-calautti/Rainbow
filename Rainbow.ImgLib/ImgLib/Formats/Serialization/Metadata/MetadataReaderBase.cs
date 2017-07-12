@@ -46,6 +46,18 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             }
         }
 
+        public double GetDouble(string key)
+        {
+            try
+            {
+                return double.Parse(GetString(key));
+            }
+            catch (Exception e)
+            {
+                throw new MetadataException("Cannot get element value " + key + "!", e);
+            }
+        }
+
         public long GetLong(string key)
         {
             try
@@ -111,6 +123,18 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             }catch(Exception e)
             {
                 throw new MetadataException("Cannot get attribute value "+key+"!",e);
+            }
+        }
+
+        public double GetAttributeDouble(string key)
+        {
+            try
+            {
+                return double.Parse(GetAttributeString(key));
+            }
+            catch (Exception e)
+            {
+                throw new MetadataException("Cannot get attribute value " + key + "!", e);
             }
         }
 

@@ -50,6 +50,16 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             Put(key, value.ToString());
         }
 
+        public void Put(string key, float value)
+        {
+            Put(key, value.ToString());
+        }
+
+        public void Put(string key, double value)
+        {
+            Put(key, value.ToString());
+        }
+
         public abstract void PutAttribute(string key, string value);
 
         public void PutAttribute(string key, int value)
@@ -66,6 +76,17 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             PutAttribute(key, value.ToString());
         }
+
+        public void PutAttribute(string key, float value)
+        {
+            PutAttribute(key, value.ToString());
+        }
+
+        public void PutAttribute(string key, double value)
+        {
+            PutAttribute(key, value.ToString());
+        }
+
         public abstract void Dispose();
     }
 }

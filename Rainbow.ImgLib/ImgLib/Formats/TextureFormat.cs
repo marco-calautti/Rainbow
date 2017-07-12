@@ -94,6 +94,11 @@ namespace Rainbow.ImgLib.Formats
         int SelectedPalette { get; set; }
 
         /// <summary>
+        /// Returns the active palette. If this TextureFormat has no palette, null is returned.
+        /// </summary>
+        Color[] Palette { get; }
+
+        /// <summary>
         /// Gets the Image representation of the currently selected active frame and active palette (if any).
         /// </summary>
         /// <returns></returns>

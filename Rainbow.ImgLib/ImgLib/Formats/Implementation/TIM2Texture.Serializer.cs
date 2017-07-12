@@ -17,6 +17,8 @@
 
 using Rainbow.ImgLib.Formats.Serialization;
 using Rainbow.ImgLib.Formats.Serialization.Metadata;
+using Rainbow.ImgLib.Common;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -257,10 +259,16 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             Writemetadata(segment, metadata, basename);
             int i = 0;
-            foreach (Image img in ConstructImages(segment))
+            Image referenceImage = null;
+            ICollection<Image> images = ConstructImages(segment, out referenceImage);
+
+            foreach (Image img in images)
             {
                 img.Save(Path.Combine(directory, basename + "_" + i++ + ".png"));
             }
+
+            if (referenceImage != null)
+                referenceImage.Save(Path.Combine(directory, basename + "_reference.png"));
         }
 
         public TextureFormat Import(MetadataReader metadata, string directory)
@@ -272,31 +280,54 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             TIM2Segment.TIM2SegmentParameters parameters;
             Readmetadata(metadata, out parameters, out basename, out palCount);
-            ICollection<Image> images = ReadImageData(directory, basename, palCount);
+            Image referenceImage = null;
+            ICollection<Image> images = ReadImageData(directory, basename, palCount, out referenceImage);
 
-            segment = new TIM2Segment(images, parameters);
+            if (referenceImage != null)
+                segment = new TIM2Segment(referenceImage, images.Select(img => img.GetColorArray()).ToList(), parameters);
+            else
+                segment = new TIM2Segment(images.First(), null, parameters);
 
             return segment;
         }
 
-        private ICollection<Image> ConstructImages(TIM2Segment segment)
+        private ICollection<Image> ConstructImages(TIM2Segment segment, out Image referenceImage)
         {
+
+            referenceImage = segment.GetReferenceImage();
+
+            if(referenceImage == null)
+            {
+                return new List<Image>() { segment.GetImage() };
+            }
 
             var list = new List<Image>();
             int oldSelected = segment.SelectedPalette;
-            for (int i = 0; i < (segment.PalettesCount == 0 ? 1 : segment.PalettesCount); i++)
+            for (int i = 0; i < segment.PalettesCount; i++)
             {
                 segment.SelectedPalette = i;
-                list.Add(segment.GetImage());
+                Bitmap img = new Bitmap(segment.Palette.Length, 1);
+                for (int j = 0; j < segment.Palette.Length; j++)
+                    img.SetPixel(j, 0, segment.Palette[j]);
+
+                list.Add(img);
             }
             segment.SelectedPalette = oldSelected;
+
             return list;
         }
 
-        private ICollection<Image> ReadImageData(string directory, string basename, int palCount)
+        private ICollection<Image> ReadImageData(string directory, string basename, int palCount, out Image referenceImage)
         {
+            if (palCount > 1)
+            {
+                referenceImage = Image.FromFile(Path.Combine(directory, basename + "_reference.png"));
+            }
+            else
+                referenceImage = null;
 
             ICollection<Image> images = new List<Image>();
+
             for (int i = 0; i < (palCount == 0 ? 1 : palCount); i++)
             {
                 string file = Path.Combine(directory, basename + "_" + i + ".png");
@@ -377,7 +408,8 @@ namespace Rainbow.ImgLib.Formats.Implementation
             writer.Write((uint)imageData.Length);
             writer.Write((ushort)(0x30 + parameters.userdata.Length));
 
-            ushort colorEntries = (ushort)(paletteData.Length / parameters.colorSize);
+
+            ushort colorEntries = (ushort)(parameters.bpp > 8 ? 0 : 1 << parameters.bpp);
             writer.Write(colorEntries);
 
             writer.Write(parameters.format);

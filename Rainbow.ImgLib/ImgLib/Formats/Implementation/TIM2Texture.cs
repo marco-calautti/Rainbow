@@ -16,6 +16,7 @@
 //http://github.com/marco-calautti/Rainbow
 
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Rainbow.ImgLib.Formats.Implementation
@@ -130,6 +131,16 @@ namespace Rainbow.ImgLib.Formats.Implementation
             TIM2Segment tim2 = imagesList[activeFrame];
             tim2.SelectedPalette=activePalette;
             return tim2.GetImage();
+        }
+
+        protected override Color[] GetPalette(int activePalette)
+        {
+            TIM2Segment format = imagesList[SelectedFrame];
+            int oldPal = format.SelectedPalette;
+            format.SelectedPalette = activePalette;
+            Color[] palette = format.Palette;
+            format.SelectedPalette = oldPal;
+            return palette;
         }
 
         internal List<TIM2Segment> TIM2SegmentsList { get { return imagesList; } }

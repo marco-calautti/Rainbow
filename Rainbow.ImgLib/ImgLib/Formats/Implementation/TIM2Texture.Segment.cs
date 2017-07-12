@@ -95,7 +95,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         }
 
-        internal TIM2Segment(ICollection<Image> images,TIM2SegmentParameters parameters)
+        internal TIM2Segment(Image image, IList<Color[]> palettes, TIM2SegmentParameters parameters)
         {
             this.parameters = parameters;
             swizzleFilter = new SwizzleFilter(parameters.width, parameters.height, parameters.bpp);
@@ -103,16 +103,23 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             if(parameters.bpp>8) //true color image
             {
-                if (images.Count > 1) //something wrong, we can have at most one true color segment
-                    throw new TextureFormatException("Too many images for this true color segment!");
+                //if (images.Count > 1) //something wrong, we can have at most one true color segment
+                //   throw new TextureFormatException("Too many images for this true color segment!");
 
-                IEnumerator<Image> en = images.GetEnumerator(); en.MoveNext();
-                imageData = GetColorCodec(parameters.colorSize).EncodeColors(en.Current.GetColorArray()); //I love extension methods. Hurray!
-            }else
+                //IEnumerator<Image> en = images.GetEnumerator(); en.MoveNext();
+                //imageData = GetColorCodec(parameters.colorSize).EncodeColors(en.Current.GetColorArray()); //I love extension methods. Hurray!
+                imageData = GetColorCodec(parameters.colorSize).EncodeColors(image.GetColorArray()); //I love extension methods. Hurray!
+            }
+            else
             {
-                ImageEncoderIndexed encoder=new ImageEncoderIndexed(new List<Image>(images), IndexCodec.FromBitPerPixel(parameters.bpp),new TIM2ColorSorter());
+                ImageEncoderIndexed encoder;
+                if (palettes != null)
+                    encoder = new ImageEncoderIndexed(palettes, image, IndexCodec.FromBitPerPixel(parameters.bpp));
+                else
+                    encoder = new ImageEncoderIndexed(image, IndexCodec.FromBitPerPixel(parameters.bpp), new TIM2ColorSorter());
+
                 imageData = encoder.Encode();
-                palettes = new List<Color[]>(encoder.Palettes).ToArray();
+                this.palettes = new List<Color[]>(encoder.Palettes).ToArray();
             }
             CreateImageDecoder(imageData);
         }
@@ -177,6 +184,11 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             return decoder.DecodeImage();
 
+        }
+
+        protected override Color[] GetPalette(int activePalette)
+        {
+            return palettes[activePalette];
         }
 
         private void CreateImageDecoder(byte[] imageData)

@@ -50,7 +50,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             width = img.Width;
             height = img.Height;
 
-            ImageEncoderIndexed encoder = new ImageEncoderIndexed(new List<Image> { img }, 
+            ImageEncoderIndexed encoder = new ImageEncoderIndexed(img, 
                                                                   IndexCodec.FromBitPerPixel(4), null, null, 
                                                                   new SwizzleFilter(width, height, 4));
             imageData = encoder.Encode();
@@ -98,6 +98,11 @@ namespace Rainbow.ImgLib.Formats.Implementation
                                                                   IndexCodec.FromBitPerPixel(4), null,
                                                                   new SwizzleFilter(Width, Height, 4));
             return decoder.DecodeImage();
+        }
+
+        protected override Color[] GetPalette(int activePalette)
+        {
+            return null;
         }
 
         public override Image GetReferenceImage()
