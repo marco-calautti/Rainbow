@@ -22,6 +22,7 @@ File Formats
 * The 3rd Birthday DAT (full support)
 * NUT (partial support, only Open and export to png)
 * TPL (partial support, only Open and export to png)
+* EFX (Tactics Ogre PSP)
 
 *TIM2 support is almost complete. The app supports multi-layer, multi-clut, swizzled (PSP)/unswizzled TIM2 images with both linear, interleaved palettes, and segments headers eventually extended with custom user data (usually used by programmers).
 
