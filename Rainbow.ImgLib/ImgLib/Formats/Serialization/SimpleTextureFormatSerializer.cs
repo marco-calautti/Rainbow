@@ -77,8 +77,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
         /// <summary>
         /// Implementations of this method must construct the main texture container, according to the
-        /// given format specific data. The returned texture's FormatSpecificData property should coincide with the
-        /// given one.
+        /// given format specific data.
         /// </summary>
         /// <param name="formatSpecificData"></param>
         /// <returns></returns>
@@ -87,27 +86,30 @@ namespace Rainbow.ImgLib.Formats.Serialization
         /// <summary>
         /// Implementations of this method must add to the given texture, a new frame (in particular, the frame-th frame).
         /// This frame must be a TextureFormat constructed according to the given format specific data.
-        /// The added frame's FormatSpecificData property must coincide with the given one, after this method is called.
         /// </summary>
         /// <param name="texture"></param>
         /// <param name="frame"></param>
         /// <param name="formatSpecificData"></param>
         /// <param name="images"></param>
         /// <param name="referenceImage"></param>
-        protected abstract void CreateFrameForGeneralTexture(T texture, int frame, GenericDictionary formatSpecificData, IList<Image> images, Image referenceImage);
+        protected abstract TextureFormat CreateFrameForGeneralTexture(T texture, int frame, GenericDictionary formatSpecificData, IList<Image> images, Image referenceImage);
 
         private T OnImportGeneralTextureMetadata(Metadata.MetadataReader metadata)
         {
             GenericDictionary formatSpecific = new GenericDictionary();
             InteropUtils.ReadFrom(metadata, formatSpecific);
-            return CreateGeneralTextureFromFormatSpecificData(formatSpecific);
+            T result = CreateGeneralTextureFromFormatSpecificData(formatSpecific);
+            result.FormatSpecificData = formatSpecific;
+
+            return result;
         }
 
         private void OnImportFrameMetadata(T texture, int frame, Metadata.MetadataReader metadata, IList<Image> images, Image referenceImage)
         {
             GenericDictionary formatSpecific = new GenericDictionary();
             InteropUtils.ReadFrom(metadata, formatSpecific);
-            CreateFrameForGeneralTexture(texture, frame, formatSpecific, images, referenceImage);
+            TextureFormat segment = CreateFrameForGeneralTexture(texture, frame, formatSpecific, images, referenceImage);
+            segment.FormatSpecificData = formatSpecific;
         }
 
         public virtual bool IsValidFormat(System.IO.Stream inputFormat)

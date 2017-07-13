@@ -242,7 +242,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             throw new NotImplementedException();
         }
 
-        protected override void CreateFrameForGeneralTexture(TPLTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
+        protected override TextureFormat CreateFrameForGeneralTexture(TPLTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
         {
             throw new NotImplementedException();
         }

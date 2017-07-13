@@ -213,13 +213,10 @@ namespace Rainbow.ImgLib.Formats.Implementation
         protected override TacticsOgreEFXTexture CreateGeneralTextureFromFormatSpecificData(GenericDictionary formatSpecificData)
         {
             TacticsOgreEFXTexture texture = new TacticsOgreEFXTexture();
-
-            texture.FormatSpecificData = formatSpecificData;
-
             return texture;
         }
 
-        protected override void CreateFrameForGeneralTexture(TacticsOgreEFXTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
+        protected override TextureFormat CreateFrameForGeneralTexture(TacticsOgreEFXTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
         {
             if (referenceImage != null || images.Count > 1)
                 throw new TextureFormatException("EFX texture should not contain multiple palettes!");
@@ -246,9 +243,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
                               .Build(image); 
             }
 
-            segment.FormatSpecificData = formatSpecificData;
-
             texture.TextureFormats.Add(segment);
+
+            return segment;
         }
 
         private TextureFormat ReadEntry(BinaryReader reader)
