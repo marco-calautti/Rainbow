@@ -57,9 +57,9 @@ To-do
 * ~~Fix DXT1Decoder~~.
 * Reverse engineer NUT encodings.
 * Complete GenericTextureFormat to be constructible from Image, ColorEncoder ecc.
-* Fix export/import for multiclut TIM2 imags using reference image.
-* Let IndexedImageEncoders to be constructed using a reference gray scale image.
-* Add missing copyright snippet to new files.
+* ~~Fix export/import for multiclut TIM2 imags using reference image.~~
+* ~~Let IndexedImageEncoders to be constructed using a reference gray scale image.~~
+* ~~Add missing copyright snippet to new files.~~
 
 **Future work**
 * Add support to mipmap TIM2 textures. They are rare and usually used just for materials.
