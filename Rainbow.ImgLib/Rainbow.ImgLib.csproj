@@ -49,6 +49,7 @@
     <Compile Include="ImgLib\Common\ImageUtils.cs" />
     <Compile Include="ImgLib\Common\InteropUtils.cs" />
     <Compile Include="ImgLib\Encoding\ColorCodecEndiannessDependent.cs" />
+    <Compile Include="ImgLib\Encoding\ColorComparers\ARGBColorComparer.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodec32BitABGR.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodec32BitARGB.cs" />
     <Compile Include="ImgLib\Encoding\Implementation\ColorCodecDXT1.cs" />

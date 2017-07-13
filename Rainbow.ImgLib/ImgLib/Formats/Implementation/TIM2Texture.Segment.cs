@@ -21,6 +21,7 @@ using System.Drawing;
 using System.IO;
 using System.Xml;
 using Rainbow.ImgLib.Encoding;
+using Rainbow.ImgLib.Encoding.ColorComparers;
 using Rainbow.ImgLib.Common;
 using Rainbow.ImgLib.Filters;
 
@@ -28,17 +29,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
 {
     public class TIM2Segment : TextureFormatBase
     {
-        private class TIM2ColorSorter : IComparer<Color>
-        {
-            public int Compare(Color x, Color y)
-            {
-                long c1 = (uint)(x.A<<24|x.B<<16|x.G<<8|x.R);
-                long c2 = (uint)(y.A << 24 | y.B << 16 | y.G << 8 | y.R);
-                long result = c1 - c2;
-                return result < 0 ? -1 : result > 0 ? 1 : 0;
-            }
-        }
-
         internal class TIM2SegmentParameters
         {
             //segment parameters
@@ -51,14 +41,14 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             //raw header data we don't mind to process (I hope so).
             internal byte format;
-            internal byte[] GsTEX0=new byte[8], GsTEX1=new byte[8];
+            internal byte[] GsTEX0 = new byte[8], GsTEX1 = new byte[8];
             internal uint GsRegs, GsTexClut;
             internal byte[] userdata = new byte[0];
         }
 
         #region Members
 
-        private TIM2SegmentParameters parameters=new TIM2SegmentParameters();
+        private TIM2SegmentParameters parameters = new TIM2SegmentParameters();
 
         private byte[] imageData;
         private Color[][] palettes = new Color[0][];
@@ -70,7 +60,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         internal static readonly string NAME = "TIM2Segment";
 
-        internal TIM2Segment(byte[] imageData,byte[] paletteData, uint colorEntries,TIM2SegmentParameters parameters)
+        internal TIM2Segment(byte[] imageData, byte[] paletteData, uint colorEntries, TIM2SegmentParameters parameters)
         {
             this.imageData = imageData;
             this.parameters = parameters;
@@ -85,7 +75,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             ConstructPalettes(paletteData, colorEntries);
             CreateImageDecoder(imageData);
 
-            if(!parameters.linearPalette)
+            if (!parameters.linearPalette)
             {
                 for (int i = 0; i < palettes.Length; i++)
                 {
@@ -101,7 +91,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             swizzleFilter = new SwizzleFilter(parameters.width, parameters.height, parameters.bpp);
             paletteFilter = new TIM2PaletteFilter(parameters.bpp);
 
-            if(parameters.bpp>8) //true color image
+            if (parameters.bpp > 8) //true color image
             {
                 //if (images.Count > 1) //something wrong, we can have at most one true color segment
                 //   throw new TextureFormatException("Too many images for this true color segment!");
@@ -116,7 +106,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 if (palettes != null)
                     encoder = new ImageEncoderIndexed(palettes, image, IndexCodec.FromBitPerPixel(parameters.bpp));
                 else
-                    encoder = new ImageEncoderIndexed(image, IndexCodec.FromBitPerPixel(parameters.bpp), new TIM2ColorSorter());
+                    encoder = new ImageEncoderIndexed(image, IndexCodec.FromBitPerPixel(parameters.bpp), new ARGBColorComparer());
 
                 imageData = encoder.Encode();
                 this.palettes = new List<Color[]>(encoder.Palettes).ToArray();
@@ -145,7 +135,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         public override int FramesCount { get { return 1; } }
 
-        public int Bpp { get { return parameters.bpp;} }
+        public int Bpp { get { return parameters.bpp; } }
 
         internal bool Swizzled
         {
@@ -170,13 +160,13 @@ namespace Rainbow.ImgLib.Formats.Implementation
             }
         }
 
-        public int ColorSize { get { return parameters.colorSize;} }
+        public int ColorSize { get { return parameters.colorSize; } }
 
         #endregion
 
         #region Non public methods
 
-        protected override Image GetImage(int activeFrame,int activePalette)
+        protected override Image GetImage(int activeFrame, int activePalette)
         {
             ImageDecoderIndexed iDecoder = decoder as ImageDecoderIndexed;
             if (iDecoder != null)
@@ -260,7 +250,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             ColorCodec encoder = GetColorCodec(parameters.colorSize);
 
             MemoryStream stream = new MemoryStream();
-            foreach(Color[] palette in palettes)
+            foreach (Color[] palette in palettes)
             {
                 Color[] pal = !parameters.linearPalette ? paletteFilter.ApplyFilter(palette) : palette;
 

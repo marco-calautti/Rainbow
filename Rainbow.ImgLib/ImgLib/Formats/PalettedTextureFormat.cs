@@ -222,7 +222,7 @@ namespace Rainbow.ImgLib.Formats
                 return this;
             }
 
-            public Builder SetPixelComparer(IComparer<Color> comparer)
+            public Builder SetColorComparer(IComparer<Color> comparer)
             {
                 //texture.PixelComparer = comparer;
                 this.comparer = comparer;

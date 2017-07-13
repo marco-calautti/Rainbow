@@ -23,6 +23,7 @@ using System.IO;
 
 using Rainbow.ImgLib.Common;
 using Rainbow.ImgLib.Encoding;
+using Rainbow.ImgLib.Encoding.ColorComparers;
 using Rainbow.ImgLib.Filters;
 using Rainbow.ImgLib.Formats.Serialization;
 using System.Drawing;
@@ -31,18 +32,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 {
     public class TacticsOgreEFXTextureSerializer : SimpleTextureFormatSerializer<TacticsOgreEFXTexture>
     {
-        private class EFXColorSorter : IComparer<Color>
-        {
-            public int Compare(Color x, Color y)
-            {
-                long c1 = (uint)(x.A << 24 | x.B << 16 | x.G << 8 | x.R);
-                long c2 = (uint)(y.A << 24 | y.B << 16 | y.G << 8 | y.R);
-                long result = c1 - c2;
-                return result < 0 ? -1 : result > 0 ? 1 : 0;
-            }
-        }
-
-        public static readonly string RAW_DATA_KEY="RawData";
+        public static readonly string RAW_DATA_KEY = "RawData";
         public static readonly string SCALE_KEY = "Scale";
 
         public static readonly string UNK1_KEY = "Unk1";
@@ -89,7 +79,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             BinaryReader reader = new BinaryReader(formatData);
 
-			//read magic and discard
+            //read magic and discard
             reader.ReadBytes(8);
 
             float scale = reader.ReadSingle();
@@ -98,7 +88,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             texture.FormatSpecificData.Put<float>(SCALE_KEY, scale);
 
-			while(reader.BaseStream.Position<fileSize)
+            while (reader.BaseStream.Position < fileSize)
             {
                 TextureFormat segment = ReadEntry(reader);
                 texture.TextureFormats.Add(segment);
@@ -124,7 +114,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             int fileSize = 0x10;
 
-            foreach(TextureFormat segment in efxTexture.TextureFormats)
+            foreach (TextureFormat segment in efxTexture.TextureFormats)
             {
                 byte[] entryData = null;
                 int fullEntrySize = 0;
@@ -147,12 +137,13 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
                     entryData = imgData.Concat(palData).ToArray();
                 }
-                else if( dummySegment != null)
+                else if (dummySegment != null)
                 {
                     entryData = dummySegment.FormatSpecificData.Get<byte[]>(RAW_DATA_KEY);
 
                     fullEntrySize = 0x10 + entryData.Length;
-                }else
+                }
+                else
                 {
                     throw new TextureFormatException("EFX segments should be Paletted or dummy!");
                 }
@@ -173,7 +164,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 writer.Write(segment.FormatSpecificData.Get<byte>(ENTRY_TYPE_KEY));
                 writer.Write(segment.FormatSpecificData.Get<byte>(UNK3_KEY));
 
-                if(palSegment != null)
+                if (palSegment != null)
                 {
                     byte bpp = segment.FormatSpecificData.Get<byte>(BPP_KEY);
                     writer.Write(bpp);
@@ -208,7 +199,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             writer.Write((uint)fileSize);
 
             byte[] finalData = (writer.BaseStream as MemoryStream).ToArray();
-            outFormatData.Write(finalData,0,finalData.Length);
+            outFormatData.Write(finalData, 0, finalData.Length);
 
             writer.Close();
         }
@@ -228,7 +219,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         protected override void OnImportFrameMetadata(TacticsOgreEFXTexture texture, int frame, Serialization.Metadata.MetadataReader metadata, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
         {
-            if (referenceImage != null || images.Count>1)
+            if (referenceImage != null || images.Count > 1)
                 throw new TextureFormatException("EFX texture should not contain multiple palettes!");
 
             TextureFormat segment = null;
@@ -238,7 +229,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             ushort unk2 = (ushort)metadata.GetInt(UNK2_KEY);
             ushort id = (ushort)metadata.GetInt(ID_KEY);
             byte entryType = (byte)metadata.GetInt(ENTRY_TYPE_KEY);
-            byte unk3 = (byte)metadata.GetInt(UNK3_KEY); 
+            byte unk3 = (byte)metadata.GetInt(UNK3_KEY);
 
             if (entryType != 0x52)
             {
@@ -260,7 +251,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                               .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp))
                               .SetImageFilter(new SwizzleFilter(image.Width, image.Height, bpp))
                               .SetPaletteCodec(ColorCodec.CODEC_32BIT_RGBA)
-                              .SetPixelComparer(new EFXColorSorter())
+                              .SetColorComparer(new ARGBColorComparer())
                               .Build(image);
 
                 segment.FormatSpecificData.Put<byte>(BPP_KEY, bpp);
@@ -280,90 +271,90 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         private TextureFormat ReadEntry(BinaryReader reader)
         {
-			TextureFormat segment = null;
+            TextureFormat segment = null;
 
-			uint fullEntrySize = reader.ReadUInt32();
-			ushort unk1 = reader.ReadUInt16();
+            uint fullEntrySize = reader.ReadUInt32();
+            ushort unk1 = reader.ReadUInt16();
             ushort unk2 = reader.ReadUInt16();
 
             uint sizeEntryNotHeader = reader.ReadUInt32();
 
-			ushort id = reader.ReadUInt16();
-			byte entryType = reader.ReadByte();
-			byte unk3 = reader.ReadByte();
+            ushort id = reader.ReadUInt16();
+            byte entryType = reader.ReadByte();
+            byte unk3 = reader.ReadByte();
 
 
             if (entryType != 0x52) // non-image entry
-			{
-				//let's copy the raw data and put it in a dummy texture
-                byte[] buf = reader.ReadBytes((int)fullEntrySize-0x10);
-                
-				segment = new DummyTexture(string.Format("Data entry, type=0x{0:X}", entryType));
+            {
+                //let's copy the raw data and put it in a dummy texture
+                byte[] buf = reader.ReadBytes((int)fullEntrySize - 0x10);
 
-				segment.FormatSpecificData.Put<byte[]>(RAW_DATA_KEY, buf);
+                segment = new DummyTexture(string.Format("Data entry, type=0x{0:X}", entryType));
+
+                segment.FormatSpecificData.Put<byte[]>(RAW_DATA_KEY, buf);
                 segment.FormatSpecificData.Put<uint>(ENTRY_NO_HEADER_KEY, sizeEntryNotHeader);
-			}
-			else //image data, let's read header 2 data
-			{
+            }
+            else //image data, let's read header 2 data
+            {
                 if (fullEntrySize - sizeEntryNotHeader != 0x10)
                     throw new TextureFormatException("Not a valid EFX file, full size and size without header 1 do not match!");
 
                 byte bpp = reader.ReadByte();
-				if (bpp != 4 && bpp != 8)
-					throw new TextureFormatException("Not a valid EFX file, unsupported bpp=" + bpp);
+                if (bpp != 4 && bpp != 8)
+                    throw new TextureFormatException("Not a valid EFX file, unsupported bpp=" + bpp);
 
-				byte unk4 = reader.ReadByte();
-				if (unk4 != 0x20)
-					throw new TextureFormatException("Not a valid EFX file, unk3 not equal to 0x20!");
-				
-				ushort unk5 = reader.ReadUInt16();
-				if (unk5 != 0x01)
-					throw new TextureFormatException("Not a valid EFX file, unk4 not equal to 0x01!");
-				
-				ushort paletteColors = reader.ReadUInt16();
-                if(paletteColors != 1 << bpp)
+                byte unk4 = reader.ReadByte();
+                if (unk4 != 0x20)
+                    throw new TextureFormatException("Not a valid EFX file, unk3 not equal to 0x20!");
+
+                ushort unk5 = reader.ReadUInt16();
+                if (unk5 != 0x01)
+                    throw new TextureFormatException("Not a valid EFX file, unk4 not equal to 0x01!");
+
+                ushort paletteColors = reader.ReadUInt16();
+                if (paletteColors != 1 << bpp)
                 {
                     throw new TextureFormatException("This EFX file contains more colors then requested by bpp. Is this a multi-palette texture?");
                 }
 
-				ushort width = reader.ReadUInt16();
-				ushort height = reader.ReadUInt16();
+                ushort width = reader.ReadUInt16();
+                ushort height = reader.ReadUInt16();
 
-				if (reader.ReadUInt16() != width)
-					throw new TextureFormatException("Not a valid EFX file, widths not corresponding!");
-				if (reader.ReadUInt16() != height)
-					throw new TextureFormatException("Not a valid EFX file, widths not corresponding!");
-				
-				reader.ReadUInt16(); //pad
+                if (reader.ReadUInt16() != width)
+                    throw new TextureFormatException("Not a valid EFX file, widths not corresponding!");
+                if (reader.ReadUInt16() != height)
+                    throw new TextureFormatException("Not a valid EFX file, widths not corresponding!");
 
-				uint unk6 = reader.ReadUInt32();
-				if(unk6!=0x20)
-					throw new TextureFormatException("Not a valid EFX file, unk5 not equal to 0x20!");
+                reader.ReadUInt16(); //pad
 
-				uint header2AndImgDataSize = reader.ReadUInt32();
-				uint imgSize = header2AndImgDataSize - 0x20;
+                uint unk6 = reader.ReadUInt32();
+                if (unk6 != 0x20)
+                    throw new TextureFormatException("Not a valid EFX file, unk5 not equal to 0x20!");
 
-				int paletteSize = paletteColors * 4;
-				if (sizeEntryNotHeader - header2AndImgDataSize != paletteSize)
-					throw new TextureFormatException("Not a valid EFX file, size of image data not corresponding!");
+                uint header2AndImgDataSize = reader.ReadUInt32();
+                uint imgSize = header2AndImgDataSize - 0x20;
 
-				if (reader.ReadUInt32() != sizeEntryNotHeader)
-					throw new TextureFormatException("Not a valid EFX file, size of entry without header 1 not corresponding in header 2!");
+                int paletteSize = paletteColors * 4;
+                if (sizeEntryNotHeader - header2AndImgDataSize != paletteSize)
+                    throw new TextureFormatException("Not a valid EFX file, size of image data not corresponding!");
 
-				reader.ReadUInt32(); //pad
+                if (reader.ReadUInt32() != sizeEntryNotHeader)
+                    throw new TextureFormatException("Not a valid EFX file, size of entry without header 1 not corresponding in header 2!");
 
-				//retrieve image and palette data and construct texture
+                reader.ReadUInt32(); //pad
 
-				byte[] imgData = reader.ReadBytes((int)imgSize);
-				byte[] palData = reader.ReadBytes((int)paletteSize);
+                //retrieve image and palette data and construct texture
 
-				segment = new PalettedTextureFormat.Builder()
-					.SetIndexCodec(IndexCodec.FromBitPerPixel(bpp))
-					.SetImageFilter(new SwizzleFilter(width, height, bpp))
-					.SetPaletteCodec(ColorCodec.CODEC_32BIT_RGBA)
-                    .SetPixelComparer(new EFXColorSorter())
+                byte[] imgData = reader.ReadBytes((int)imgSize);
+                byte[] palData = reader.ReadBytes((int)paletteSize);
+
+                segment = new PalettedTextureFormat.Builder()
+                    .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp))
+                    .SetImageFilter(new SwizzleFilter(width, height, bpp))
+                    .SetPaletteCodec(ColorCodec.CODEC_32BIT_RGBA)
+                    .SetColorComparer(new ARGBColorComparer())
                     .Build(imgData, palData, width, height);
-               
+
                 segment.FormatSpecificData.Put<byte>(BPP_KEY, bpp);
                 segment.FormatSpecificData.Put<byte>(UNK4_KEY, unk4);
                 segment.FormatSpecificData.Put<ushort>(UNK5_KEY, unk5);
@@ -375,7 +366,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             segment.FormatSpecificData.Put<ushort>(ID_KEY, id);
             segment.FormatSpecificData.Put<byte>(ENTRY_TYPE_KEY, entryType);
             segment.FormatSpecificData.Put<byte>(UNK3_KEY, unk3);
-			return segment;
+            return segment;
         }
     }
 }
