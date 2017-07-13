@@ -10,7 +10,7 @@ If you want to **compile** Rainbow, please refer to this [wiki page](https://git
 
 Rainbow is a tool, written in C#, intended to handle different graphics formats from video games assets.
 Currently, Rainbow supports almost every variant of the TIM2 format and some game specific formats (see the Feature section below).
-It requires the .NET framework v3.5+ or any version of mono supporting v3.5 (tested on mono 2.10.x).
+It requires the .NET framework v4.0+ or any version of mono supporting v4.0.
 Download it here https://github.com/marco-calautti/Rainbow/releases
 
 ![ScreenShot](http://i.imgur.com/FsrZ2SY.png)
