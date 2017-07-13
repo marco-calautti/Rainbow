@@ -25,6 +25,15 @@ using System.Text;
 
 namespace Rainbow.ImgLib.Formats.Serialization
 {
+    /// <summary>
+    /// This TextureFormatSerializer takes care of the exporting and import phases.
+    /// A class extending this Serializer will only need to implement the Open and Save methods, and some
+    /// other minor methods.
+    /// This serializer defaults to TextureFormats having a "magic" sequence of bytes as identifier and implements
+    /// the method IsValidFormat accordingly. If a more refined identification is needed,
+    /// subclasses should override the IsValidFormat method.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class SimpleTextureFormatSerializer<T> : TextureFormatSerializer where T : TextureFormat
     {
 
@@ -36,9 +45,15 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
         public abstract void Save(TextureFormat texture, System.IO.Stream outFormatData);
 
-
+        /// <summary>
+        /// Array of bytes with which the TextureFormat starts.
+        /// </summary>
         public abstract byte[] MagicID { get; }
 
+        /// <summary>
+        /// This is the ID used by this serializer as the name for the root section of the automatically generated
+        /// metadata.
+        /// </summary>
         public abstract string MetadataID { get; }
 
         protected virtual void OnExportGeneralTextureMetadata(T texture, Metadata.MetadataWriter metadata)
@@ -52,10 +67,33 @@ namespace Rainbow.ImgLib.Formats.Serialization
             InteropUtils.WriteTo(tFrame.FormatSpecificData, metadata);
         }
 
+        /// <summary>
+        /// Implementations of this method must return the TextureFormat corresponding to the frame given in the given texture.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="frame"></param>
+        /// <returns></returns>
         protected abstract TextureFormat GetTextureFrame(T texture, int frame);
 
+        /// <summary>
+        /// Implementations of this method must construct the main texture container, according to the
+        /// given format specific data. The returned texture's FormatSpecificData property should coincide with the
+        /// given one.
+        /// </summary>
+        /// <param name="formatSpecificData"></param>
+        /// <returns></returns>
         protected abstract T CreateGeneralTextureFromFormatSpecificData(GenericDictionary formatSpecificData);
 
+        /// <summary>
+        /// Implementations of this method must add to the given texture, a new frame (in particular, the frame-th frame).
+        /// This frame must be a TextureFormat constructed according to the given format specific data.
+        /// The added frame's FormatSpecificData property must coincide with the given one, after this method is called.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="frame"></param>
+        /// <param name="formatSpecificData"></param>
+        /// <param name="images"></param>
+        /// <param name="referenceImage"></param>
         protected abstract void CreateFrameForGeneralTexture(T texture, int frame, GenericDictionary formatSpecificData, IList<Image> images, Image referenceImage);
 
         private T OnImportGeneralTextureMetadata(Metadata.MetadataReader metadata)
