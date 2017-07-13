@@ -137,10 +137,10 @@ namespace Rainbow.ImgLib.Formats.Implementation
             {
                 metadata.EnterSection("TIM2");
 
-                int version = metadata.GetAttributeInt("Version");
-                string basename = metadata.GetAttributeString("Basename");
-                bool swizzled = metadata.GetAttributeBool("Swizzled");
-                int textureCount = metadata.GetAttributeInt("Textures");
+                int version = metadata.GetAttribute<int>("Version");
+                string basename = metadata.GetAttribute<string>("Basename");
+                bool swizzled = metadata.GetAttribute<bool>("Swizzled");
+                int textureCount = metadata.GetAttribute<int>("Textures");
                 
                 List<TIM2Segment> imagesList = new List<TIM2Segment>();
 
@@ -342,31 +342,31 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             metadata.EnterSection("TIM2Texture");
 
-            basename = metadata.GetAttributeString("Basename");
-            palCount = metadata.GetAttributeInt("Cluts");
+            basename = metadata.GetAttribute<string>("Basename");
+            palCount = metadata.GetAttribute<int>("Cluts");
 
             parameters = new TIM2Segment.TIM2SegmentParameters();
 
             parameters.swizzled = swizzled;
 
-            parameters.linearPalette = metadata.GetAttributeBool("LinearClut");
+            parameters.linearPalette = metadata.GetAttribute<bool>("LinearClut");
 
-            parameters.width = metadata.GetInt("Width");
-            parameters.height = metadata.GetInt("Height");
-            parameters.bpp = (byte)metadata.GetInt("Bpp");
-            parameters.colorSize = metadata.GetInt("ColorSize");
-            parameters.mipmapCount = (byte)metadata.GetInt("MipmapCount");
+            parameters.width = metadata.Get<int>("Width");
+            parameters.height = metadata.Get<int>("Height");
+            parameters.bpp = metadata.Get<byte>("Bpp");
+            parameters.colorSize = metadata.Get<int>("ColorSize");
+            parameters.mipmapCount = metadata.Get<byte>("MipmapCount");
 
-            parameters.format = (byte)metadata.GetInt("Format");
+            parameters.format = metadata.Get<byte>("Format");
             //parameters.clutFormat = (byte)int.Parse(node.Element("ClutFormat").Value);
 
-            parameters.GsTEX0 = metadata.GetRaw("GsTEX0");
-            parameters.GsTEX1 = metadata.GetRaw("GsTEX1");
+            parameters.GsTEX0 = metadata.Get<byte[]>("GsTEX0");
+            parameters.GsTEX1 = metadata.Get<byte[]>("GsTEX1");
 
-            parameters.GsRegs = (uint)metadata.GetInt("GsRegs");
-            parameters.GsTexClut = (uint)metadata.GetInt("GsTexClut");
+            parameters.GsRegs = metadata.Get<uint>("GsRegs");
+            parameters.GsTexClut = metadata.Get<uint>("GsTexClut");
 
-            parameters.userdata = metadata.GetRaw("UserData");
+            parameters.userdata = metadata.Get<byte[]>("UserData");
 
             metadata.ExitSection();
 
@@ -392,8 +392,8 @@ namespace Rainbow.ImgLib.Formats.Implementation
             metadata.Put("GsTEX0", segment.GetParameters().GsTEX0);
             metadata.Put("GsTEX1", segment.GetParameters().GsTEX1);
 
-            metadata.Put("GsRegs", (int)segment.GetParameters().GsRegs);
-            metadata.Put("GsTexClut", (int)segment.GetParameters().GsTexClut);
+            metadata.Put("GsRegs", segment.GetParameters().GsRegs);
+            metadata.Put("GsTexClut", segment.GetParameters().GsTexClut);
             metadata.Put("UserData", segment.GetParameters().userdata);
 
             metadata.EndSection();

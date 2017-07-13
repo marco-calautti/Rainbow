@@ -87,12 +87,21 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             get
             {
-                if (currentElement == null)
-                    throw new MetadataException("No sections entered");
+                try
+                {
+                    if (currentElement == null)
+                        throw new MetadataException("No sections entered");
 
-                return currentElement   .Elements("data")
-                                        .Select(el => el.Attribute("name").Value)
-                                        .ToList();
+                    return currentElement.Elements("data")
+                                            .Select(el => el.Attribute("name").Value)
+                                            .ToList();
+                }
+                catch (Exception e)
+                {
+                    if (e is MetadataException)
+                        throw e;
+                    throw new MetadataException("Error while retrieving element value!", e);
+                }
             }
         }
 
@@ -100,16 +109,25 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             get
             {
-                if (currentElement == null)
-                    throw new MetadataException("No sections entered");
+                try
+                {
+                    if (currentElement == null)
+                        throw new MetadataException("No sections entered");
 
-                return currentElement.Elements("attribute")
-                                        .Select(el => el.Attribute("name").Value)
-                                        .ToList();
+                    return currentElement.Elements("attribute")
+                                            .Select(el => el.Attribute("name").Value)
+                                            .ToList();
+                }
+                catch (Exception e)
+                {
+                    if (e is MetadataException)
+                        throw e;
+                    throw new MetadataException("Error while retrieving element value!", e);
+                }
             }
         }
 
-        public override string GetString(string key)
+        protected override string GetDataStringRepresentation(string key)
         {
             try
             {
@@ -130,7 +148,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             }
         }
 
-        public override string GetAttributeString(string key)
+        protected override string GetAttributeStringRepresentation(string key)
         {
             try
             {
@@ -149,6 +167,50 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 if (e is MetadataException)
                     throw e;
 
+                throw new MetadataException("Error while retrieving element value!", e);
+            }
+        }
+
+        public override Type GetValueType(string key)
+        {
+            if (currentElement == null)
+                throw new MetadataException("No sections entered");
+
+            try
+            {
+                IEnumerable<string> en = currentElement.Elements("data")
+                                                            .Where(el => el.Attribute("name").Value == key)
+                                                            .Select(el => el.Attribute("type").Value);
+
+                return Type.GetType(en.First());
+
+            }
+            catch (Exception e)
+            {
+                if (e is MetadataException)
+                    throw e;
+                throw new MetadataException("Error while retrieving element value!", e);
+            }
+        }
+
+        public override Type GetAttributeValueType(string key)
+        {
+            if (currentElement == null)
+                throw new MetadataException("No sections entered");
+
+            try
+            {
+                IEnumerable<string> en = currentElement.Elements("attribute")
+                                                            .Where(el => el.Attribute("name").Value == key)
+                                                            .Select(el => el.Attribute("type").Value);
+
+                return Type.GetType(en.First());
+
+            }
+            catch (Exception e)
+            {
+                if (e is MetadataException)
+                    throw e;
                 throw new MetadataException("Error while retrieving element value!", e);
             }
         }

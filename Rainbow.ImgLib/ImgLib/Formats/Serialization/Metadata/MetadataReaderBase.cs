@@ -29,115 +29,97 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public abstract void ExitSection();
 
-        public abstract string GetString(string key);
-
         public abstract void Rewind();
 
         public abstract ICollection<string> Keys { get; }
 
         public abstract ICollection<string> AttributesKeys { get; }
 
-        public int GetInt(string key)
+        public abstract Type GetValueType(string key);
+
+        public abstract Type GetAttributeValueType(string key);
+
+        protected abstract string GetDataStringRepresentation(string key);
+
+        protected abstract string GetAttributeStringRepresentation(string key);
+
+        public T Get<T>(string key)
         {
-            try
-            {
-                return int.Parse(GetString(key));
-            }catch(Exception e)
-            {
-                throw new MetadataException("Cannot get element value "+key+"!",e);
-            }
+            return _Get<T>(key, GetDataStringRepresentation(key), GetValueType(key));
         }
 
-        public double GetDouble(string key)
+        public T GetAttribute<T>(string key)
         {
+            return _Get<T>(key, GetAttributeStringRepresentation(key), GetAttributeValueType(key));
+        }
+
+        private T _Get<T>(string key, string representation, Type t)
+        {
+            Type myType = typeof(T);
+            if (t != myType)
+                throw new MetadataException("The value/attribute with key " + key + " is not a of type " + myType.Name + "!");
+
+            object ret = null;
             try
             {
-                return double.Parse(GetString(key));
+                if (myType == typeof(byte[]))
+                {
+                    ret = Convert.FromBase64String(representation);
+
+                }
+                else if (myType == typeof(string))
+                {
+                    ret = representation;
+                }
+                else if (myType == typeof(byte))
+                {
+                    ret = byte.Parse(representation);
+                }
+                else if (myType == typeof(short))
+                {
+                    ret = short.Parse(representation);
+                }
+                else if (myType == typeof(ushort))
+                {
+                    ret = ushort.Parse(representation);
+                }
+                else if (myType == typeof(int))
+                {
+                    ret = int.Parse(representation);
+                }
+                else if (myType == typeof(uint))
+                {
+                    ret = uint.Parse(representation);
+                }
+                else if (myType == typeof(long))
+                {
+                    ret = long.Parse(representation);
+                }
+                else if (myType == typeof(ulong))
+                {
+                    ret = ulong.Parse(representation);
+                }
+                else if (myType == typeof(float))
+                {
+                    ret = float.Parse(representation);
+                }
+                else if (myType == typeof(double))
+                {
+                    ret = double.Parse(representation);
+                }
+                else if (myType == typeof(bool))
+                {
+                    ret = bool.Parse(representation);
+                }
+                else
+                    throw new MetadataException("Unsupported type " + myType.Name + "!");
             }
             catch (Exception e)
             {
                 throw new MetadataException("Cannot get element value " + key + "!", e);
             }
-        }
 
-        public long GetLong(string key)
-        {
-            try
-            {
-                return long.Parse(GetString(key));
-            }catch(Exception e)
-            {
-                throw new MetadataException("Cannot get element value "+key+"!",e);
-            }
-        }
-
-        public byte[] GetRaw(string key)
-        {
-            try
-            {
-                return Convert.FromBase64String(GetString(key));
-            }catch(Exception e)
-            {
-                throw new MetadataException("Cannot get element value "+key+"!",e);
-            }
-        }
-
-        public bool GetBool(string key)
-        {
-            try
-            {
-                return bool.Parse(GetString(key));
-            }catch(Exception e)
-            {
-                throw new MetadataException("Cannot get element value "+key+"!",e);
-            }
-        }
-
-        public abstract string GetAttributeString(string key);
-
-        public int GetAttributeInt(string key)
-        {
-            try
-            {
-                return int.Parse(GetAttributeString(key));
-            }catch(Exception e)
-            {
-                throw new MetadataException("Cannot get attribute value "+key+"!",e);
-            }
-        }
-
-        public long GetAttributeLong(string key)
-        {
-            try
-            {
-                return long.Parse(GetAttributeString(key));
-            }catch(Exception e)
-            {
-                throw new MetadataException("Cannot get attribute value "+key+"!",e);
-            }
-        }
-
-        public bool GetAttributeBool(string key)
-        {
-            try
-            {
-                return bool.Parse(GetAttributeString(key));
-            }catch(Exception e)
-            {
-                throw new MetadataException("Cannot get attribute value "+key+"!",e);
-            }
-        }
-
-        public double GetAttributeDouble(string key)
-        {
-            try
-            {
-                return double.Parse(GetAttributeString(key));
-            }
-            catch (Exception e)
-            {
-                throw new MetadataException("Cannot get attribute value " + key + "!", e);
-            }
+            return (T)ret;
         }
 
         public abstract void Dispose();

@@ -237,12 +237,12 @@ namespace Rainbow.ImgLib.Formats.Implementation
             return texture.TextureFormats[frame];
         }
 
-        protected override TPLTexture OnImportGeneralTextureMetadata(Serialization.Metadata.MetadataReader metadata)
+        protected override TPLTexture CreateGeneralTextureFromFormatSpecificData(GenericDictionary formatSpecificData)
         {
             throw new NotImplementedException();
         }
 
-        protected override void OnImportFrameMetadata(TPLTexture texture, int frame, Serialization.Metadata.MetadataReader metadata, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
+        protected override void CreateFrameForGeneralTexture(TPLTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
         {
             throw new NotImplementedException();
         }

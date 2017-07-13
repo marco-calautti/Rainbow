@@ -210,14 +210,16 @@ namespace Rainbow.ImgLib.Formats.Implementation
             return texture.TextureFormats[frame];
         }
 
-        protected override TacticsOgreEFXTexture OnImportGeneralTextureMetadata(Serialization.Metadata.MetadataReader metadata)
+        protected override TacticsOgreEFXTexture CreateGeneralTextureFromFormatSpecificData(GenericDictionary formatSpecificData)
         {
             TacticsOgreEFXTexture texture = new TacticsOgreEFXTexture();
-            texture.FormatSpecificData.Put<float>(SCALE_KEY, (float)metadata.GetDouble(SCALE_KEY));
+
+            texture.FormatSpecificData = formatSpecificData;
+
             return texture;
         }
 
-        protected override void OnImportFrameMetadata(TacticsOgreEFXTexture texture, int frame, Serialization.Metadata.MetadataReader metadata, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
+        protected override void CreateFrameForGeneralTexture(TacticsOgreEFXTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
         {
             if (referenceImage != null || images.Count > 1)
                 throw new TextureFormatException("EFX texture should not contain multiple palettes!");
@@ -225,46 +227,26 @@ namespace Rainbow.ImgLib.Formats.Implementation
             TextureFormat segment = null;
 
             var image = images.First();
-            ushort unk1 = (ushort)metadata.GetInt(UNK1_KEY);
-            ushort unk2 = (ushort)metadata.GetInt(UNK2_KEY);
-            ushort id = (ushort)metadata.GetInt(ID_KEY);
-            byte entryType = (byte)metadata.GetInt(ENTRY_TYPE_KEY);
-            byte unk3 = (byte)metadata.GetInt(UNK3_KEY);
+            byte entryType = formatSpecificData.Get<byte>(ENTRY_TYPE_KEY);
 
             if (entryType != 0x52)
             {
-                byte[] rawData = metadata.GetRaw(RAW_DATA_KEY);
+                byte[] rawData = formatSpecificData.Get<byte[]>(RAW_DATA_KEY);
                 segment = new DummyTexture(string.Format("Data entry, type=0x{0:X}", entryType));
-
-                segment.FormatSpecificData.Put<byte[]>(RAW_DATA_KEY, rawData);
-                uint sizeNoHeader = (uint)metadata.GetLong(ENTRY_NO_HEADER_KEY);
-                segment.FormatSpecificData.Put<uint>(ENTRY_NO_HEADER_KEY, sizeNoHeader);
             }
             else
             {
-                byte bpp = (byte)metadata.GetInt(BPP_KEY);
-                byte unk4 = (byte)metadata.GetInt(UNK4_KEY);
-                ushort unk5 = (ushort)metadata.GetInt(UNK5_KEY);
-                uint unk6 = (uint)metadata.GetLong(UNK6_KEY);
+                byte bpp = formatSpecificData.Get<byte>(BPP_KEY);
 
                 segment = new PalettedTextureFormat.Builder()
                               .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp))
                               .SetImageFilter(new SwizzleFilter(image.Width, image.Height, bpp))
                               .SetPaletteCodec(ColorCodec.CODEC_32BIT_RGBA)
                               .SetColorComparer(new ARGBColorComparer())
-                              .Build(image);
-
-                segment.FormatSpecificData.Put<byte>(BPP_KEY, bpp);
-                segment.FormatSpecificData.Put<byte>(UNK4_KEY, unk4);
-                segment.FormatSpecificData.Put<ushort>(UNK5_KEY, unk5);
-                segment.FormatSpecificData.Put<uint>(UNK6_KEY, unk6);
+                              .Build(image); 
             }
 
-            segment.FormatSpecificData.Put<ushort>(UNK1_KEY, unk1);
-            segment.FormatSpecificData.Put<ushort>(UNK2_KEY, unk2);
-            segment.FormatSpecificData.Put<ushort>(ID_KEY, id);
-            segment.FormatSpecificData.Put<byte>(ENTRY_TYPE_KEY, entryType);
-            segment.FormatSpecificData.Put<byte>(UNK3_KEY, unk3);
+            segment.FormatSpecificData = formatSpecificData;
 
             texture.TextureFormats.Add(segment);
         }

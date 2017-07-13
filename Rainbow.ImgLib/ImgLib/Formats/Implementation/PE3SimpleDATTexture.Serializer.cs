@@ -118,8 +118,8 @@ namespace Rainbow.ImgLib.Formats.Implementation
         public TextureFormat Import(MetadataReader metadata, string directory)
         {
             metadata.EnterSection("PE3SimpleDAT");
-            string basename = metadata.GetAttributeString("Basename");
-            byte[] rawHeader = metadata.GetRaw("RawHeader");
+            string basename = metadata.GetAttribute<string>("Basename");
+            byte[] rawHeader = metadata.Get<byte[]>("RawHeader");
 
             Image img=Image.FromFile(Path.Combine(directory,basename+".png"));
 

@@ -54,9 +54,23 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
         protected abstract TextureFormat GetTextureFrame(T texture, int frame);
 
-        protected abstract T OnImportGeneralTextureMetadata(Metadata.MetadataReader metadata);
+        protected abstract T CreateGeneralTextureFromFormatSpecificData(GenericDictionary formatSpecificData);
 
-        protected abstract void OnImportFrameMetadata(T texture, int frame, Metadata.MetadataReader metadata, IList<Image> images, Image referenceImage);
+        protected abstract void CreateFrameForGeneralTexture(T texture, int frame, GenericDictionary formatSpecificData, IList<Image> images, Image referenceImage);
+
+        private T OnImportGeneralTextureMetadata(Metadata.MetadataReader metadata)
+        {
+            GenericDictionary formatSpecific = new GenericDictionary();
+            InteropUtils.ReadFrom(metadata, formatSpecific);
+            return CreateGeneralTextureFromFormatSpecificData(formatSpecific);
+        }
+
+        private void OnImportFrameMetadata(T texture, int frame, Metadata.MetadataReader metadata, IList<Image> images, Image referenceImage)
+        {
+            GenericDictionary formatSpecific = new GenericDictionary();
+            InteropUtils.ReadFrom(metadata, formatSpecific);
+            CreateFrameForGeneralTexture(texture, frame, formatSpecific, images, referenceImage);
+        }
 
         public virtual bool IsValidFormat(System.IO.Stream inputFormat)
         {
@@ -139,8 +153,8 @@ namespace Rainbow.ImgLib.Formats.Serialization
         public TextureFormat Import(Metadata.MetadataReader metadata, string directory)
         {
             metadata.EnterSection(MetadataID);
-                int count = metadata.GetAttributeInt("Textures");
-                string basename = metadata.GetAttributeString("Basename");
+                int count = metadata.GetAttribute<int>("Textures");
+                string basename = metadata.GetAttribute<string>("Basename");
 
                 metadata.EnterSection("GeneralMetadata");
                     T texture=OnImportGeneralTextureMetadata(metadata);
@@ -149,7 +163,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
                 for (int frame = 0; frame < count;frame++ )
                 {
                     metadata.EnterSection("FrameMetadata");
-                        int palCount=metadata.GetAttributeInt("PalettesCount");
+                        int palCount=metadata.GetAttribute<int>("PalettesCount");
 
                         IList<Image> images = new List<Image>();
                         Image referenceImage = null;

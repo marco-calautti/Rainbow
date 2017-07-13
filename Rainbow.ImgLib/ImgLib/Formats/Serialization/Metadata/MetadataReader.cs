@@ -41,92 +41,21 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         void ExitSection();
 
         /// <summary>
-        /// Retrieves the string value of the given key:
+        /// Retrieves the value of type T for the given key. Supported types are all the once
+        /// supported by writing methods of MetadataWriters.
         /// </summary>
         /// <exception cref="MetadataException"></exception>
         /// <param name="key"></param>
         /// <returns></returns>
-        string GetString(string key);
+        T Get<T>(string key);
 
         /// <summary>
-        /// Retrieves the int value of the given key:
+        /// Retrieves the value of type T for the given attribute key:
         /// </summary>
         /// <exception cref="MetadataException"></exception>
         /// <param name="key"></param>
         /// <returns></returns>
-        int GetInt(string key);
-
-        /// <summary>
-        /// Retrieves the double value of the given key:
-        /// </summary>
-        /// <exception cref="MetadataException"></exception>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        double GetDouble(string key);
-
-        /// <summary>
-        /// Retrieves the long value of the given key:
-        /// </summary>
-        /// <exception cref="MetadataException"></exception>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        long GetLong(string key);
-
-        /// <summary>
-        /// Retrieves the raw byte array value of the given key:
-        /// </summary>
-        /// <exception cref="MetadataException"></exception>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        byte[] GetRaw(string key);
-
-        /// <summary>
-        /// Retrieves the bool value of the given key:
-        /// </summary>
-        /// <exception cref="MetadataException"></exception>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        bool GetBool(string key);
-
-        /// <summary>
-        /// Retrieves the string value of the given attribute key:
-        /// </summary>
-        /// <exception cref="MetadataException"></exception>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        string GetAttributeString(string key);
-
-        /// <summary>
-        /// Retrieves the int value of the given attribute key:
-        /// </summary>
-        /// <exception cref="MetadataException"></exception>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        int GetAttributeInt(string key);
-
-        /// <summary>
-        /// Retrieves the long value of the given attribute key:
-        /// </summary>
-        /// <exception cref="MetadataException"></exception>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        long GetAttributeLong(string key);
-
-        /// <summary>
-        /// Retrieves the bool value of the given attribute key:
-        /// </summary>
-        /// <exception cref="MetadataException"></exception>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        bool GetAttributeBool(string key);
-
-        /// <summary>
-        /// Retrieves the double value of the given attribute key:
-        /// </summary>
-        /// <exception cref="MetadataException"></exception>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        double GetAttributeDouble(string key);
+        T GetAttribute<T>(string key);
 
         /// <summary>
         /// Rewinds this MetadataReader from the very beginning, allowing to traverse it again.
@@ -145,7 +74,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         /// <exception cref="MetadataException"></exception>
         ICollection<string> AttributesKeys { get; }
 
-        /*
+        
         /// <summary>
         /// Returns the C# type of the data value with key "key".
         /// </summary>
@@ -160,6 +89,6 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         /// <exception cref="MetadataException"></exception>
         /// <param name="key"></param>
         /// <returns></returns>
-        Type GetAttributeValueType(string key);*/
+        Type GetAttributeValueType(string key);
     }
 }

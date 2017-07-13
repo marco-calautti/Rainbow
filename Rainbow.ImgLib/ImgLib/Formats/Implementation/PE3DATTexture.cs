@@ -86,7 +86,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                     throw new TextureFormatException("Illegal bpp value: "+bpps[i]);
 
                 Image img=images[i];
-                ImageEncoderIndexed encoder = new ImageEncoderIndexed(img, IndexCodec.FromBitPerPixel(bpps[i]));
+                ImageEncoderIndexed encoder = new ImageEncoderIndexed(img, IndexCodec.FromBitPerPixel(bpps[i]),null,null,new SwizzleFilter(widths[i],heights[i],bpps[i]));
                 imagesData.Add(encoder.Encode());
                 palettes.Add(encoder.Palettes[0]);
             }

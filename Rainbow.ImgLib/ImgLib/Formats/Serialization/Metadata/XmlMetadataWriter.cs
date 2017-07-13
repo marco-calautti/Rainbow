@@ -73,7 +73,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
                 XElement element=new XElement("data");
                 element.SetAttributeValue("name", key);
-                element.SetAttributeValue("type", type.Name);
+                element.SetAttributeValue("type", type.FullName);
                 element.Value = value;
                 currentElement.Add(element);
 
@@ -94,7 +94,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
                 XElement element = new XElement("attribute");
                 element.SetAttributeValue("name", key);
-                element.SetAttributeValue("type", type.Name);
+                element.SetAttributeValue("type", type.FullName);
                 element.Value = value;
                 currentElement.Add(element);
 

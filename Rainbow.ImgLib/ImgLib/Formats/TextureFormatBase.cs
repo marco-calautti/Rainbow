@@ -115,6 +115,7 @@ namespace Rainbow.ImgLib.Formats
         public GenericDictionary FormatSpecificData 
         {
             get { return specificData; }
+            set { specificData = value; }
         }
 
         protected abstract Image GetImage(int activeFrame, int activePalette);

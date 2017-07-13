@@ -126,12 +126,12 @@ namespace Rainbow.ImgLib.Formats.Implementation
             return texture.TextureFormats[frame];
         }
 
-        protected override NamcoTexture OnImportGeneralTextureMetadata(MetadataReader metadata)
+        protected override NamcoTexture CreateGeneralTextureFromFormatSpecificData(GenericDictionary formatSpecificData)
         {
             throw new NotImplementedException();
         }
 
-        protected override void OnImportFrameMetadata(NamcoTexture texture, int frame, MetadataReader metadata, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
+        protected override void CreateFrameForGeneralTexture(NamcoTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
         {
             throw new NotImplementedException();
         }

@@ -119,7 +119,7 @@ namespace Rainbow.ImgLib.Formats
         /// <returns></returns>
         Image GetMipmap(int i);
 
-        GenericDictionary FormatSpecificData { get; }
+        GenericDictionary FormatSpecificData { get; set; }
 
     }
 }

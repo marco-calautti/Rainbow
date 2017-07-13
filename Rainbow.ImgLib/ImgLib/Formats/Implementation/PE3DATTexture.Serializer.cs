@@ -186,8 +186,8 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             metadata.EnterSection("PE3DAT");
 
-            int count = metadata.GetAttributeInt("Textures");
-            string basename = metadata.GetAttributeString("Basename");
+            int count = metadata.GetAttribute<int>("Textures");
+            string basename = metadata.GetAttribute<string>("Basename");
 
             uint[] positions1 = new uint[count];
             ushort[] widths = new ushort[count];
@@ -201,9 +201,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
             {
                 metadata.EnterSection("PE3DATSegment");
 
-                positions1[i] = (uint)metadata.GetLong("Position1");
-                positions2[i] = (uint)metadata.GetLong("Position2");
-                bpps[i] = metadata.GetInt("Bpp");
+                positions1[i] = metadata.Get<uint>("Position1");
+                positions2[i] = metadata.Get<uint>("Position2");
+                bpps[i] = metadata.Get<int>("Bpp");
 
                 Image img=Image.FromFile(Path.Combine(directory, basename + "_" + i + ".png"));
                 widths[i] = (ushort)img.Width;

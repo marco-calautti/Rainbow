@@ -72,7 +72,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public void Put(string key, byte[] value)
         {
-            PutWithType(key, value.ToString(), value.GetType());
+            PutWithType(key, Convert.ToBase64String(value) , value.GetType());
         }
 
         public void Put(string key, bool value)

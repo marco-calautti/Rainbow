@@ -189,10 +189,10 @@ namespace Rainbow.ImgLib.Formats.Implementation
         public TextureFormat Import(MetadataReader metadata, string directory)
         {
             metadata.EnterSection("TX48Texture");
-            string basename = metadata.GetAttributeString("Basename");
+            string basename = metadata.GetAttribute<string>("Basename");
 
             metadata.EnterSection("TX48Segment");
-            int bpp = metadata.GetInt("Bpp");
+            int bpp = metadata.Get<int>("Bpp");
             Image img = Image.FromFile(Path.Combine(directory, basename + ".png"));
             metadata.ExitSection();
 
