@@ -49,6 +49,30 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         void Put(string key, string value);
 
         /// <summary>
+        /// Adds the given byte associated to the given key into the current section.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void Put(string key, byte value);
+
+        /// <summary>
+        /// Adds the given short associated to the given key into the current section.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void Put(string key, short value);
+
+        /// <summary>
+        /// Adds the given ushort associated to the given key into the current section.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void Put(string key, ushort value);
+
+        /// <summary>
         /// Adds the given int associated to the given key into the current section.
         /// </summary>
         /// <exception cref="MetadataException"></exception>
@@ -57,12 +81,28 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         void Put(string key, int value);
 
         /// <summary>
+        /// Adds the given uint associated to the given key into the current section.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void Put(string key, uint value);
+
+        /// <summary>
         /// Adds the given long associated to the given key into the current section.
         /// </summary>
         /// <exception cref="MetadataException"></exception>
         /// <param name="key"></param>
         /// <param name="value"></param>
         void Put(string key, long value);
+
+        /// <summary>
+        /// Adds the given ulong associated to the given key into the current section.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void Put(string key, ulong value);
 
         /// <summary>
         /// Adds the given float associated to the given key into the current section.
@@ -104,6 +144,30 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         void PutAttribute(string key, string value);
 
         /// <summary>
+        /// Adds the given byte associated to the given key as a special section attribute.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void PutAttribute(string key, byte value);
+
+        /// <summary>
+        /// Adds the given short associated to the given key as a special section attribute.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void PutAttribute(string key, short value);
+
+        /// <summary>
+        /// Adds the given ushort associated to the given key as a special section attribute.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void PutAttribute(string key, ushort value);
+
+        /// <summary>
         /// Adds the given int associated to the given key as a special section attribute.
         /// </summary>
         /// <exception cref="MetadataException"></exception>
@@ -112,12 +176,28 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         void PutAttribute(string key, int value);
 
         /// <summary>
+        /// Adds the given uint associated to the given key as a special section attribute.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void PutAttribute(string key, uint value);
+
+        /// <summary>
         /// Adds the given long associated to the given key as a special section attribute.
         /// </summary>
         /// <exception cref="MetadataException"></exception>
         /// <param name="key"></param>
         /// <param name="value"></param>
         void PutAttribute(string key, long value);
+
+        /// <summary>
+        /// Adds the given ulong associated to the given key as a special section attribute.
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void PutAttribute(string key, ulong value);
 
         /// <summary>
         /// Adds the given bool associated to the given key as a special section attribute.

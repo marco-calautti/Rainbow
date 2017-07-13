@@ -136,11 +136,30 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         /// <summary>
         /// Retrieves all the keys for data values in the currently entered section.
         /// </summary>
+        /// <exception cref="MetadataException"></exception>
         ICollection<string> Keys { get; }
 
         /// <summary>
         /// Retrivies all the keys for the attribute values in the currently entered section.
         /// </summary>
+        /// <exception cref="MetadataException"></exception>
         ICollection<string> AttributesKeys { get; }
+
+        /*
+        /// <summary>
+        /// Returns the C# type of the data value with key "key".
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Type GetValueType(string key);
+
+        /// <summary>
+        /// Returns the C# type of the attribute value with key "key".
+        /// </summary>
+        /// <exception cref="MetadataException"></exception>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Type GetAttributeValueType(string key);*/
     }
 }

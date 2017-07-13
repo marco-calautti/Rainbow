@@ -175,13 +175,5 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         {
             return Create(File.Open(filename, FileMode.Open));
         }
-
-        public override IEnumerable<string> Keys()
-        {
-            if (currentElement == null)
-                throw new MetadataException("No sections entered");
-
-            return currentElement.Elements("data").Select(e => e.Attribute("name").Value);
-        }
     }
 }

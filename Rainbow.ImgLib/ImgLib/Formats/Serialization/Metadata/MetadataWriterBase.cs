@@ -28,63 +28,123 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public abstract void EndSection();
 
-        public abstract void Put(string key, string value);
+        protected abstract void PutWithType(string key, string value, Type type);
+
+        public void Put(string key, string value)
+        {
+            PutWithType(key, value, value.GetType());
+        }
+
+        public void Put(string key, byte value)
+        {
+            PutWithType(key, value.ToString(), value.GetType());
+        }
+
+        public void Put(string key, short value)
+        {
+            PutWithType(key, value.ToString(), value.GetType());
+        }
+
+        public void Put(string key, ushort value)
+        {
+            PutWithType(key, value.ToString(), value.GetType());
+        }
 
         public void Put(string key, int value)
         {
-            Put(key, value.ToString());
+            PutWithType(key, value.ToString(),value.GetType());
+        }
+
+        public void Put(string key, uint value)
+        {
+            PutWithType(key, value.ToString(), value.GetType());
         }
 
         public void Put(string key, long value)
         {
-            Put(key, value.ToString());
+            PutWithType(key, value.ToString(), value.GetType());
+        }
+
+        public void Put(string key, ulong value)
+        {
+            PutWithType(key, value.ToString(), value.GetType());
         }
 
         public void Put(string key, byte[] value)
         {
-            Put(key, Convert.ToBase64String(value));
+            PutWithType(key, value.ToString(), value.GetType());
         }
 
         public void Put(string key, bool value)
         {
-            Put(key, value.ToString());
+            PutWithType(key, value.ToString(), value.GetType());
         }
 
         public void Put(string key, float value)
         {
-            Put(key, value.ToString());
+            PutWithType(key, value.ToString(), value.GetType());
         }
 
         public void Put(string key, double value)
         {
-            Put(key, value.ToString());
+            PutWithType(key, value.ToString(), value.GetType());
         }
 
-        public abstract void PutAttribute(string key, string value);
+        protected abstract void PutAttributeWithType(string key, string value, Type type);
+
+        public void PutAttribute(string key, string value)
+        {
+            PutAttributeWithType(key, value, value.GetType());
+        }
+
+        public void PutAttribute(string key, byte value)
+        {
+            PutAttributeWithType(key, value.ToString(), value.GetType());
+        }
+
+        public void PutAttribute(string key, short value)
+        {
+            PutAttributeWithType(key, value.ToString(), value.GetType());
+        }
+
+        public void PutAttribute(string key, ushort value)
+        {
+            PutAttributeWithType(key, value.ToString(), value.GetType());
+        }
 
         public void PutAttribute(string key, int value)
         {
-            PutAttribute(key, value.ToString());
+            PutAttributeWithType(key, value.ToString(), value.GetType());
+        }
+
+        public void PutAttribute(string key, uint value)
+        {
+            PutAttributeWithType(key, value.ToString(), value.GetType());
         }
 
         public void PutAttribute(string key, long value)
         {
-            PutAttribute(key, value.ToString());
+            PutAttributeWithType(key, value.ToString(), value.GetType());
+        }
+
+        public void PutAttribute(string key, ulong value)
+        {
+            PutAttributeWithType(key, value.ToString(), value.GetType());
         }
 
         public void PutAttribute(string key, bool value)
         {
-            PutAttribute(key, value.ToString());
+            PutAttributeWithType(key, value.ToString(), value.GetType());
         }
 
         public void PutAttribute(string key, float value)
         {
-            PutAttribute(key, value.ToString());
+            PutAttributeWithType(key, value.ToString(), value.GetType());
         }
 
         public void PutAttribute(string key, double value)
         {
-            PutAttribute(key, value.ToString());
+            PutAttributeWithType(key, value.ToString(), value.GetType());
         }
 
         public abstract void Dispose();

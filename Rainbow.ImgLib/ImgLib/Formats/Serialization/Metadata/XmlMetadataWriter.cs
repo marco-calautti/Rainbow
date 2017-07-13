@@ -64,7 +64,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             currentElement = savedElements.Pop();
         }
 
-        public override void Put(string key, string value)
+        protected override void PutWithType(string key, string value, Type type)
         {
             try
             {
@@ -73,6 +73,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
                 XElement element=new XElement("data");
                 element.SetAttributeValue("name", key);
+                element.SetAttributeValue("type", type.Name);
                 element.Value = value;
                 currentElement.Add(element);
 
@@ -84,7 +85,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             }
         }
 
-        public override void PutAttribute(string key, string value)
+        protected override void PutAttributeWithType(string key, string value, Type type)
         {
             try
             {
@@ -93,6 +94,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
                 XElement element = new XElement("attribute");
                 element.SetAttributeValue("name", key);
+                element.SetAttributeValue("type", type.Name);
                 element.Value = value;
                 currentElement.Add(element);
 
