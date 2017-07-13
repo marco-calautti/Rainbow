@@ -228,7 +228,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             if (entryType != 0x52)
             {
-                byte[] rawData = formatSpecificData.Get<byte[]>(RAW_DATA_KEY);
                 segment = new DummyTexture(string.Format("Data entry, type=0x{0:X}", entryType));
             }
             else
