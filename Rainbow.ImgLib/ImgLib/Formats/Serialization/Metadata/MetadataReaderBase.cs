@@ -33,7 +33,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public abstract void Rewind();
 
-        public abstract IEnumerable<string> Keys();
+        public abstract ICollection<string> Keys { get; }
+
+        public abstract ICollection<string> AttributesKeys { get; }
 
         public int GetInt(string key)
         {

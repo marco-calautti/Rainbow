@@ -28,8 +28,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
     public class XmlMetadataReader : MetadataReaderBase
     {
         XDocument doc;
-        IEnumerator<XElement> subSections=null;
-        XElement currentElement=null;
+        IEnumerator<XElement> subSections = null;
+        XElement currentElement = null;
         Stream inputStream;
         Stack<IEnumerator<XElement>> savedPointers = new Stack<IEnumerator<XElement>>();
         Stack<XElement> savedElements = new Stack<XElement>();
@@ -45,27 +45,28 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             if (en == null)
                 throw new MetadataException("At least one section is required!");
 
-            subSections=en.GetEnumerator();
+            subSections = en.GetEnumerator();
         }
 
         public override void EnterSection(string name)
         {
             try
             {
-                if(subSections==null || !subSections.MoveNext())
+                if (subSections == null || !subSections.MoveNext())
                     throw new MetadataException("No more sections available on this level!");
-                if(subSections.Current.Attribute("name").Value!=name)
+                if (subSections.Current.Attribute("name").Value != name)
                     throw new MetadataException("Expected section named " + name + " but found " + subSections.Current.Attribute("name").Value);
 
                 savedElements.Push(currentElement);
                 savedPointers.Push(subSections);
-                currentElement=subSections.Current;
+                currentElement = subSections.Current;
                 if (currentElement.Elements("section") != null)
                     subSections = currentElement.Elements("section").GetEnumerator();
                 else
                     subSections = null;
 
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 if (e is MetadataException)
                     throw e;
@@ -75,11 +76,37 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public override void ExitSection()
         {
-            if (savedPointers.Count==0)
+            if (savedPointers.Count == 0)
                 throw new MetadataException("Cannot exit from root section!");
 
             subSections = savedPointers.Pop();
             currentElement = subSections.Current;
+        }
+
+        public override ICollection<string> Keys
+        {
+            get
+            {
+                if (currentElement == null)
+                    throw new MetadataException("No sections entered");
+
+                return currentElement   .Elements("data")
+                                        .Select(el => el.Attribute("name").Value)
+                                        .ToList();
+            }
+        }
+
+        public override ICollection<string> AttributesKeys
+        {
+            get
+            {
+                if (currentElement == null)
+                    throw new MetadataException("No sections entered");
+
+                return currentElement.Elements("attribute")
+                                        .Select(el => el.Attribute("name").Value)
+                                        .ToList();
+            }
         }
 
         public override string GetString(string key)
@@ -88,13 +115,14 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             {
                 if (currentElement == null)
                     throw new MetadataException("No sections entered");
-                IEnumerable<XElement> en=currentElement.Elements("data").Where( el => el.Attribute("name").Value==key );
-                
+                IEnumerable<XElement> en = currentElement.Elements("data").Where(el => el.Attribute("name").Value == key);
+
                 if (en.Count() != 1)
                     throw new MetadataException("Data " + key + " not found or many occurrences found in section " + currentElement.Attribute("name").Value);
-                
+
                 return en.First().Value;
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 if (e is MetadataException)
                     throw e;
@@ -115,7 +143,8 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                     throw new MetadataException("Attribute " + key + " not found or many occurrences found in section " + currentElement.Attribute("name").Value);
 
                 return en.First().Value;
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 if (e is MetadataException)
                     throw e;
@@ -150,7 +179,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         public override IEnumerable<string> Keys()
         {
             if (currentElement == null)
-                    throw new MetadataException("No sections entered");
+                throw new MetadataException("No sections entered");
 
             return currentElement.Elements("data").Select(e => e.Attribute("name").Value);
         }

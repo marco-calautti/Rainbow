@@ -128,6 +128,19 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         /// <returns></returns>
         double GetAttributeDouble(string key);
 
+        /// <summary>
+        /// Rewinds this MetadataReader from the very beginning, allowing to traverse it again.
+        /// </summary>
         void Rewind();
+
+        /// <summary>
+        /// Retrieves all the keys for data values in the currently entered section.
+        /// </summary>
+        ICollection<string> Keys { get; }
+
+        /// <summary>
+        /// Retrivies all the keys for the attribute values in the currently entered section.
+        /// </summary>
+        ICollection<string> AttributesKeys { get; }
     }
 }
