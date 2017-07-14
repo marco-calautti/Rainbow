@@ -39,7 +39,17 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 
         public override byte[] EncodeColors(Color[] colors, int start, int length)
         {
-            throw new NotImplementedException();
+            byte[] encoded = new byte[length * 4];
+
+            for (int i = 0; i < encoded.Length; i += 4)
+            {
+                encoded[i] = colors[start + i / 4].A;
+                encoded[i + 1] = colors[start + i / 4].R;
+                encoded[i + 2] = colors[start + i / 4].G;
+                encoded[i + 3] = colors[start + i / 4].B;
+            }
+
+            return encoded;
         }
     }
 }

@@ -41,15 +41,17 @@ namespace Rainbow.ImgLib.Encoding.Implementation
         public override byte[] EncodeColors(System.Drawing.Color[] colors, int start, int length)
         {
 
-            byte[] palette = new byte[colors.Length * 4];
-            for (int i = start; i < colors.Length; i++)
+            byte[] encoded = new byte[length * 4];
+
+            for (int i = 0; i < encoded.Length; i += 4)
             {
-                palette[(i - start) * 4] = colors[i].R;
-                palette[(i - start) * 4 + 1] = colors[i].G;
-                palette[(i - start) * 4 + 2] = colors[i].B;
-                palette[(i - start) * 4 + 3] = colors[i].A;
+                encoded[i]      = colors[start + i / 4].R;
+                encoded[i + 1]  = colors[start + i / 4].G;
+                encoded[i + 2]  = colors[start + i / 4].B;
+                encoded[i + 3]  = colors[start + i / 4].A;
             }
-            return palette;
+
+            return encoded;
         }
 
         public override int BitDepth { get { return 32; } }
