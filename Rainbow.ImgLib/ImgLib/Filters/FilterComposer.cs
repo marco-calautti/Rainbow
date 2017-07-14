@@ -58,6 +58,28 @@ namespace Rainbow.ImgLib.Filters
             return data;
         }
 
+        public override int GetWidthForEncoding(int realWidth)
+        {
+            int encodedWidth = realWidth;
+            foreach (var filter in filters)
+            {
+                encodedWidth = filter.GetWidthForEncoding(encodedWidth);
+            }
+
+            return encodedWidth;
+        }
+
+        public override int GetHeightForEncoding(int realHeight)
+        {
+            int encodedHeight = realHeight;
+            foreach (var filter in filters)
+            {
+                encodedHeight = filter.GetWidthForEncoding(encodedHeight);
+            }
+
+            return encodedHeight;
+        }
+
         public IEnumerator<ImageFilter> GetEnumerator()
         {
             return filters.GetEnumerator();
@@ -67,5 +89,6 @@ namespace Rainbow.ImgLib.Filters
         {
             return filters.GetEnumerator();
         }
+
     }
 }

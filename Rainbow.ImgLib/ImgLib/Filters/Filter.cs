@@ -73,7 +73,15 @@ namespace Rainbow.ImgLib.Filters
 
     public abstract class ImageFilter : Filter<byte>
     {
+        public virtual int GetWidthForEncoding(int realWidth)
+        {
+            return realWidth;
+        }
 
+        public virtual int GetHeightForEncoding(int realHeight)
+        {
+            return realHeight;
+        }
     }
 
     public abstract class PaletteFilter : Filter<Color>

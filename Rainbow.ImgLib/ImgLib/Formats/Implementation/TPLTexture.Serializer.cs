@@ -98,39 +98,39 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 {
                     case 0: //I4
                         colorCodec = ColorCodec.CODEC_4BITBE_I4;
-                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(4, 8, 8, width, height);
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height, imgFilter);
                         break;
                     case 1: //I8
                         colorCodec = ColorCodec.CODEC_8BIT_I8;
-                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(8, 8, 4, width, height);
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height, imgFilter);
                         break;
                     case 2: //IA4
                         colorCodec = ColorCodec.CODEC_8BITBE_IA4;
-                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(8, 8, 4, width, height);
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height, imgFilter);
                         break;
                     case 3: //IA8
                         colorCodec = ColorCodec.CODEC_16BITBE_IA8;
-                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(16, 4, 4, width, height);
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height, imgFilter);
                         break;
                     case 4: //RGB565
                         colorCodec = ColorCodec.CODEC_16BITBE_RGB565;
-                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(16, 4, 4, width, height);
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height, imgFilter);
                         break;
                     case 5: //RGB5A3
                         colorCodec = ColorCodec.CODEC_16BITBE_RGB5A3;
-                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new TileFilter(16, 4, 4, width, height);
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height,imgFilter);
                         break;
                     case 6: //RGBA32 2 planes
                         colorCodec = ColorCodec.CODEC_32BIT_ARGB;
-                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height);
                         imgFilter = new ImageFilterComposer{ new GamecubePlanarFilter(),
                                                            new TileFilter(32,4,4,width,height)};
+                        imgDataSize = colorCodec.GetBytesNeededForEncode(width, height, imgFilter);
                         break;
                     case 8: //C4
                     case 9: //C8
@@ -139,6 +139,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
                         entryCount = reader.ReadUInt16(order);
                         unknown = reader.ReadUInt16(order);
+
                         paletteFormat = reader.ReadUInt32(order);
                         palDataOffset = reader.ReadUInt32(order);
 
@@ -169,7 +170,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                             imgFilter = new TileFilter(8, 8, 4, width, height);
                         }
 
-                        imgDataSize = idxCodec.GetBytesNeededForEncode(width, height);
+                        imgDataSize = idxCodec.GetBytesNeededForEncode(width, height, imgFilter);
                         break;
                     case 0xA: //C14X2
                         throw new TextureFormatException("C14X2 not implemented yet!");

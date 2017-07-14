@@ -19,6 +19,7 @@ using System.Drawing;
 
 using Rainbow.ImgLib.Encoding.Implementation;
 using Rainbow.ImgLib.Common;
+using Rainbow.ImgLib.Filters;
 
 namespace Rainbow.ImgLib.Encoding
 {
@@ -94,8 +95,14 @@ namespace Rainbow.ImgLib.Encoding
         /// Subclasses are encouraged to override this method whenever the number of bytes needed
         /// might not be equal to just the number of total pixels weighted w.r.t. the bit depth.
         /// </summary>
-        public virtual int GetBytesNeededForEncode(int width, int height)
+        public virtual int GetBytesNeededForEncode(int width, int height, ImageFilter referenceFilter = null)
         {
+            if(referenceFilter != null)
+            {
+                width = referenceFilter.GetWidthForEncoding(width);
+                height = referenceFilter.GetHeightForEncoding(height);
+            }
+
             int totalPixel = width * height;
             int bytes = totalPixel * BitDepth / 8;
             int remainder = (totalPixel * BitDepth) % 8;

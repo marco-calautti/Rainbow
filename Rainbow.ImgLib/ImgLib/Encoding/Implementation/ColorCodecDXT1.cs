@@ -106,7 +106,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             get { return GetFullHeight(height); }
         }
 
-        public override int GetBytesNeededForEncode(int width, int height)
+        public override int GetBytesNeededForEncode(int width, int height, ImageFilter referenceFilter = null)
         {
             return GetFullWidth(width) * GetFullHeight(height) * BitDepth / 8;
         }

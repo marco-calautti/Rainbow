@@ -39,113 +39,64 @@ namespace Rainbow.ImgLib.Filters
             TileDimensionsAsBytes = false;
         }
 
+        // TO-DO: fix by adding padding data
         public override byte[] ApplyFilter(byte[] originalData, int index, int length)
         {
-            /*byte[] newData = new byte[length];
-
-            int lineSize = (tileWidth * bpp) / 8;
-            int tileSize = lineSize * tileHeight;
-            int pitch = (width * bpp) / 8;
-
-            int tile = 0;
-
-            for (int y = 0; y < height; y += tileHeight)
-            {
-                for (int x = 0; x < pitch; x += lineSize)
-                {
-                    for (int line = 0; line < tileHeight; line++)
-                    {
-                        Array.Copy(originalData, pitch * (y + line) + x, newData, index + tile * tileSize + line * lineSize, lineSize);
-                    }
-
-                    tile++;
-                }
-            }
-
-            return newData;*/
-
             byte[] Buf = new byte[length];
             int w = (this.width * bpp) / 8;
 
             int lineSize = TileDimensionsAsBytes? tileWidth : (tileWidth * bpp) / 8;
-            int tileSize = lineSize * tileHeight;
+            
+            int i = 0;
 
-            int rowblocks = w / lineSize;
-
-            int totalBlocksx = w / lineSize;
-            int totalBlocksy = height / tileHeight;
-
-            for (int blocky = 0; blocky < totalBlocksy; blocky++)
-                for (int blockx = 0; blockx < totalBlocksx; blockx++)
+            for (int y = 0; y < height; y += tileHeight)
+            {
+                for (int x = 0; x < w; x += lineSize)
                 {
-                    int block_index = blockx + blocky * rowblocks;
-                    int block_address = block_index * tileSize;
-
-                    for (int y = 0; y < tileHeight; y++)
+                    for (int tileY = y; tileY < y + tileHeight; tileY++)
                     {
-                        int absolutey = y + blocky * tileHeight;
-                        Array.Copy(originalData, index + blockx * lineSize + absolutey * w , Buf, + block_address + y * lineSize, lineSize);
+                        for (int tileX = x; tileX < x + lineSize; tileX++)
+                        {
+                            if (tileX >= w || tileY >= height)
+                                continue;
+
+                            Buf[i] = originalData[index + tileY * w + tileX];
+                            i++;
+                        }
                     }
                 }
-
-            int start = totalBlocksy * rowblocks * lineSize * tileHeight;
-            for (int i = start; i < length; i++)
-                Buf[i] = originalData[i + index];
+            }
 
             return Buf;
         }
 
         public override byte[] Defilter(byte[] originalData, int index, int length)
         {
-            /*byte[] newData = new byte[length];
+            byte[] Buf = new byte[length];
+            int w = (this.width * bpp) / 8;
 
-            int lineSize = (tileWidth * bpp) / 8;
-            int tileSize = lineSize * tileHeight;
-            int pitch = (width * bpp) / 8;
+            int lineSize = TileDimensionsAsBytes ? tileWidth : (tileWidth * bpp) / 8;
 
-            int tile = 0;
+            int i = 0;
 
             for (int y = 0; y < height; y += tileHeight)
             {
-                for (int x = 0; x < pitch; x += lineSize)
+                for (int x = 0; x < w; x += lineSize)
                 {
-                    for (int line = 0; line < tileHeight; line++)
+                    for (int tileY = y; tileY < y + tileHeight; tileY++)
                     {
-                        Array.Copy(originalData, index + tile * tileSize + line * lineSize, newData, pitch * (y + line) + x, lineSize);
-                    }
+                        for (int tileX = x; tileX < x + lineSize; tileX++)
+                        {
+                            byte data = originalData[index + i++];
 
-                    tile++;
+                            if (tileX >= w || tileY >= height)
+                                continue;
+
+                            Buf[tileY * w + tileX] = data;
+                        }
+                    }
                 }
             }
-
-            return newData;*/
-
-            byte[] Buf = new byte[length];
-            int w = (this.width * bpp) / 8;
-            int lineSize = TileDimensionsAsBytes ? tileWidth : (tileWidth * bpp) / 8;
-            int tileSize = lineSize * tileHeight;
-
-            int rowblocks = w / lineSize;
-
-            int totalBlocksx = w / lineSize;
-            int totalBlocksy = height / tileHeight;
-
-            for (int blocky = 0; blocky < totalBlocksy; blocky++)
-                for (int blockx = 0; blockx < totalBlocksx; blockx++)
-                {
-                    int block_index = blockx + blocky * rowblocks;
-                    int block_address = block_index * tileSize;
-
-                    for (int y = 0; y < tileHeight; y++)
-                    {
-                        int absolutey = y + blocky * tileHeight;
-                        Array.Copy(originalData, index + block_address + y * lineSize, Buf, blockx * lineSize + absolutey * w, lineSize);
-                    }
-                }
-
-            int start = totalBlocksy * rowblocks * lineSize * tileHeight;
-            for (int i = start; i < length; i++)
-                Buf[i] = originalData[i + index];
 
             return Buf;
         }
@@ -154,6 +105,30 @@ namespace Rainbow.ImgLib.Filters
         {
             get;
             set;
+        }
+
+        public override int GetWidthForEncoding(int realWidth)
+        {
+            int encodingWidth = realWidth;
+
+            int w = (realWidth * bpp) / 8;
+
+            int lineSize = TileDimensionsAsBytes ? tileWidth : (tileWidth * bpp) / 8;
+
+            if (w % lineSize != 0)
+                encodingWidth += ((lineSize - w % lineSize) * 8) / bpp;
+
+            return encodingWidth;
+
+        }
+        public override int GetHeightForEncoding(int realHeight)
+        {
+            int encodingHeight = realHeight;
+
+            if (height % tileHeight != 0)
+                encodingHeight += (height - height % tileHeight);
+
+            return encodingHeight;
         }
     }
 }
