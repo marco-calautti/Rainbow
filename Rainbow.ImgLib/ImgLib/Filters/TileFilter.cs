@@ -39,17 +39,20 @@ namespace Rainbow.ImgLib.Filters
             TileDimensionsAsBytes = false;
         }
 
-        // TO-DO: fix by adding padding data
         public override byte[] ApplyFilter(byte[] originalData, int index, int length)
         {
-            byte[] Buf = new byte[length];
-            int w = (this.width * bpp) / 8;
+            int encodingWidth = GetWidthForEncoding(this.width);
+            int encodingHeight = GetHeightForEncoding(this.height);
+
+            int w = (encodingWidth * bpp) / 8;
+            byte[] Buf = new byte[w*encodingHeight];
 
             int lineSize = TileDimensionsAsBytes? tileWidth : (tileWidth * bpp) / 8;
-            
+
+            int origW = (this.width * bpp) / 8;
             int i = 0;
 
-            for (int y = 0; y < height; y += tileHeight)
+            for (int y = 0; y < encodingHeight; y += tileHeight)
             {
                 for (int x = 0; x < w; x += lineSize)
                 {
@@ -57,11 +60,13 @@ namespace Rainbow.ImgLib.Filters
                     {
                         for (int tileX = x; tileX < x + lineSize; tileX++)
                         {
-                            if (tileX >= w || tileY >= height)
-                                continue;
+                            byte data = 0;
+                            if (tileX < origW && tileY < height)
+                            {
+                                data = originalData[index + tileY * w + tileX]; ;
+                            }
 
-                            Buf[i] = originalData[index + tileY * w + tileX];
-                            i++;
+                            Buf[i++] = data;
                         }
                     }
                 }
