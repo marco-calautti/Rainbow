@@ -44,7 +44,14 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 
         public override byte[] EncodeColors(System.Drawing.Color[] colors, int start, int length)
         {
-            throw new NotImplementedException();
+            byte[] encoded = new byte[length];
+
+            for(int i=0;i<length;i++)
+            {
+                encoded[i] = ImageUtils.ToGrayScale(colors[start + i]).R;
+            }
+
+            return encoded;
         }
 
         public override int BitDepth

@@ -21,6 +21,7 @@ using Rainbow.ImgLib.Encoding.Implementation;
 using Rainbow.ImgLib.Common;
 using Rainbow.ImgLib.Filters;
 
+// TODO: Fix interface of ColorCodec, supporting matrices/width x height inputs.
 namespace Rainbow.ImgLib.Encoding
 {
 

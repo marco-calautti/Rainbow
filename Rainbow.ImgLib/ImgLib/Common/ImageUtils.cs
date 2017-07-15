@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -74,6 +75,14 @@ namespace Rainbow.ImgLib.Common
             return cc83[value];
         }
 
+        public static Color ToGrayScale(Color color)
+        {
+            if (color.R == color.G && color.G == color.B)
+                return color;
+
+            int intensity = (int)(color.R * 0.2126 + color.G * 0.7152 + color.B * 0.0722);
+            return Color.FromArgb(color.A, intensity, intensity, intensity);
+        }
 
         // Color conversion tables taken from wiimms-szs-tools source code.
         // See http://opensvn.wiimm.de/viewvc/wii/trunk/wiimms-szs-tools/src/lib-image2.c

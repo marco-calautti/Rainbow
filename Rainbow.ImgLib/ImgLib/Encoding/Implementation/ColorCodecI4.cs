@@ -51,7 +51,30 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 
         public override byte[] EncodeColors(Color[] colors, int start, int length)
         {
-            throw new NotImplementedException();
+            byte[] encoded = new byte[(length +1)/ 2];
+
+            for(int i=0;i<length;i+=2)
+            {
+                Color first = ImageUtils.ToGrayScale(colors[start + i]);
+                Color second = i == length - 1 ? Color.Black : ImageUtils.ToGrayScale(colors[start + i + 1]);
+
+                int firstNibble = ImageUtils.Conv8To4(first.R);
+                int secondNibble = ImageUtils.Conv8To4(second.R);
+
+                byte value = 0;
+
+                if(ByteOrder == ByteOrder.LittleEndian)
+                {
+                    value = (byte)((firstNibble & 0xF) | ((secondNibble & 0xF) << 4));
+                }else
+                {
+                    value = (byte)((secondNibble & 0xF) | ((firstNibble & 0xF) << 4));
+                }
+
+                encoded[i / 2] = value;
+            }
+
+            return encoded;
         }
 
         public override int BitDepth
