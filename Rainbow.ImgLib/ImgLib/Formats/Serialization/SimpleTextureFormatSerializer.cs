@@ -86,13 +86,14 @@ namespace Rainbow.ImgLib.Formats.Serialization
         /// <summary>
         /// Implementations of this method must add to the given texture, a new frame (in particular, the frame-th frame).
         /// This frame must be a TextureFormat constructed according to the given format specific data.
+        /// Finally, the method must return the constructed frame.
         /// </summary>
         /// <param name="texture"></param>
         /// <param name="frame"></param>
         /// <param name="formatSpecificData"></param>
         /// <param name="images"></param>
         /// <param name="referenceImage"></param>
-        protected abstract TextureFormat CreateFrameForGeneralTexture(T texture, int frame, GenericDictionary formatSpecificData, IList<Image> images, Image referenceImage);
+        protected abstract TextureFormat CreateFrameForGeneralTexture(T texture, int frame, GenericDictionary formatSpecificData, IList<Image> images, Image referenceImage, int mipmapsCount);
 
         private T OnImportGeneralTextureMetadata(Metadata.MetadataReader metadata)
         {
@@ -104,11 +105,11 @@ namespace Rainbow.ImgLib.Formats.Serialization
             return result;
         }
 
-        private void OnImportFrameMetadata(T texture, int frame, Metadata.MetadataReader metadata, IList<Image> images, Image referenceImage)
+        private void OnImportFrameMetadata(T texture, int frame, Metadata.MetadataReader metadata, IList<Image> images, Image referenceImage, int mipmapsCount)
         {
             GenericDictionary formatSpecific = new GenericDictionary();
             InteropUtils.ReadFrom(metadata, formatSpecific);
-            TextureFormat segment = CreateFrameForGeneralTexture(texture, frame, formatSpecific, images, referenceImage);
+            TextureFormat segment = CreateFrameForGeneralTexture(texture, frame, formatSpecific, images, referenceImage, mipmapsCount);
             segment.FormatSpecificData = formatSpecific;
         }
 
@@ -164,6 +165,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
 
                     metadata.BeginSection("FrameMetadata");
                     metadata.PutAttribute("PalettesCount", texture.PalettesCount);
+                    metadata.PutAttribute("MipmapsCount", texture.MipmapsCount);
 
                     OnExportFrameMetadata((T)texture, frame, metadata);
                     metadata.EndSection();
@@ -204,6 +206,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
                 {
                     metadata.EnterSection("FrameMetadata");
                         int palCount=metadata.GetAttribute<int>("PalettesCount");
+                        int mipmapsCount = metadata.GetAttribute<int>("MipmapsCount");
 
                         IList<Image> images = new List<Image>();
                         Image referenceImage = null;
@@ -218,7 +221,7 @@ namespace Rainbow.ImgLib.Formats.Serialization
                             referenceImage = Image.FromFile(Path.Combine(directory, basename + "_layer" + frame + "_reference.png"));
                         }
 
-                        OnImportFrameMetadata(texture, frame, metadata, images, referenceImage);
+                        OnImportFrameMetadata(texture, frame, metadata, images, referenceImage, mipmapsCount);
 
                     metadata.ExitSection();
                 }

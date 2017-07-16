@@ -106,7 +106,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             texture.SetName(this.Name);
 
-            texture.FormatSpecificData.Put<int>(VERSION_KEY, version);
+            texture.FormatSpecificData.Put<ushort>(VERSION_KEY, version);
 
             for(int i=0;i<texturesCount;i++)
             {
@@ -128,12 +128,63 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         protected override NamcoTexture CreateGeneralTextureFromFormatSpecificData(GenericDictionary formatSpecificData)
         {
-            throw new NotImplementedException();
+            return new NamcoTexture();
         }
 
-        protected override TextureFormat CreateFrameForGeneralTexture(NamcoTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
+        protected override TextureFormat CreateFrameForGeneralTexture(NamcoTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage, int mipmapsCount)
         {
-            throw new NotImplementedException();
+            TextureFormat segment = null;
+
+            ushort version = texture.FormatSpecificData.Get<ushort>(VERSION_KEY);
+            byte clutFormat = formatSpecificData.Get<byte>(CLUTFORMAT_KEY);
+            byte depth = formatSpecificData.Get<byte>(DEPTH_KEY);
+            int colorsCount = 1 << depth;
+
+            int width = images.First().Width;
+            int height = images.First().Height;
+
+            byte[] data = formatSpecificData.Get<byte[]>(DATA_KEY);
+            byte[] userData = formatSpecificData.Get<byte[]>(USERDATA_KEY);
+
+            if (IsPaletted(clutFormat))
+            {
+                ColorCodec paletteCodec;
+                IndexCodec indexCodec;
+                ImageFilter imgFilter;
+                PaletteFilter palFilter;
+
+                GetPalettedTools(version, clutFormat, depth, colorsCount, width, height, data, userData,
+                                    out paletteCodec, out indexCodec, out imgFilter, out palFilter);
+
+                var builder = new PalettedTextureFormat.Builder()
+                                .SetPaletteCodec(paletteCodec)
+                                .SetMipmapsCount(mipmapsCount)
+                                .SetIndexCodec(indexCodec)
+                                .SetImageFilter(imgFilter)
+                                .SetPaletteFilter(palFilter);
+                if (referenceImage != null)
+                    segment = builder.Build(referenceImage, images.Select(img => img.GetColorArray()).ToList());
+                else
+                    segment = builder.Build(images.First());
+            }
+            else
+            {
+                ColorCodec imageCodec;
+                ImageFilter imgFilter;
+
+                GetUnpalettedTools(version, clutFormat, depth, colorsCount, width, height, data, userData,
+                                    out imageCodec, out imgFilter);
+
+                segment = new GenericTextureFormat.Builder()
+                            .SetColorCodec(imageCodec)
+                            .SetMipmapsCount(mipmapsCount)
+                            .SetImageFilter(imgFilter)
+                            .Build(images.First());
+            }
+
+            texture.TextureFormats.Add(segment);
+
+            return segment;
         }
 
         private TextureFormat ConstructSegment(BinaryReader reader, ushort version)

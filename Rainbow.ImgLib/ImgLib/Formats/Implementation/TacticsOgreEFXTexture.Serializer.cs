@@ -216,7 +216,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             return texture;
         }
 
-        protected override TextureFormat CreateFrameForGeneralTexture(TacticsOgreEFXTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage)
+        protected override TextureFormat CreateFrameForGeneralTexture(TacticsOgreEFXTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage, int mipmapsCount)
         {
             if (referenceImage != null || images.Count > 1)
                 throw new TextureFormatException("EFX texture should not contain multiple palettes!");
