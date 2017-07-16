@@ -72,7 +72,35 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 
         public override byte[] EncodeColors(Color[] colors, int start, int length)
         {
-            throw new NotImplementedException();
+            byte[] encoded = new byte[length * 2];
+
+            for(int i=0;i<length;i++)
+            {
+                ushort color = 0;
+                int red, green, blue;
+
+                int alpha = ImageUtils.Conv8To3(colors[start + i].A);
+                if (alpha == 7) //we don't need alpha
+                {
+                    red = ImageUtils.Conv8To5(colors[start + i].R);
+                    green = ImageUtils.Conv8To5(colors[start + i].G);
+                    blue = ImageUtils.Conv8To5(colors[start + i].B);
+                    color = (ushort)(((red & 0x1F) << 10) | ((green & 0x1F) << 5) | blue & 0x1F);
+                    color |= 0x8000; //mark as no alpha
+                }
+                else
+                {
+                    red = ImageUtils.Conv8To4(colors[start + i].R);
+                    green = ImageUtils.Conv8To4(colors[start + i].G);
+                    blue = ImageUtils.Conv8To4(colors[start + i].B);
+                    color = (ushort)( ((alpha & 0x7) << 12) | ((red & 0xF) << 8) | ((green & 0xF) << 4) | blue & 0xF);
+                }
+
+                encoded[i * 2] = (byte)(ByteOrder == ByteOrder.LittleEndian ? color & 0xFF : (color >> 8) & 0xFF);
+                encoded[i * 2 + 1] = (byte)(ByteOrder == ByteOrder.LittleEndian ? (color >> 8) & 0xFF : color & 0xFF);
+            }
+
+            return encoded;
         }
     }
 }
