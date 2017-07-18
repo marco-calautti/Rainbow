@@ -33,8 +33,9 @@ namespace Rainbow.ImgLib.Formats
     }
 
     /// <summary>
-    /// A TextureFormat is used to retrieve image data from a particular format, save this data into this same format and import/export
-    /// this data into a suitable format for editing. A TextureFormat can contain more than one images, in general.
+    /// A TextureFormat representes a set of textures (i.e., images) called frames.
+    /// Each frame can have zero or more palettes.
+    /// A TextureFormat is the result of calling the method Open of a TextureFormatSerializer.
     /// </summary>
     public interface TextureFormat
     {
