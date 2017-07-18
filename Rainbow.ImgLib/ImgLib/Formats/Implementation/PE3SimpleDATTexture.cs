@@ -44,8 +44,10 @@ namespace Rainbow.ImgLib.Formats.Implementation
         internal PE3SimpleDATTexture(byte[] rawHeader, Image img)
         {
             this.rawHeader = rawHeader;
-            if(img.Width!=512)
+            if (img.Width != 512)
+            {
                 throw new TextureFormatException("Only a width of 512 pixel is allowed!");
+            }
 
             width = img.Width;
             height = img.Height;

@@ -156,9 +156,13 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 sizeOfEntryNoHeader1 = fullEntrySize - 0x10;
 
                 if (palSegment != null)
+                {
                     writer.Write((uint)sizeOfEntryNoHeader1);
+                }
                 else
+                {
                     writer.Write(segment.FormatSpecificData.Get<uint>(ENTRY_NO_HEADER_KEY));
+                }
 
                 writer.Write(segment.FormatSpecificData.Get<ushort>(ID_KEY));
                 writer.Write(segment.FormatSpecificData.Get<byte>(ENTRY_TYPE_KEY));
@@ -307,17 +311,23 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
                 uint unk6 = reader.ReadUInt32();
                 if (unk6 != 0x20)
+                {
                     throw new TextureFormatException("Not a valid EFX file, unk5 not equal to 0x20!");
+                }
 
                 uint header2AndImgDataSize = reader.ReadUInt32();
                 uint imgSize = header2AndImgDataSize - 0x20;
 
                 int paletteSize = paletteColors * 4;
                 if (sizeEntryNotHeader - header2AndImgDataSize != paletteSize)
+                {
                     throw new TextureFormatException("Not a valid EFX file, size of image data not corresponding!");
+                }
 
                 if (reader.ReadUInt32() != sizeEntryNotHeader)
+                {
                     throw new TextureFormatException("Not a valid EFX file, size of entry without header 1 not corresponding in header 2!");
+                }
 
                 reader.ReadUInt32(); //pad
 

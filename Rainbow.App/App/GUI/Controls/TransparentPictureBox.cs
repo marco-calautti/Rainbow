@@ -106,10 +106,12 @@ namespace Rainbow.App.GUI.Controls
 
             int squareSize = 8;
             for (int y = 0; y < this.Height; y += squareSize)
+            {
                 for (int x = 0; x < this.Width; x += squareSize)
                 {
                     graphics.FillRectangle((x / squareSize + y / squareSize) % 2 == 0 ? brush1 : brush2, x, y, squareSize, squareSize);
                 }
+            }
 
             Image img = texture.GetImage();
 

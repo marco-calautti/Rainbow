@@ -84,11 +84,15 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
                 char[] magic = reader.ReadChars(MAGIC.Length);
                 if (new string(magic) != MAGIC)
+                {
                     throw new TextureFormatException("Not a valid TX48 Texture!");
+                }
 
                 int bpp = reader.ReadInt32();
                 if (bpp != 0 && bpp != 1)
+                {
                     throw new TextureFormatException("Illegal Bit per pixel value!");
+                }
 
                 bpp = (bpp + 1) * 4;
 

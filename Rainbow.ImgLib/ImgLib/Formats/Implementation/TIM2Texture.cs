@@ -58,7 +58,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
                     tim2.Swizzled = value;
 
                 if (changed)
+                {
                     OnTextureChanged();
+                }
             }
         }
 

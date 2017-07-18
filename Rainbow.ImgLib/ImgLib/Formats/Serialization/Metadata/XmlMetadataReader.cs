@@ -61,10 +61,13 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 savedPointers.Push(subSections);
                 currentElement = subSections.Current;
                 if (currentElement.Elements("section") != null)
+                {
                     subSections = currentElement.Elements("section").GetEnumerator();
+                }
                 else
+                {
                     subSections = null;
-
+                }
             }
             catch (Exception e)
             {
@@ -77,7 +80,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         public override void ExitSection()
         {
             if (savedPointers.Count == 0)
+            {
                 throw new MetadataException("Cannot exit from root section!");
+            }
 
             subSections = savedPointers.Pop();
             currentElement = subSections.Current;

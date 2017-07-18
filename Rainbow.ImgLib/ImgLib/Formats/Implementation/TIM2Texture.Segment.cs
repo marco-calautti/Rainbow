@@ -99,9 +99,13 @@ namespace Rainbow.ImgLib.Formats.Implementation
             {
                 ImageEncoderIndexed encoder;
                 if (palettes != null)
+                {
                     encoder = new ImageEncoderIndexed(palettes, image, IndexCodec.FromBitPerPixel(parameters.bpp));
+                }
                 else
+                {
                     encoder = new ImageEncoderIndexed(image, IndexCodec.FromBitPerPixel(parameters.bpp), new ARGBColorComparer());
+                }
 
                 imageData = encoder.Encode();
                 this.palettes = new List<Color[]>(encoder.Palettes).ToArray();
@@ -138,7 +142,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
             set
             {
                 if (parameters.swizzled == value)
+                {
                     return;
+                }
 
                 parameters.swizzled = value;
 
