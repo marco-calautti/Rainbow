@@ -26,7 +26,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 {
     public class ColorCodecDXT1Gamecube : ColorCodecDXT1
     {
-        private ImageFilter filter;
+        private readonly ImageFilter filter;
 
         public ColorCodecDXT1Gamecube(int width, int height) :
             base(ByteOrder.BigEndian, width, height) 

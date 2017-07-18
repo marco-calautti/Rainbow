@@ -92,7 +92,10 @@ namespace Rainbow.App.GUI
         {
             ToolStripMenuItem item = sender as ToolStripMenuItem;
             if (item == null)
+            {
                 return;
+            }
+
             if (item == zoomPlusToolStripMenuItem)
             {
                 Zoom(1.2f);

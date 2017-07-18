@@ -100,7 +100,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 int height = reader.ReadInt32();
                 int paletteOffset = reader.ReadInt32();
                 if (paletteOffset != 0x40)
+                {
                     throw new TextureFormatException("TX48 Header is wrong!");
+                }
 
                 int paletteSize = reader.ReadInt32();
                 int imageOffset = reader.ReadInt32();
@@ -133,7 +135,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             TX48Texture texture = txt as TX48Texture;
             if (texture == null)
+            {
                 throw new TextureFormatException("Not a valid TX48Texture!");
+            }
 
             BinaryWriter writer = new BinaryWriter(outFormatData);
 

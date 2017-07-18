@@ -98,13 +98,14 @@ namespace Rainbow.ImgLib.Encoding
         /// </summary>
         public virtual int GetBytesNeededForEncode(int width, int height, ImageFilter referenceFilter = null)
         {
+            int encWidth = width, encHeight = height;
             if(referenceFilter != null)
             {
-                width = referenceFilter.GetWidthForEncoding(width);
-                height = referenceFilter.GetHeightForEncoding(height);
+                encWidth = referenceFilter.GetWidthForEncoding(width);
+                encHeight = referenceFilter.GetHeightForEncoding(height);
             }
 
-            int totalPixel = width * height;
+            int totalPixel = encWidth * encHeight;
             int bytes = totalPixel * BitDepth / 8;
             int remainder = (totalPixel * BitDepth) % 8;
             return remainder == 0 ? bytes : bytes+1;

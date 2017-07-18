@@ -72,7 +72,7 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             catch (Exception e)
             {
                 if (e is MetadataException)
-                    throw e;
+                    throw;
                 throw new MetadataException("Cannot enter the given section!", e);
             }
         }
@@ -95,8 +95,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 try
                 {
                     if (currentElement == null)
+                    {
                         throw new MetadataException("No sections entered");
-
+                    }
                     return currentElement.Elements("data")
                                             .Select(el => el.Attribute("name").Value)
                                             .ToList();

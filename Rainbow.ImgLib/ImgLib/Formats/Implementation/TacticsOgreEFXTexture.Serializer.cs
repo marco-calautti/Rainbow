@@ -279,19 +279,27 @@ namespace Rainbow.ImgLib.Formats.Implementation
             else //image data, let's read header 2 data
             {
                 if (fullEntrySize - sizeEntryNotHeader != 0x10)
+                {
                     throw new TextureFormatException("Not a valid EFX file, full size and size without header 1 do not match!");
+                }
 
                 byte bpp = reader.ReadByte();
                 if (bpp != 4 && bpp != 8)
+                {
                     throw new TextureFormatException("Not a valid EFX file, unsupported bpp=" + bpp);
+                }
 
                 byte unk4 = reader.ReadByte();
                 if (unk4 != 0x20)
+                {
                     throw new TextureFormatException("Not a valid EFX file, unk3 not equal to 0x20!");
+                }
 
                 ushort unk5 = reader.ReadUInt16();
                 if (unk5 != 0x01)
+                {
                     throw new TextureFormatException("Not a valid EFX file, unk4 not equal to 0x01!");
+                }
 
                 ushort paletteColors = reader.ReadUInt16();
                 if (paletteColors != 1 << bpp)
@@ -303,9 +311,13 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 ushort height = reader.ReadUInt16();
 
                 if (reader.ReadUInt16() != width)
+                {
                     throw new TextureFormatException("Not a valid EFX file, widths not corresponding!");
+                }
                 if (reader.ReadUInt16() != height)
+                {
                     throw new TextureFormatException("Not a valid EFX file, widths not corresponding!");
+                }
 
                 reader.ReadUInt16(); //pad
 

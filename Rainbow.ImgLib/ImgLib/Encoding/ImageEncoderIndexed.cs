@@ -87,8 +87,12 @@ namespace Rainbow.ImgLib.Encoding
             height = images.First().Height;
 
             foreach (Image img in images)
+            {
                 if (img.Width != width || img.Height != height)
+                {
                     throw new ArgumentException("The images are not of the same size!");
+                }
+            }
 
             this.images = images;
 
@@ -174,18 +178,22 @@ namespace Rainbow.ImgLib.Encoding
                 int count = 0;
                 List<Color> palette = new List<Color>();
                 for (int y = 0; y < height; y++)
+                {
                     for (int x = 0; x < width; x++)
                     {
                         Color pixel = bitmaps[i].GetPixel(x, y);
                         if (!palette.Contains(pixel))
                         {
                             if (count >= colors)
-                                throw new Exception("Too many colors! The maximum for this image is " + colors + "!");
-
+                            {
+                                throw new ArgumentException("Too many colors! The maximum for this image is " + colors + "!");
+                            }
                             palette.Add(pixel);
                             count++;
                         }
                     }
+                }
+
                 for (int c = 0; c < colors - count; c++)
                 {
                     palette.Add(Color.Black);
@@ -198,13 +206,14 @@ namespace Rainbow.ImgLib.Encoding
 
             int k = 0;
             for (int y = 0; y < height; y++)
+            {
                 for (int x = 0; x < width; x++)
                 {
                     Color pixel = bitmaps[0].GetPixel(x, y);
                     int idx = Array.BinarySearch(Palettes[0], pixel, pixelSorter);
                     indexes[k++] = idx;
                 }
-
+            }
             if (colorEncoder != null)
             {
                 EncodedPalettes = new List<byte[]>(Palettes.Count);

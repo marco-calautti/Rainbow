@@ -45,16 +45,23 @@ namespace Rainbow.ImgLib.Encoding
             grayScale = new Color[1 << codec.BitDepth];
 
             for (int i = 0; i < grayScale.Length; i++)
+            {
                 grayScale[i] = Color.FromArgb(255, i * (256 / grayScale.Length), i * (256 / grayScale.Length), i * (256 / grayScale.Length));
-           
-            if (paletteFilter != null && palette!=null)
+            }
+
+            if (paletteFilter != null && palette != null)
+            {
                 Palette = paletteFilter.Defilter(palette);
+            }
             else if (palette == null)
             {
                 palette = (Color[])grayScale.Clone();
                 Palette = palette;
-            }else
-                Palette=(Color[])palette.Clone();
+            }
+            else
+            {
+                Palette = (Color[])palette.Clone();
+            }
         }
 
         public Color[] Palette { get; set; }

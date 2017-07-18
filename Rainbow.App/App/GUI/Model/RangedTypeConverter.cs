@@ -78,7 +78,9 @@ namespace Rainbow.App.GUI.Model
         {
             TexturePropertyGridObject obj = context.Instance as TexturePropertyGridObject;
             if (obj == null)
+            {
                 return new TypeConverter.StandardValuesCollection(Enumerable.Empty<int>().ToArray());
+            }
 
             return new TypeConverter.StandardValuesCollection(Enumerable.Range(0, obj.Texture.PalettesCount).ToArray());
         }

@@ -39,7 +39,9 @@ namespace Rainbow.App.GUI
             var result = dialog.ShowDialog();
 
             if (result != DialogResult.OK)
+            {
                 return;
+            }
 
             string name = dialog.FileName;
 
@@ -61,13 +63,17 @@ namespace Rainbow.App.GUI
         private void SaveExportTexture(TextureFormatMode mode)
         {
             if (texture == null)
+            {
                 return;
+            }
 
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.FileName = Path.GetFileNameWithoutExtension(filename);
 
             if (mode == TextureFormatMode.Unspecified)
+            {
                 throw new Exception("Should not happen");
+            }
 
             dialog.Filter = serializer.Name +
                             (mode==TextureFormatMode.Format ? "|" : " metadata + editable data|") +
@@ -129,7 +135,8 @@ namespace Rainbow.App.GUI
             }
             else if (mode == TextureFormatMode.Metadata)
             {
-                curSerializer = TextureFormatSerializerProvider.FromMetadata(reader = XmlMetadataReader.Create(stream));
+                reader = XmlMetadataReader.Create(stream);
+                curSerializer = TextureFormatSerializerProvider.FromMetadata(reader);
             }
             else
             {
@@ -137,7 +144,8 @@ namespace Rainbow.App.GUI
                 mode = TextureFormatMode.Format;
                 if (curSerializer == null)
                 {
-                    curSerializer = TextureFormatSerializerProvider.FromMetadata(reader = XmlMetadataReader.Create(stream));
+                    reader = XmlMetadataReader.Create(stream);
+                    curSerializer = TextureFormatSerializerProvider.FromMetadata(reader);
                     mode = TextureFormatMode.Metadata;
                 }
             }

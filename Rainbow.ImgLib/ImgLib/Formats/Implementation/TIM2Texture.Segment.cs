@@ -171,7 +171,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             ImageDecoderIndexed iDecoder = decoder as ImageDecoderIndexed;
             if (iDecoder != null)
+            {
                 iDecoder.Palette = palettes[activePalette];
+            }
 
             return decoder.DecodeImage();
 

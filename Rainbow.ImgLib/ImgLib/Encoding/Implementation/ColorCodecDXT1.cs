@@ -29,7 +29,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 {
     public class ColorCodecDXT1 : ColorCodecEndiannessDependent
     {
-        private int width, height;
+        private readonly int width, height;
         private static Color[] clut = new Color[4];
 
         public ColorCodecDXT1(ByteOrder order, int width, int height):

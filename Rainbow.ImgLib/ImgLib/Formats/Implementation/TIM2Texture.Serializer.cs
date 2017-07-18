@@ -90,7 +90,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             TIM2Texture tim2 = texture as TIM2Texture;
             if (tim2 == null)
+            {
                 throw new TextureFormatException("Not a valid TIM2Texture!");
+            }
 
             BinaryWriter writer = new BinaryWriter(outFormatData);
             writer.Write("TIM2".ToCharArray());
@@ -240,7 +242,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             TIM2Segment segment = texture as TIM2Segment;
             if (segment == null)
+            {
                 throw new TextureFormatException("Not A valid TIM2Segment!");
+            }
 
             byte[] imageData = segment.GetImageData();
             byte[] paletteData = segment.GetPaletteData();
@@ -287,9 +291,13 @@ namespace Rainbow.ImgLib.Formats.Implementation
             ICollection<Image> images = ReadImageData(directory, basename, palCount, out referenceImage);
 
             if (referenceImage != null)
+            {
                 segment = new TIM2Segment(referenceImage, images.Select(img => img.GetColorArray()).ToList(), parameters);
+            }
             else
+            {
                 segment = new TIM2Segment(images.First(), null, parameters);
+            }
 
             return segment;
         }
@@ -311,8 +319,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 segment.SelectedPalette = i;
                 Bitmap img = new Bitmap(segment.Palette.Length, 1);
                 for (int j = 0; j < segment.Palette.Length; j++)
+                {
                     img.SetPixel(j, 0, segment.Palette[j]);
-
+                }
                 list.Add(img);
             }
             segment.SelectedPalette = oldSelected;

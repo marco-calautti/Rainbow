@@ -89,10 +89,14 @@ namespace Rainbow.ImgLib.Formats
             set
             {
                 if (PalettesCount == 0)
+                {
                     return;
-                if (value < 0 || value >= PalettesCount)
-                    throw new IndexOutOfRangeException();
+                }
 
+                if (value < 0 || value >= PalettesCount)
+                {
+                    throw new IndexOutOfRangeException();
+                }
                 bool changed = activePalette != value;
                 activePalette = value;
 
