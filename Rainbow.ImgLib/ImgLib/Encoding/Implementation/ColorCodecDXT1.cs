@@ -50,7 +50,9 @@ namespace Rainbow.ImgLib.Encoding.Implementation
                 reader = new BinaryReader(new MemoryStream(data));
             }
             else
+            {
                 reader = new BinaryReader(new MemoryStream(colors, start, length));
+            }
 
             Color[] decoded = new Color[FullWidth * FullHeight];
             Color[] tile = new Color[4 * 4];
@@ -70,17 +72,21 @@ namespace Rainbow.ImgLib.Encoding.Implementation
 
             reader.Close();
 
-
-            if(FullWidth==width && FullHeight==height)
+            if (FullWidth == width && FullHeight == height)
+            {
                 return decoded;
-
+            }
 
             Color[] decodedRealSize = new Color[width * height];
 
             int k = 0;
             for (int y = 0; y < height; y++)
+            {
                 for (int x = 0; x < width; x++)
+                {
                     decodedRealSize[k++] = decoded[y * FullWidth + x];
+                }
+            }
 
             return decodedRealSize;
 

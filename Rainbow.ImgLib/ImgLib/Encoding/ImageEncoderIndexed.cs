@@ -81,7 +81,9 @@ namespace Rainbow.ImgLib.Encoding
             fromReference = false;
 
             if (images.Count == 0)
+            {
                 throw new ArgumentException("The image list cannot be empty!");
+            }
 
             width = images.First().Width;
             height = images.First().Height;
@@ -109,7 +111,9 @@ namespace Rainbow.ImgLib.Encoding
             colors = 1 << codec.BitDepth;
 
             if (pixelComparer != null)
+            {
                 pixelSorter = pixelComparer;
+            }
         }
 
         private bool IsGreyScale(Image referenceImage)
@@ -161,7 +165,9 @@ namespace Rainbow.ImgLib.Encoding
 
             }
             else //for multi palette images, quantization may break the pixel structure of the images. We must trust the work of the graphics editor.
+            {
                 bitmaps = new List<Image>(images).ConvertAll(x => new Bitmap(x));
+            }
 
             var indexes = new int[width * height];
 

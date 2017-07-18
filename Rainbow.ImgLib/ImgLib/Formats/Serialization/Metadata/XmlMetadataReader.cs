@@ -39,11 +39,15 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             inputStream = stream;
             doc = XDocument.Load(new StreamReader(inputStream));
             if (doc.Root.Name != "textureFormatMetadata")
+            {
                 throw new MetadataException("Illegal metadata!");
+            }
 
             IEnumerable<XElement> en = doc.Root.Elements("section");
             if (en == null)
+            {
                 throw new MetadataException("At least one section is required!");
+            }
 
             subSections = en.GetEnumerator();
         }
@@ -53,9 +57,14 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             try
             {
                 if (subSections == null || !subSections.MoveNext())
+                {
                     throw new MetadataException("No more sections available on this level!");
+                }
+
                 if (subSections.Current.Attribute("name").Value != name)
+                {
                     throw new MetadataException("Expected section named " + name + " but found " + subSections.Current.Attribute("name").Value);
+                }
 
                 savedElements.Push(currentElement);
                 savedPointers.Push(subSections);
@@ -72,7 +81,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             catch (Exception e)
             {
                 if (e is MetadataException)
+                {
                     throw;
+                }
                 throw new MetadataException("Cannot enter the given section!", e);
             }
         }
@@ -105,7 +116,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 catch (Exception e)
                 {
                     if (e is MetadataException)
-                        throw e;
+                    {
+                        throw;
+                    }
                     throw new MetadataException("Error while retrieving element value!", e);
                 }
             }
@@ -118,7 +131,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 try
                 {
                     if (currentElement == null)
+                    {
                         throw new MetadataException("No sections entered");
+                    }
 
                     return currentElement.Elements("attribute")
                                             .Select(el => el.Attribute("name").Value)
@@ -127,7 +142,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                 catch (Exception e)
                 {
                     if (e is MetadataException)
-                        throw e;
+                    {
+                        throw;
+                    }
                     throw new MetadataException("Error while retrieving element value!", e);
                 }
             }
@@ -138,18 +155,25 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             try
             {
                 if (currentElement == null)
+                {
                     throw new MetadataException("No sections entered");
+                }
+
                 IEnumerable<XElement> en = currentElement.Elements("data").Where(el => el.Attribute("name").Value == key);
 
                 if (en.Count() != 1)
+                {
                     throw new MetadataException("Data " + key + " not found or many occurrences found in section " + currentElement.Attribute("name").Value);
+                }
 
                 return en.First().Value;
             }
             catch (Exception e)
             {
                 if (e is MetadataException)
-                    throw e;
+                {
+                    throw;
+                }
                 throw new MetadataException("Error while retrieving element value!", e);
             }
         }
@@ -159,19 +183,25 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             try
             {
                 if (currentElement == null)
+                {
                     throw new MetadataException("No sections entered");
+                }
 
                 IEnumerable<XElement> en = currentElement.Elements("attribute").Where(el => el.Attribute("name").Value == key);
 
                 if (en.Count() != 1)
+                {
                     throw new MetadataException("Attribute " + key + " not found or many occurrences found in section " + currentElement.Attribute("name").Value);
+                }
 
                 return en.First().Value;
             }
             catch (Exception e)
             {
                 if (e is MetadataException)
-                    throw e;
+                {
+                    throw;
+                }
 
                 throw new MetadataException("Error while retrieving element value!", e);
             }
@@ -180,7 +210,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         public override Type GetValueType(string key)
         {
             if (currentElement == null)
+            {
                 throw new MetadataException("No sections entered");
+            }
 
             try
             {
@@ -194,7 +226,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             catch (Exception e)
             {
                 if (e is MetadataException)
-                    throw e;
+                {
+                    throw;
+                }
                 throw new MetadataException("Error while retrieving element value!", e);
             }
         }
@@ -202,8 +236,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         public override Type GetAttributeValueType(string key)
         {
             if (currentElement == null)
+            {
                 throw new MetadataException("No sections entered");
-
+            }
             try
             {
                 IEnumerable<string> en = currentElement.Elements("attribute")
@@ -216,7 +251,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             catch (Exception e)
             {
                 if (e is MetadataException)
-                    throw e;
+                {
+                    throw;
+                }
                 throw new MetadataException("Error while retrieving element value!", e);
             }
         }

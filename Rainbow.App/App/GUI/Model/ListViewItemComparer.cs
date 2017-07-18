@@ -38,7 +38,9 @@ namespace Rainbow.App.GUI.Model
         public int Compare(object x, object y)
         {
             if (SortOrder == SortOrder.None)
+            {
                 return 0;
+            }
 
             if (SortOrder == SortOrder.Descending)
             {
@@ -50,7 +52,9 @@ namespace Rainbow.App.GUI.Model
             var column2=((ListViewItem)y).SubItems[ColumnIndex];
 
             if (ColumnIndex == 1)
+            {
                 return column1.Text.CompareTo(column2.Text);
+            }
 
             return int.Parse(column1.Text).CompareTo(int.Parse(column2.Text));
         }

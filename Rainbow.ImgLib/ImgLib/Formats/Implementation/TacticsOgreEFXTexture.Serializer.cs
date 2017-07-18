@@ -101,7 +101,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             TacticsOgreEFXTexture efxTexture = texture as TacticsOgreEFXTexture;
             if (efxTexture == null)
+            {
                 throw new TextureFormatException("Not a valid EFX Testure!");
+            }
 
             BinaryWriter writer = new BinaryWriter(new MemoryStream());
 
@@ -223,7 +225,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
         protected override TextureFormat CreateFrameForGeneralTexture(TacticsOgreEFXTexture texture, int frame, GenericDictionary formatSpecificData, IList<System.Drawing.Image> images, System.Drawing.Image referenceImage, int mipmapsCount)
         {
             if (referenceImage != null || images.Count > 1)
+            {
                 throw new TextureFormatException("EFX texture should not contain multiple palettes!");
+            }
 
             TextureFormat segment = null;
 

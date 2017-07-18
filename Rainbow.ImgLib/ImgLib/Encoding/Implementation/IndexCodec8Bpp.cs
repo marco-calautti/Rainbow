@@ -35,7 +35,9 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             for (int i = start; i < length; i++)
             {
                 if (indexes[i] > 255)
-                    throw new Exception("Too big index!");
+                {
+                    throw new ArgumentException("Too big index!");
+                }
                 packed[i - start] = (byte)indexes[i];
             }
             return packed;

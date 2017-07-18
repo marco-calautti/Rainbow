@@ -48,7 +48,9 @@ namespace Rainbow.App.GUI
             try
             {
                 using (Stream s = File.Open(name, FileMode.Open))
+                {
                     OpenImportStream(s, name, mode);
+                }
 
             }
             catch (Exception ex)
@@ -57,7 +59,7 @@ namespace Rainbow.App.GUI
                 return;
             }
 
-            FillListView(new string[] { name });
+            FillListView(new[] { name });
         }
 
         private void SaveExportTexture(TextureFormatMode mode)
@@ -72,7 +74,7 @@ namespace Rainbow.App.GUI
 
             if (mode == TextureFormatMode.Unspecified)
             {
-                throw new Exception("Should not happen");
+                throw new ArgumentException("Should not happen");
             }
 
             dialog.Filter = serializer.Name +
@@ -81,18 +83,24 @@ namespace Rainbow.App.GUI
 
             var result = dialog.ShowDialog();
             if (result != DialogResult.OK)
+            {
                 return;
+            }
 
             try
             {
                 using (Stream s = File.Open(dialog.FileName, FileMode.Create))
                 {
-                    if (mode==TextureFormatMode.Format)
+                    if (mode == TextureFormatMode.Format)
+                    {
                         serializer.Save(texture, s);
+                    }
                     else
                     {
-                        using(MetadataWriter writer=XmlMetadataWriter.Create(s))
+                        using (MetadataWriter writer = XmlMetadataWriter.Create(s))
+                        {
                             serializer.Export(texture, writer, Path.GetDirectoryName(dialog.FileName), Path.GetFileNameWithoutExtension(dialog.FileName));
+                        }
                     }
                 }
 
@@ -107,12 +115,17 @@ namespace Rainbow.App.GUI
         private void OpenImportFolder(TextureFormatMode mode)
         {
             if (mode == TextureFormatMode.Unspecified)
-                throw new Exception("Should not happen");
+            {
+                throw new ArgumentException("Should not happen");
+            }
+
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             var result = dialog.ShowDialog();
 
             if (result != DialogResult.OK)
+            {
                 return;
+            }
 
             string path = dialog.SelectedPath;
 
@@ -153,8 +166,11 @@ namespace Rainbow.App.GUI
             if (curSerializer == null)
             {
                 MessageBox.Show("Unsupported file format!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                if(reader!=null)
+                if (reader != null)
+                {
                     reader.Dispose();
+                }
+
                 return;
             }
 
@@ -167,10 +183,12 @@ namespace Rainbow.App.GUI
                     SetTexture(curSerializer.Import(reader, Path.GetDirectoryName(fullPath)));
                     break;
                 default:
-                    throw new Exception("Should never happen!");
+                    throw new ArgumentException("Should never happen!");
             }
             if (reader != null)
+            {
                 reader.Dispose();
+            }
 
             SetFilename(Path.GetFileName(fullPath));
             serializer = curSerializer;
@@ -180,8 +198,9 @@ namespace Rainbow.App.GUI
         private string ConstructFilters(TextureFormatMode mode)
         {
             if (mode == TextureFormatMode.Unspecified)
-                throw new Exception("Should not happen");
-
+            {
+                throw new ArgumentException("Should not happen");
+            }
             StringBuilder builder = new StringBuilder();
 
             IEnumerable<TextureFormatSerializer> ordered = TextureFormatSerializerProvider.RegisteredSerializers.OrderBy(s => s.Name);

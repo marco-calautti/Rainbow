@@ -74,7 +74,9 @@ namespace Rainbow.App.GUI
 
             var result = dialog.ShowDialog();
             if (result != DialogResult.OK)
+            {
                 return;
+            }
 
             transparentPictureBox.SetTransparencyColor(dialog.Color);
         }
@@ -83,7 +85,10 @@ namespace Rainbow.App.GUI
         {
             ToolStripMenuItem item = sender as ToolStripMenuItem;
             if (item == null)
+            {
                 return;
+            }
+
             item.Checked = !item.Checked;
             transparentPictureBox.Chessboard = item.Checked;
         }

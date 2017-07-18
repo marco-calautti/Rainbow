@@ -41,7 +41,9 @@ namespace Rainbow.App.GUI.Controls
         public void SetTexture(TextureFormat tex)
         {
             if (texture != null)
+            {
                 texture.TextureChanged -= OnTextureChanged;
+            }
 
             texture = tex;
             originalWidth = tex.Width;
@@ -88,7 +90,9 @@ namespace Rainbow.App.GUI.Controls
             
             base.OnPaint(pe);
             if (texture == null)
+            {
                 return;
+            }
 
             Graphics graphics = pe.Graphics;
 

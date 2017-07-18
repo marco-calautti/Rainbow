@@ -31,7 +31,9 @@ namespace Rainbow.ImgLib.Encoding
         {
             this.pixelData = pixelData;
             if (imageFilter != null)
+            {
                 this.pixelData = imageFilter.Defilter(pixelData);
+            }
 
             this.width = width;
             this.height = height;
@@ -41,14 +43,20 @@ namespace Rainbow.ImgLib.Encoding
         public Image DecodeImage()
         {
             if (width == 0 || height == 0)
+            {
                 return null;
+            }
 
             Color[] colors = decoder.DecodeColors(pixelData);
             Bitmap bmp = new Bitmap(width, height);
 
             for (int y = 0; y < height; y++)
+            {
                 for (int x = 0; x < width; x++)
+                {
                     bmp.SetPixel(x, y, colors[y * width + x]);
+                }
+            }
 
             return bmp;
         }

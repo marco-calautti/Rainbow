@@ -105,8 +105,12 @@ namespace Rainbow.ImgLib.Formats.Serialization
         public static TextureFormatSerializer FromMetadata(MetadataReader  reader)
         {
             foreach (var serializer in serializers)
+            {
                 if (serializer.IsValidMetadataFormat(reader))
+                {
                     return serializer;
+                }
+            }
 
             return null;
         }
@@ -120,7 +124,9 @@ namespace Rainbow.ImgLib.Formats.Serialization
         {
             TextureFormatSerializer serializer = null;
             using (Stream s = File.Open(filePath, FileMode.Open))
-                serializer=FromStream(s);
+            {
+                serializer = FromStream(s);
+            }
 
             return serializer;
         }

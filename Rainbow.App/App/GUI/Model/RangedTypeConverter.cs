@@ -39,7 +39,9 @@ namespace Rainbow.App.GUI.Model
         public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
         {
             if (value.GetType() != typeof(string))
+            {
                 return base.ConvertFrom(context, culture, value);
+            }
 
             return _ConvertFrom(context, culture, value);
         }

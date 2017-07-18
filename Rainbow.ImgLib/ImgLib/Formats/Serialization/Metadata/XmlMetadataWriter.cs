@@ -59,8 +59,10 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
 
         public override void EndSection()
         {
-            if (savedElements.Count==0)
+            if (savedElements.Count == 0)
+            {
                 throw new MetadataException("Cannot close root section!");
+            }
             currentElement = savedElements.Pop();
         }
 
@@ -69,7 +71,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             try
             {
                 if (currentElement == doc.Root)
+                {
                     throw new MetadataException("Must first enter at least one section to insert a value!");
+                }
 
                 XElement element=new XElement("data");
                 element.SetAttributeValue("name", key);
@@ -80,7 +84,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             }catch(Exception e)
             {
                 if (e is MetadataException)
-                    throw e;
+                {
+                    throw;
+                }
                 throw new MetadataException("Error while inserting value " + key + "!", e);
             }
         }
@@ -90,7 +96,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             try
             {
                 if (currentElement == doc.Root)
+                {
                     throw new MetadataException("Must first enter one section at least to insert an attribute!");
+                }
 
                 XElement element = new XElement("attribute");
                 element.SetAttributeValue("name", key);
@@ -101,7 +109,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
             }catch(Exception e)
             {
                 if (e is MetadataException)
-                    throw e;
+                {
+                    throw;
+                }
                 throw new MetadataException("Error while inserting attribute " + key + "!", e);
             }
         }
