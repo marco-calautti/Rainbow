@@ -60,7 +60,9 @@ namespace Rainbow.ImgLib.Encoding
             height = referenceImage.Height;
 
             if (!IsGreyScale(referenceImage))
+            {
                 throw new ArgumentException("The reference image must be in grey scale!");
+            }
 
             Init(codec, null, encoder, imageFilter, paletteFilter);
 
@@ -185,7 +187,9 @@ namespace Rainbow.ImgLib.Encoding
                         }
                     }
                 for (int c = 0; c < colors - count; c++)
+                {
                     palette.Add(Color.Black);
+                }
 
                 palette.Sort(pixelSorter);
                 Palettes[i] = palette.ToArray();

@@ -97,11 +97,16 @@ namespace Rainbow.ImgLib.Formats.Implementation
             writer.Write((ushort)tim2.Version);
             writer.Write((ushort)tim2.TIM2SegmentsList.Count);
 
-            for (int i = 0; i < 8; i++) writer.Write((byte)0);
+            for (int i = 0; i < 8; i++)
+            {
+                writer.Write((byte)0);
+            }
 
             TIM2SegmentSerializer serializer=new TIM2SegmentSerializer(tim2.Swizzled);
             foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
+            {
                 serializer.Save(segment, outFormatData);
+            }
         }
 
         public void Export(TextureFormat texture, MetadataWriter metadata, string directory, string basename)
@@ -264,7 +269,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
             }
 
             if (referenceImage != null)
+            {
                 referenceImage.Save(Path.Combine(directory, basename + "_reference.png"));
+            }
         }
 
         public TextureFormat Import(MetadataReader metadata, string directory)
@@ -472,7 +479,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
             parameters.mipmapCount = reader.ReadByte();
 
             if (parameters.mipmapCount > 1)
+            {
                 throw new TextureFormatException("Mipmapped images not supported yet!");
+            }
 
             byte clutFormat = reader.ReadByte();
 

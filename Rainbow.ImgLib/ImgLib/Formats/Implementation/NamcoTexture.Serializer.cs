@@ -163,9 +163,13 @@ namespace Rainbow.ImgLib.Formats.Implementation
                                 .SetImageFilter(imgFilter)
                                 .SetPaletteFilter(palFilter);
                 if (referenceImage != null)
+                {
                     segment = builder.Build(referenceImage, images.Select(img => img.GetColorArray()).ToList());
+                }
                 else
+                {
                     segment = builder.Build(images.First());
+                }
             }
             else
             {

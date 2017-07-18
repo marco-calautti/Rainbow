@@ -102,7 +102,9 @@ namespace Rainbow.App.GUI
                 Zoom(0.8f);
             }
             else
+            {
                 return;
+            }
         }
 
         private void OnOriginalSizeMenuItem(object sender, EventArgs e)

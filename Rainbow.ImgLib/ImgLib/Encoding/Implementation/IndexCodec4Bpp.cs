@@ -50,11 +50,19 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             for (int i = start; i < length; i += 2)
             {
                 if (indexes[i] > 15 || indexes[i + 1] > 15)
+                {
                     throw new Exception("Too big index!");
+
+                }
+
                 if (ByteOrder == ByteOrder.LittleEndian)
+                {
                     packed[k++] = (byte)((indexes[i + 1] << 4) | indexes[i]);
+                }
                 else
+                {
                     packed[k++] = (byte)((indexes[i] << 4) | indexes[i + 1]);
+                }
             }
             return packed;
         }

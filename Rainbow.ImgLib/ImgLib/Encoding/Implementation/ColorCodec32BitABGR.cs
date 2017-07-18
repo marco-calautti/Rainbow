@@ -30,7 +30,9 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             List<Color> pal = new List<Color>();
 
             for (int i = 0; i < size / 4; i++)
+            {
                 pal.Add(Color.FromArgb(palette[start + i * 4], palette[start + i * 4 + 3], palette[start + i * 4 + 2], palette[start + i * 4]));
+            }
 
             return pal.ToArray();
         }

@@ -70,7 +70,9 @@ namespace Rainbow.ImgLib.Formats
             set
             {
                 if (value < 0 || value >= FramesCount)
+                {
                     throw new IndexOutOfRangeException();
+                }
 
                 bool changed = activeFrame != value;
 

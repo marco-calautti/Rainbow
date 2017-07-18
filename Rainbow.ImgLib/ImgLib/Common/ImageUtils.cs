@@ -78,7 +78,9 @@ namespace Rainbow.ImgLib.Common
         public static Color ToGrayScale(Color color)
         {
             if (color.R == color.G && color.G == color.B)
+            {
                 return color;
+            }
 
             int intensity = (int)(color.R * 0.2126 + color.G * 0.7152 + color.B * 0.0722);
             return Color.FromArgb(color.A, intensity, intensity, intensity);

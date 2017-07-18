@@ -69,16 +69,23 @@ namespace Rainbow.App.GUI
         {
             listviewSorter.ColumnIndex = e.Column;
             if (listviewSorter.SortOrder == SortOrder.Ascending)
+            {
                 listviewSorter.SortOrder = SortOrder.Descending;
+            }
             else
+            {
                 listviewSorter.SortOrder = SortOrder.Ascending;
+            }
+
             listView.Sort();
         }
 
         private void listView_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listView.SelectedItems.Count == 0)
+            {
                 return;
+            }
 
             TextureFormatProxy proxy = (TextureFormatProxy)listView.SelectedItems[0].Tag;
             try
@@ -86,7 +93,9 @@ namespace Rainbow.App.GUI
                 FileTextureFormatProxy fproxy = proxy as FileTextureFormatProxy;
                 string fullPath = null;
                 if (fproxy != null)
+                {
                     fullPath = fproxy.FullPath;
+                }
 
                 using (Stream s = proxy.GetTextureStream())
                     OpenImportStream(s, fullPath, TextureFormatMode.Unspecified);

@@ -54,9 +54,14 @@ namespace Rainbow.ImgLib.Formats.Implementation
             {
                 int count = widths[i] * heights[i];
                 if (bpps[i] == 4)
+                {
                     count /= 2;
-                if(bpps[i]!=8 && bpps[i]!=4)
-                    throw new TextureFormatException("Illegal bpp value: "+bpps[i]);
+                }
+
+                if (bpps[i] != 8 && bpps[i] != 4)
+                {
+                    throw new TextureFormatException("Illegal bpp value: " + bpps[i]);
+                }
 
                 byte[] paletteData = new byte[bpps[i] == 8? 4 * 256 : 4 * 16];
                 byte[] imageData = new byte[count];

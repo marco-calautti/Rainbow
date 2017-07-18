@@ -177,9 +177,13 @@ namespace Rainbow.ImgLib.Formats.Serialization
                     {
                         string fullPath=Path.Combine(directory, basename + "_layer" + frame + "_" + i++ + ".png");
                         if (img != null)
+                        {
                             img.Save(fullPath);
+                        }
                         else
+                        {
                             File.WriteAllText(fullPath, string.Empty);
+                        }
                     }
 
                     if(referenceImage!=null)
