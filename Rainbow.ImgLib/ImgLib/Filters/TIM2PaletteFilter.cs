@@ -25,7 +25,7 @@ namespace Rainbow.ImgLib.Filters
 {
     public class TIM2PaletteFilter : PaletteFilter
     {
-        private int bitDepth;
+        private readonly int bitDepth;
         public TIM2PaletteFilter(int bitDepth)
         {
             this.bitDepth = bitDepth;

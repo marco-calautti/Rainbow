@@ -24,10 +24,10 @@ namespace Rainbow.ImgLib.Filters
 {
     public class TileFilter : ImageFilter
     {
-        private int bpp;
-        private int tileWidth;
-        private int tileHeight;
-        private int width, height;
+        private readonly int bpp;
+        private readonly int tileWidth;
+        private readonly int tileHeight;
+        private readonly int width, height;
 
         public TileFilter(int bpp, int tileWidth, int tileHeight, int width, int height)
         {

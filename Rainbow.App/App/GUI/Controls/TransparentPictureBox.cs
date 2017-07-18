@@ -100,7 +100,8 @@ namespace Rainbow.App.GUI.Controls
             }
             else
             {
-                brush1 = brush2 = new SolidBrush(color.IsEmpty ? PreferredTransparencyColor : color);
+                brush1 = new SolidBrush(color.IsEmpty ? PreferredTransparencyColor : color);
+                brush2 = brush1;
             }
 
 

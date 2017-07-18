@@ -112,7 +112,9 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
                     ret = bool.Parse(representation);
                 }
                 else
+                {
                     throw new MetadataException("Unsupported type " + myType.Name + "!");
+                }
             }
             catch (Exception e)
             {

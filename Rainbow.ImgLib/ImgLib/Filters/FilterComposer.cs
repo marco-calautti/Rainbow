@@ -24,7 +24,7 @@ namespace Rainbow.ImgLib.Filters
 {
     public class ImageFilterComposer : ImageFilter, IEnumerable<ImageFilter>
     {
-        private IList<ImageFilter> filters;
+        private readonly IList<ImageFilter> filters;
 
         public ImageFilterComposer()
         {

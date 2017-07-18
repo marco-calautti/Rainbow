@@ -86,8 +86,12 @@ namespace Rainbow.ImgLib.Formats.Serialization
         public static TextureFormatSerializer FromStream(Stream stream)
         {
             foreach (var serializer in serializers)
-                if (serializer.IsValidFormat(stream) /*|| serializer.IsValidMetadataFormat(stream)*/)
+            {
+                if (serializer.IsValidFormat(stream))
+                {
                     return serializer;
+                }
+            }
 
             return null;
         }

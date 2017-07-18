@@ -31,7 +31,7 @@ using Rainbow.App.GUI;
 
 namespace Rainbow.App
 {
-    class Program
+    static class Program
     {
         [STAThread]
         static void Main(string[] args)

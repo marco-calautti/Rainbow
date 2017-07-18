@@ -97,7 +97,7 @@ namespace Rainbow.ImgLib.Formats
                                                                   ImageFilter,
                                                                   PaletteFilter);
             imageData = encoder.Encode();
-            palettes = encoder.Palettes;
+            this.palettes = encoder.Palettes;
 
             encodedPalettes = encoder.EncodedPalettes;
 

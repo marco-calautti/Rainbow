@@ -26,7 +26,7 @@ namespace Rainbow.ImgLib.Formats
     /// </summary>
 	internal class DummyTexture : TextureFormatBase
 	{
-		private Bitmap img;
+		private readonly Bitmap img;
 
         /// <summary>
         /// Constructs a dummy texture having as image the given text.
@@ -44,7 +44,7 @@ namespace Rainbow.ImgLib.Formats
         /// <param name="font">Font.</param>
         /// <param name="bgColor">Background color.</param>
         /// <param name="textColor">Text color.</param>
-		public DummyTexture (string text, Font font, Color bgColor, Color textColor) : base()
+		public DummyTexture (string text, Font font, Color bgColor, Color textColor)
 		{
 			SizeF textSize;
 
