@@ -54,7 +54,9 @@ namespace Rainbow.ImgLib.Formats
         public Image GetMipmap(int i)
         {
             if (i < 0 || i >= MipmapsCount)
-                throw new IndexOutOfRangeException();
+            {
+                throw new ArgumentException("Mipmap index out of range!");
+            }
 
             Image img = GetImage();
 
@@ -79,7 +81,9 @@ namespace Rainbow.ImgLib.Formats
                 activeFrame = value;
 
                 if (changed)
+                {
                     OnTextureChanged();
+                }
             }
         }
 
@@ -101,7 +105,9 @@ namespace Rainbow.ImgLib.Formats
                 activePalette = value;
 
                 if (changed)
+                {
                     OnTextureChanged();
+                }
             }
         }
 
@@ -130,8 +136,10 @@ namespace Rainbow.ImgLib.Formats
 
         protected void OnTextureChanged()
         {
-            if(TextureChanged!=null)
+            if (TextureChanged != null)
+            {
                 TextureChanged(this, new EventArgs());
+            }
         }
     }
 }

@@ -31,7 +31,9 @@ namespace Rainbow.ImgLib.Common
         public static UInt16 ReadUInt16(this BinaryReader reader, ByteOrder order)
         {
             if (order == ByteOrder.LittleEndian)
+            {
                 return reader.ReadUInt16();
+            }
 
             reader.Read(buf, 0, 2);
             Array.Reverse(buf, 0, 2);
@@ -41,7 +43,9 @@ namespace Rainbow.ImgLib.Common
         public static Int16 ReadInt16(this BinaryReader reader, ByteOrder order)
         {
             if (order == ByteOrder.LittleEndian)
+            {
                 return reader.ReadInt16();
+            }
 
             reader.Read(buf, 0, 2);
             Array.Reverse(buf, 0, 2);
@@ -51,7 +55,9 @@ namespace Rainbow.ImgLib.Common
         public static UInt32 ReadUInt32(this BinaryReader reader, ByteOrder order)
         {
             if (order == ByteOrder.LittleEndian)
+            {
                 return reader.ReadUInt32();
+            }
 
             reader.Read(buf, 0, 4);
             Array.Reverse(buf, 0, 4);
@@ -61,7 +67,9 @@ namespace Rainbow.ImgLib.Common
         public static Int32 ReadInt32(this BinaryReader reader, ByteOrder order)
         {
             if (order == ByteOrder.LittleEndian)
+            {
                 return reader.ReadInt32();
+            }
 
             reader.Read(buf, 0, 4);
             Array.Reverse(buf, 0, 4);
@@ -71,7 +79,9 @@ namespace Rainbow.ImgLib.Common
         public static UInt64 ReadUInt64(this BinaryReader reader, ByteOrder order)
         {
             if (order == ByteOrder.LittleEndian)
+            {
                 return reader.ReadUInt64();
+            }
 
             reader.Read(buf, 0, 8);
             Array.Reverse(buf, 0, 8);
@@ -81,7 +91,9 @@ namespace Rainbow.ImgLib.Common
         public static Int64 ReadInt64(this BinaryReader reader, ByteOrder order)
         {
             if (order == ByteOrder.LittleEndian)
+            {
                 return reader.ReadInt64();
+            }
 
             reader.Read(buf, 0, 8);
             Array.Reverse(buf, 0, 8);
@@ -91,7 +103,9 @@ namespace Rainbow.ImgLib.Common
         public static float ReadSingle(this BinaryReader reader, ByteOrder order)
         {
             if (order == ByteOrder.LittleEndian)
+            {
                 return reader.ReadSingle();
+            }
 
             reader.Read(buf, 0, 4);
             Array.Reverse(buf, 0, 4);

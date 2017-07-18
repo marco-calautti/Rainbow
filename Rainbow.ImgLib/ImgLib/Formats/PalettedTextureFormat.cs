@@ -162,7 +162,9 @@ namespace Rainbow.ImgLib.Formats
         public override Image GetReferenceImage()
         {
             if (PalettesCount <= 1)
+            {
                 return null;
+            }
 
             return new ImageDecoderIndexed(imageData,
                                            width,

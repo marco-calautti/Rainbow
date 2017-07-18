@@ -95,7 +95,9 @@ namespace Rainbow.ImgLib.Filters
                             byte data = originalData[index + i++];
 
                             if (tileX >= w || tileY >= height)
+                            {
                                 continue;
+                            }
 
                             Buf[tileY * w + tileX] = data;
                         }
@@ -121,7 +123,9 @@ namespace Rainbow.ImgLib.Filters
             int lineSize = TileDimensionsAsBytes ? tileWidth : (tileWidth * bpp) / 8;
 
             if (w % lineSize != 0)
+            {
                 encodingWidth += ((lineSize - w % lineSize) * 8) / bpp;
+            }
 
             return encodingWidth;
 
@@ -131,7 +135,9 @@ namespace Rainbow.ImgLib.Filters
             int encodingHeight = realHeight;
 
             if (height % tileHeight != 0)
+            {
                 encodingHeight += (height - height % tileHeight);
+            }
 
             return encodingHeight;
         }

@@ -126,7 +126,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             catch (Exception e)
             {
                 if (e is TextureFormatException)
-                    throw e;
+                    throw;
                 throw new TextureFormatException(e.Message, e);
             }
         }
@@ -164,7 +164,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
             writer.Write(img.Length);
 
             for (int j = 0; j < 8; j++)
+            {
                 writer.Write(0);
+            }
 
             writer.Write(pal);
             writer.Write(img);
@@ -174,7 +176,10 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             TX48Texture texture = txt as TX48Texture;
             if (texture == null)
+            {
                 throw new TextureFormatException("Not a valid TX48Texture!");
+            }
+
             try
             {
                 metadata.BeginSection("TX48Texture");

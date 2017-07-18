@@ -125,13 +125,16 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             PE3DATTexture dat = texture as PE3DATTexture;
             if (dat == null)
+            {
                 throw new TextureFormatException("Not a valid PE3 DAT texture!");
-
+            }
             BinaryWriter writer=new BinaryWriter(outFormatData);
 
             writer.Write((uint)dat.FramesCount);
             for (int i = 0; i < 3; i++)
+            {
                 writer.Write((uint)0);
+            }
 
             int oldSelected = dat.SelectedFrame;
             for(int i=0;i<dat.FramesCount;i++)
@@ -159,7 +162,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             PE3DATTexture dat = texture as PE3DATTexture;
             if (dat == null)
+            {
                 throw new TextureFormatException("Not a valid PE3 DAT texture!");
+            }
 
             metadata.BeginSection("PE3DAT");
             metadata.PutAttribute("Textures", dat.FramesCount);

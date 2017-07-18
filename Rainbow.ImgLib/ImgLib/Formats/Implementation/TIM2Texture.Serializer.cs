@@ -116,8 +116,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             TIM2Texture tim2 = texture as TIM2Texture;
             if (tim2 == null)
+            {
                 throw new TextureFormatException("Not a valid TIM2Texture!");
-
+            }
 
             metadata.BeginSection("TIM2");
             metadata.PutAttribute("Version", tim2.Version);
@@ -185,7 +186,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             char[] magic = reader.ReadChars(4);
             if (new string(magic) != "TIM2")
+            {
                 throw new TextureFormatException("Invalid TIM2 image!");
+            }
 
             version = reader.ReadUInt16();
             textureCount = reader.ReadUInt16();
@@ -260,7 +263,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
         {
             TIM2Segment segment = texture as TIM2Segment;
             if (segment == null)
+            {
                 throw new TextureFormatException("Not A valid TIM2Segment!");
+            }
 
             Writemetadata(segment, metadata, basename);
             int i = 0;
@@ -336,7 +341,9 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 referenceImage = Image.FromFile(Path.Combine(directory, basename + "_reference.png"));
             }
             else
+            {
                 referenceImage = null;
+            }
 
             ICollection<Image> images = new List<Image>();
 
@@ -449,7 +456,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                     depth = 3;
                     break;
                 default:
-                    throw new Exception("Should never happen");
+                    throw new ArgumentException("Should never happen");
             }
             writer.Write(depth);
             writer.Write((ushort)parameters.width);

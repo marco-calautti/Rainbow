@@ -41,8 +41,10 @@ namespace Rainbow.ImgLib.Encoding
             byte[] data = codec.EncodeColors(image.GetColorArray());
 
             if (filter != null)
+            {
                 data = filter.ApplyFilter(data);
-            
+            }
+
             return data;
         }
     }

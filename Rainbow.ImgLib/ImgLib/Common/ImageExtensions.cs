@@ -32,8 +32,12 @@ namespace Rainbow.ImgLib.Common
             Bitmap bmp = new Bitmap(img);
             var list = new List<Color>();
             for (int y = 0; y < img.Height; y++)
+            {
                 for (int x = 0; x < img.Width; x++)
+                {
                     list.Add(bmp.GetPixel(x, y));
+                }
+            }
             return list.ToArray();
         }
 
@@ -43,12 +47,17 @@ namespace Rainbow.ImgLib.Common
             HashSet<Color> colors = new HashSet<Color>();
             int count = 0;
             for (int y = 0; y < img.Height; y++)
+            {
                 for (int x = 0; x < img.Width; x++)
+                {
                     if (!colors.Contains(bmp.GetPixel(x, y)))
                     {
                         colors.Add(bmp.GetPixel(x, y));
                         count++;
                     }
+                }
+            }
+
             return count;
         }
 
@@ -58,7 +67,9 @@ namespace Rainbow.ImgLib.Common
             int newHeight = ImageUtils.GetMipmapHeight(img.Height, i);
 
             if (newWidth == 0 || newHeight == 0)
+            {
                 return null;
+            }
 
             var destRect = new Rectangle(0, 0, newWidth, newHeight);
             var destImage = new Bitmap(newWidth, newHeight);

@@ -125,6 +125,5 @@ namespace Rainbow.ImgLib.Formats.Serialization.Metadata
         }
 
         public abstract void Dispose();
-
     }
 }

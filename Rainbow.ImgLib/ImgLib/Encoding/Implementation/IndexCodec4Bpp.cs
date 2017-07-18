@@ -35,15 +35,19 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             byte b = pixelData[pos / 2];
 
             if (ByteOrder == ByteOrder.LittleEndian)
+            {
                 return pos % 2 == 0 ? b & 0xF : (b >> 4) & 0xF;
+            }
             else
+            {
                 return pos % 2 != 0 ? b & 0xF : (b >> 4) & 0xF;
+            }
         }
 
         public override byte[] PackIndexes(int[] indexes, int start, int length)
         {
             if (length % 2 != 0)
-                throw new Exception("Number of indexes must be odd!");
+                throw new ArgumentException("Number of indexes must be odd!");
 
             byte[] packed = new byte[length / 2];
             int k = 0;
@@ -51,7 +55,7 @@ namespace Rainbow.ImgLib.Encoding.Implementation
             {
                 if (indexes[i] > 15 || indexes[i + 1] > 15)
                 {
-                    throw new Exception("Too big index!");
+                    throw new ArgumentException("Too big index!");
 
                 }
 
