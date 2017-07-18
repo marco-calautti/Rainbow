@@ -24,7 +24,7 @@ namespace Rainbow.ImgLib.Common
 {
     public class GenericDictionary
     {
-        private IDictionary<string, object> dict=new Dictionary<string,object>();
+        private readonly IDictionary<string, object> dict=new Dictionary<string,object>();
 
         /// <summary>
         /// String representation of value with key "key".

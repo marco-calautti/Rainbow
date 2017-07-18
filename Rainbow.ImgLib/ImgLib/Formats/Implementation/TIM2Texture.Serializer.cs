@@ -37,8 +37,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         public string PreferredFormatExtension { get { return ".tm2";  } }
 
-        //public string PreferredMetadataExtension { get { return ".xml"; } }
-
         public bool IsValidFormat(Stream format)
         {
             long oldPos = format.Position;
@@ -205,8 +203,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         public string PreferredFormatExtension { get { return ""; } }
 
-        //public string PreferredMetadataExtension{ get {return ""; } }
-
         public bool IsValidFormat(Stream input)
         {
             throw new NotImplementedException();
@@ -358,7 +354,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
             parameters.mipmapCount = metadata.Get<byte>("MipmapCount");
 
             parameters.format = metadata.Get<byte>("Format");
-            //parameters.clutFormat = (byte)int.Parse(node.Element("ClutFormat").Value);
 
             parameters.GsTEX0 = metadata.Get<byte[]>("GsTEX0");
             parameters.GsTEX1 = metadata.Get<byte[]>("GsTEX1");
@@ -386,9 +381,8 @@ namespace Rainbow.ImgLib.Formats.Implementation
             metadata.Put("ColorSize", segment.GetParameters().colorSize);
             metadata.Put("MipmapCount", segment.GetParameters().mipmapCount);
 
-            //xml.WriteComment("Raw data from TIM2 header");
             metadata.Put("Format", segment.GetParameters().format);
-            //xml.WriteElementString("ClutFormat", segment.GetParameters().clutFormat.ToString());
+
             metadata.Put("GsTEX0", segment.GetParameters().GsTEX0);
             metadata.Put("GsTEX1", segment.GetParameters().GsTEX1);
 

@@ -63,7 +63,7 @@ namespace Rainbow.ImgLib.Filters
                             byte data = 0;
                             if (tileX < origW && tileY < height)
                             {
-                                data = originalData[index + tileY * w + tileX]; ;
+                                data = originalData[index + tileY * w + tileX];
                             }
 
                             Buf[i++] = data;

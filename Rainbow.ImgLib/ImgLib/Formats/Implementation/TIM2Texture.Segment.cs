@@ -54,7 +54,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
         private Color[][] palettes = new Color[0][];
         private ImageDecoder decoder;
         private TIM2PaletteFilter paletteFilter;
-        private SwizzleFilter swizzleFilter;
+        private readonly SwizzleFilter swizzleFilter;
 
         #endregion
 
@@ -93,11 +93,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             if (parameters.bpp > 8) //true color image
             {
-                //if (images.Count > 1) //something wrong, we can have at most one true color segment
-                //   throw new TextureFormatException("Too many images for this true color segment!");
-
-                //IEnumerator<Image> en = images.GetEnumerator(); en.MoveNext();
-                //imageData = GetColorCodec(parameters.colorSize).EncodeColors(en.Current.GetColorArray()); //I love extension methods. Hurray!
                 imageData = GetColorCodec(parameters.colorSize).EncodeColors(image.GetColorArray()); //I love extension methods. Hurray!
             }
             else
@@ -205,8 +200,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             if (parameters.bpp > 8)
                 return;
 
-            //int colors = 1 << parameters.bpp;
-            int numberOfPalettes = paletteData.Length / ((int)colorEntries * parameters.colorSize); //(int)colorEntries / colors;
+            int numberOfPalettes = paletteData.Length / ((int)colorEntries * parameters.colorSize);
             int singlePaletteSize = paletteData.Length / numberOfPalettes;
 
             palettes = new Color[numberOfPalettes][];

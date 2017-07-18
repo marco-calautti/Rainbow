@@ -324,7 +324,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 //retrieve image and palette data and construct texture
 
                 byte[] imgData = reader.ReadBytes((int)imgSize);
-                byte[] palData = reader.ReadBytes((int)paletteSize);
+                byte[] palData = reader.ReadBytes(paletteSize);
 
                 segment = new PalettedTextureFormat.Builder()
                     .SetIndexCodec(IndexCodec.FromBitPerPixel(bpp))

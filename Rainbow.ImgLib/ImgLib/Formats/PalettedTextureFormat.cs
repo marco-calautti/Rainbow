@@ -196,35 +196,30 @@ namespace Rainbow.ImgLib.Formats
 
             public Builder SetPaletteCodec(ColorCodec decoder)
             {
-                //texture.PaletteCodec = decoder;
                 this.decoder = decoder;
                 return this;
             }
 
             public Builder SetIndexCodec(IndexCodec codec)
             {
-                //texture.IndexCodec = codec;
                 this.codec = codec;
                 return this;
             }
 
             public Builder SetImageFilter(ImageFilter filter)
             {
-                //texture.ImageFilter = filter;
                 imgFilter = filter;
                 return this;
             }
 
             public Builder SetPaletteFilter(PaletteFilter filter)
             {
-                //texture.PaletteFilter = filter;
                 palFilter = filter;
                 return this;
             }
 
             public Builder SetColorComparer(IComparer<Color> comparer)
             {
-                //texture.PixelComparer = comparer;
                 this.comparer = comparer;
                 return this;
             }

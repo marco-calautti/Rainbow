@@ -25,7 +25,7 @@ namespace Rainbow.ImgLib.Encoding
 {
     public abstract class IndexCodecEndiannessDependent : IndexCodec, EndiannessDependent
     {
-        private ByteOrder order;
+        private readonly ByteOrder order;
         public IndexCodecEndiannessDependent(ByteOrder order)
         {
             this.order = order;

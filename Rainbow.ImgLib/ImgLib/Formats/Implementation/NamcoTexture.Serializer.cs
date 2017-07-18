@@ -237,7 +237,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             if(IsPaletted(clutFormat))
             {
                 int colorSize = GetPaletteColorSize(clutFormat);
-                int numberOfPalettes = palData.Length / ((int)colorsCount * colorSize);
+                int numberOfPalettes = palData.Length / (colorsCount * colorSize);
                 int singlePaletteSize = palData.Length / numberOfPalettes;
 
                 IList<byte[]> palettes = new List<byte[]>(numberOfPalettes);
