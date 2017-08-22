@@ -2,6 +2,8 @@ Rainbow [![Build Status](https://travis-ci.org/marco-calautti/Rainbow.svg?branch
 =======
 **Download latest dev build from [here](https://www.dropbox.com/s/gid080j6anqnbsb/rainbow_win32_bin_dev.zip?dl=1).**
 
+**File formats documentation [here](https://github.com/marco-calautti/Rainbow/wiki).**
+
 If you want to contact me: marco.calautti [at] gmail [.] com. For bug/issues reports, please use the github page.
 
 If you want to **compile** Rainbow, please refer to this [wiki page](https://github.com/marco-calautti/Rainbow/wiki/How-to-build-Rainbow).
@@ -54,8 +56,8 @@ To-do
 
 **Currently working on**
 * ~~Fix DXT1Decoder~~.
-* Reverse engineer NUT encodings.
-* Complete GenericTextureFormat to be constructible from Image, ColorEncoder ecc.
+* ~~Reverse engineer NUT encoding~~.
+* ~~Complete GenericTextureFormat to be constructible from Image, ColorEncoder ecc~~.
 * ~~Fix export/import for multiclut TIM2 imags using reference image.~~
 * ~~Let IndexedImageEncoders to be constructed using a reference gray scale image.~~
 * ~~Add missing copyright snippet to new files.~~
