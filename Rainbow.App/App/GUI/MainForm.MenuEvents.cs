@@ -119,5 +119,25 @@ namespace Rainbow.App.GUI
         {
             SetScaleFactor(1.0f);
         }
+
+        private void nextFrameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NextFrame();
+        }
+
+        private void previousFrameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PreviousFrame();
+        }
+
+        private void nextPaletteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NextPalette();
+        }
+
+        private void previousPaletteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PreviousPalette();
+        }
     }
 }

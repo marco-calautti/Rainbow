@@ -55,10 +55,16 @@ namespace Rainbow.App.GUI
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nextFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previousFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nextPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previousPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomPlusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomMinusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.originalSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.useBlckAsTransparentColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.chessboardBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,11 +78,12 @@ namespace Rainbow.App.GUI
             this.ItemSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.transparentPictureBox = new Rainbow.App.GUI.Controls.TransparentPictureBox();
-            this.originalSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
@@ -86,6 +93,7 @@ namespace Rainbow.App.GUI
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
@@ -167,6 +175,49 @@ namespace Rainbow.App.GUI
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.nextFrameToolStripMenuItem,
+            this.previousFrameToolStripMenuItem,
+            this.nextPaletteToolStripMenuItem,
+            this.previousPaletteToolStripMenuItem});
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.editToolStripMenuItem.Text = "Edit";
+            // 
+            // nextFrameToolStripMenuItem
+            // 
+            this.nextFrameToolStripMenuItem.Name = "nextFrameToolStripMenuItem";
+            this.nextFrameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Up)));
+            this.nextFrameToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.nextFrameToolStripMenuItem.Text = "Next Frame";
+            this.nextFrameToolStripMenuItem.Click += new System.EventHandler(this.nextFrameToolStripMenuItem_Click);
+            // 
+            // previousFrameToolStripMenuItem
+            // 
+            this.previousFrameToolStripMenuItem.Name = "previousFrameToolStripMenuItem";
+            this.previousFrameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Down)));
+            this.previousFrameToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.previousFrameToolStripMenuItem.Text = "Previous Frame";
+            this.previousFrameToolStripMenuItem.Click += new System.EventHandler(this.previousFrameToolStripMenuItem_Click);
+            // 
+            // nextPaletteToolStripMenuItem
+            // 
+            this.nextPaletteToolStripMenuItem.Name = "nextPaletteToolStripMenuItem";
+            this.nextPaletteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Right)));
+            this.nextPaletteToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.nextPaletteToolStripMenuItem.Text = "Next Palette";
+            this.nextPaletteToolStripMenuItem.Click += new System.EventHandler(this.nextPaletteToolStripMenuItem_Click);
+            // 
+            // previousPaletteToolStripMenuItem
+            // 
+            this.previousPaletteToolStripMenuItem.Name = "previousPaletteToolStripMenuItem";
+            this.previousPaletteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Left)));
+            this.previousPaletteToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.previousPaletteToolStripMenuItem.Text = "Previous Palette";
+            this.previousPaletteToolStripMenuItem.Click += new System.EventHandler(this.previousPaletteToolStripMenuItem_Click);
+            // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -203,6 +254,14 @@ namespace Rainbow.App.GUI
             this.zoomMinusToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.zoomMinusToolStripMenuItem.Text = "Zoom-";
             this.zoomMinusToolStripMenuItem.Click += new System.EventHandler(this.OnZoomMenuItem);
+            // 
+            // originalSizeToolStripMenuItem
+            // 
+            this.originalSizeToolStripMenuItem.Name = "originalSizeToolStripMenuItem";
+            this.originalSizeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D0)));
+            this.originalSizeToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.originalSizeToolStripMenuItem.Text = "Original size";
+            this.originalSizeToolStripMenuItem.Click += new System.EventHandler(this.OnOriginalSizeMenuItem);
             // 
             // useBlckAsTransparentColorToolStripMenuItem
             // 
@@ -321,6 +380,7 @@ namespace Rainbow.App.GUI
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.propertyGrid.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.propertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propertyGrid.Location = new System.Drawing.Point(3, 3);
             this.propertyGrid.Name = "propertyGrid";
             this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
@@ -336,14 +396,6 @@ namespace Rainbow.App.GUI
             this.transparentPictureBox.Size = new System.Drawing.Size(370, 317);
             this.transparentPictureBox.TabIndex = 0;
             // 
-            // originalSizeToolStripMenuItem
-            // 
-            this.originalSizeToolStripMenuItem.Name = "originalSizeToolStripMenuItem";
-            this.originalSizeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D0)));
-            this.originalSizeToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.originalSizeToolStripMenuItem.Text = "Original size";
-            this.originalSizeToolStripMenuItem.Click += new System.EventHandler(this.OnOriginalSizeMenuItem);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -358,9 +410,11 @@ namespace Rainbow.App.GUI
             this.menuStrip.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -397,5 +451,10 @@ namespace Rainbow.App.GUI
         private System.Windows.Forms.ToolStripMenuItem zoomPlusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomMinusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem originalSizeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nextFrameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem previousFrameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nextPaletteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem previousPaletteToolStripMenuItem;
     }
 }

@@ -230,8 +230,16 @@ namespace Rainbow.App.GUI
         {
             texture = tex;
             propertyGrid.SelectedObject = PropertyGridObjectFactory.Create(texture);
-            
             transparentPictureBox.SetTexture(texture);
+            if (texture != null)
+            {
+                texture.TextureChanged += OnTextureChanged;
+            }
+        }
+
+        private void OnTextureChanged(object sender, EventArgs e)
+        {
+            propertyGrid.Refresh();
         }
 
         private void OnPropertyChanged(object s, PropertyValueChangedEventArgs e)
@@ -266,6 +274,46 @@ namespace Rainbow.App.GUI
         private void SetScaleFactor(float factor)
         {
             transparentPictureBox.SetScaleFactor(factor);
+        }
+
+        private void NextFrame()
+        {
+            if(texture == null || texture.FramesCount == 0)
+            {
+                return;
+            }
+
+            texture.SelectedFrame = (texture.SelectedFrame + 1) % texture.FramesCount;
+        }
+
+        private void PreviousFrame()
+        {
+            if (texture == null || texture.FramesCount == 0)
+            {
+                return;
+            }
+
+            texture.SelectedFrame = texture.SelectedFrame == 0 ? texture.FramesCount - 1 : texture.SelectedFrame - 1;
+        }
+
+        private void NextPalette()
+        {
+            if (texture == null || texture.PalettesCount == 0)
+            {
+                return;
+            }
+
+            texture.SelectedPalette = (texture.SelectedPalette + 1) % texture.PalettesCount;
+        }
+
+        private void PreviousPalette()
+        {
+            if (texture == null || texture.PalettesCount == 0)
+            {
+                return;
+            }
+
+            texture.SelectedPalette = texture.SelectedPalette == 0? texture.PalettesCount - 1 : texture.SelectedPalette - 1;
         }
     }
 }
