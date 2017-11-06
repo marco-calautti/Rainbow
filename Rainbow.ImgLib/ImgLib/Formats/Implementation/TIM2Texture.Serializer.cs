@@ -270,7 +270,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             Writemetadata(segment, metadata, basename);
             int i = 0;
             Image referenceImage = null;
-            ICollection<Image> images = ConstructImages(segment, out referenceImage);
+            List<Image> images = ConstructImages(segment, out referenceImage);
 
             foreach (Image img in images)
             {
@@ -293,7 +293,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             TIM2Segment.TIM2SegmentParameters parameters;
             Readmetadata(metadata, out parameters, out basename, out palCount);
             Image referenceImage = null;
-            ICollection<Image> images = ReadImageData(directory, basename, palCount, out referenceImage);
+            List<Image> images = ReadImageData(directory, basename, palCount, out referenceImage);
 
             if (referenceImage != null)
             {
@@ -307,7 +307,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             return segment;
         }
 
-        private ICollection<Image> ConstructImages(TIM2Segment segment, out Image referenceImage)
+        private List<Image> ConstructImages(TIM2Segment segment, out Image referenceImage)
         {
 
             referenceImage = segment.GetReferenceImage();
@@ -334,7 +334,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             return list;
         }
 
-        private ICollection<Image> ReadImageData(string directory, string basename, int palCount, out Image referenceImage)
+        private List<Image> ReadImageData(string directory, string basename, int palCount, out Image referenceImage)
         {
             if (palCount > 1)
             {
@@ -345,7 +345,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 referenceImage = null;
             }
 
-            ICollection<Image> images = new List<Image>();
+            List<Image> images = new List<Image>();
 
             for (int i = 0; i < (palCount == 0 ? 1 : palCount); i++)
             {
