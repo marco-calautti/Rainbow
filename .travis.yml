@@ -14,13 +14,9 @@ after_success:
 - cp *.md /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/
 - cd /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/
 - zip rainbow_win32_bin_dev.zip *.exe *.dll *.md
-- wget https://www.dropbox.com/s/5ns3ttljgw70dxi/dropbox_uploader.sh?dl=1 -O ./dropbox_uploader.sh
+- wget https://www.dropbox.com/s/j4e9iyqhea93db6/dropbox_uploader.sh?dl=1 -O ./dropbox_uploader.sh
 - chmod +x ./dropbox_uploader.sh
-- echo $APPKEY >> dropbox_config
-- echo $APPSECRET >> dropbox_config
-- echo $ACCESS_LEVEL >> dropbox_config
 - echo $OAUTH_ACCESS_TOKEN >> dropbox_config
-- echo $OAUTH_ACCESS_TOKEN_SECRET >> dropbox_config
 - ./dropbox_uploader.sh upload rainbow_win32_bin_dev.zip Rainbow/rainbow_win32_bin_dev.zip
 
 notifications:
