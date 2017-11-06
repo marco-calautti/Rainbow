@@ -137,7 +137,7 @@ namespace Rainbow.ImgLib.Encoding
 
         private byte[] EncodeFromReference()
         {
-            int[] indexes = referenceImage.GetColorArray().Select((c) => (int)c.R >> codec.BitDepth).ToArray();
+            int[] indexes = referenceImage.GetColorArray().Select((c) => (c.R >> (8 - codec.BitDepth))).ToArray();
 
             if (colorEncoder != null)
             {
