@@ -41,7 +41,8 @@ namespace Rainbow.ImgLib.Encoding.Implementation
                 int green = data & 0x1F;
                 data >>= 5;
                 int blue = data & 0x1F;
-                int alpha = data == 0 ? 0 : 127;
+                data >>= 5;
+                int alpha = data == 0 ? 0 : 255;
 
                 pal.Add(Color.FromArgb(alpha, ImageUtils.Conv5To8(red), ImageUtils.Conv5To8(green), ImageUtils.Conv5To8(blue)));
             }
