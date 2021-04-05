@@ -130,9 +130,9 @@ namespace Rainbow.App.GUI
             string path = dialog.SelectedPath;
 
             IEnumerable<string> extensions = TextureFormatSerializerProvider.RegisteredSerializers.Select(
-                s => mode == TextureFormatMode.Format ? s.PreferredFormatExtension : ".xml");
+                s => mode == TextureFormatMode.Format ? s.PreferredFormatExtension.ToLower() : ".xml");
             extensions = extensions.OrderBy(s => s);
-            var files = Directory.GetFiles(path, "*.*").Where(s => extensions.Contains(Path.GetExtension(s)) && TextureFormatSerializerProvider.FromFile(s)!=null);
+            var files = Directory.GetFiles(path, "*.*").Where(s => extensions.Contains(Path.GetExtension(s).ToLower()) && TextureFormatSerializerProvider.FromFile(s)!=null);
 
             FillListView(files);
         }

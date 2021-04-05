@@ -28,6 +28,12 @@ namespace Rainbow.ImgLib.Formats.Implementation
     /// </summary>
     public class TIM2Texture : TextureFormatBase
     {
+        public enum TIM2ByteAlignment
+        {
+            Align16bytes = 0,
+            Align128Bytes = 1
+        }
+
         #region Members
 
         private List<TIM2Segment> imagesList;
@@ -89,6 +95,11 @@ namespace Rainbow.ImgLib.Formats.Implementation
         /// The version number of this TIM2 image.
         /// </summary>
         public int Version { get; internal set; }
+
+        /// <summary>
+        /// Whether the tim2 is 16 or 128 bytes aligned
+        /// </summary>
+        public TIM2ByteAlignment Alignment { get; internal set; }
 
         /// <inheritdoc />
         public override string Name

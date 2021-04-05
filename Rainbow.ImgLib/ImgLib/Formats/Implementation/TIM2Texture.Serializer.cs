@@ -32,7 +32,6 @@ namespace Rainbow.ImgLib.Formats.Implementation
 {
     public class TIM2TextureSerializer : TextureFormatSerializer
     {
-
         public string Name { get { return TIM2Texture.NAME;  } }
 
         public string PreferredFormatExtension { get { return ".tm2";  } }
@@ -68,8 +67,8 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
         public TextureFormat Open(Stream formatData)
         {
-            int version, textureCount;
-            ReadHeader(formatData, out version, out textureCount);
+            int version, alignment, textureCount;
+            ReadHeader(formatData, out version, out alignment, out textureCount);
 
             //construct images
             List<TIM2Segment> imagesList = new List<TIM2Segment>();
@@ -83,6 +82,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             TIM2Texture tim = new TIM2Texture(imagesList);
             tim.Version = version;
+            tim.Alignment = (TIM2Texture.TIM2ByteAlignment)alignment;
             return tim;
         }
 
@@ -95,19 +95,34 @@ namespace Rainbow.ImgLib.Formats.Implementation
             }
 
             BinaryWriter writer = new BinaryWriter(outFormatData);
+            WriteMainHeader(tim2, writer);
+
+            TIM2SegmentSerializer serializer = new TIM2SegmentSerializer(tim2.Swizzled);
+            foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
+            {
+                serializer.Save(segment, outFormatData);
+            }
+        }
+
+        private static void WriteMainHeader(TIM2Texture tim2, BinaryWriter writer)
+        {
             writer.Write("TIM2".ToCharArray());
-            writer.Write((ushort)tim2.Version);
+            writer.Write((byte)tim2.Version);
+            writer.Write((byte)tim2.Alignment);
             writer.Write((ushort)tim2.TIM2SegmentsList.Count);
+
 
             for (int i = 0; i < 8; i++)
             {
                 writer.Write((byte)0);
             }
-
-            TIM2SegmentSerializer serializer=new TIM2SegmentSerializer(tim2.Swizzled);
-            foreach (TIM2Segment segment in tim2.TIM2SegmentsList)
+            
+            if ( tim2.Alignment == TIM2Texture.TIM2ByteAlignment.Align128Bytes ) //add more padding
             {
-                serializer.Save(segment, outFormatData);
+                for (int i = 0; i < 0x70; i++)
+                {
+                    writer.Write((byte)0);
+                }
             }
         }
 
@@ -122,6 +137,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
 
             metadata.BeginSection("TIM2");
             metadata.PutAttribute("Version", tim2.Version);
+            metadata.PutAttribute("Alignment", (int)tim2.Alignment);
             metadata.PutAttribute("Basename", basename);
             metadata.PutAttribute("Swizzled", tim2.Swizzled);
 
@@ -144,6 +160,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 metadata.EnterSection("TIM2");
 
                 int version = metadata.GetAttribute<int>("Version");
+                int alignment = metadata.GetAttribute<int>("Alignment");
                 string basename = metadata.GetAttribute<string>("Basename");
                 bool swizzled = metadata.GetAttribute<bool>("Swizzled");
                 int textureCount = metadata.GetAttribute<int>("Textures");
@@ -159,6 +176,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 metadata.ExitSection();
                 tim2 = new TIM2Texture(imagesList);
                 tim2.Version = version;
+                tim2.Alignment = (TIM2Texture.TIM2ByteAlignment)alignment;
             }
             catch (FormatException e)
             {
@@ -180,7 +198,7 @@ namespace Rainbow.ImgLib.Formats.Implementation
             return tim2;
         }
 
-        private void ReadHeader(Stream stream, out int version, out int textureCount)
+        private void ReadHeader(Stream stream, out int version, out int alignment, out int textureCount)
         {
             BinaryReader reader = new BinaryReader(stream);
 
@@ -190,9 +208,15 @@ namespace Rainbow.ImgLib.Formats.Implementation
                 throw new TextureFormatException("Invalid TIM2 image!");
             }
 
-            version = reader.ReadUInt16();
+            version = reader.ReadByte();
+            alignment = reader.ReadByte();
             textureCount = reader.ReadUInt16();
             reader.BaseStream.Position += 8;
+
+            if (alignment > 0) // skip remaining 0x70 bytes
+            {
+                reader.BaseStream.Position += 0x70;
+            }
         }
     }
 

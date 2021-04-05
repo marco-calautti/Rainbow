@@ -39,6 +39,17 @@ namespace Rainbow.App.GUI.Model
         }
 
         [CategoryAttribute(CATEGORY_SPECIFIC)]
+        [DescriptionAttribute("Byte alignment of the data in this TIM2 texture.")]
+        [DisplayName("Byte Alignment")]
+        public TIM2Texture.TIM2ByteAlignment Alignment
+        {
+            get
+            {
+                return ((TIM2Texture)texture).Alignment;
+            }
+        }
+
+        [CategoryAttribute(CATEGORY_SPECIFIC)]
         [DescriptionAttribute("The number of bits used to encode one pixel.")]
         [DisplayName("Bit Depth")]
         public int Bpp
