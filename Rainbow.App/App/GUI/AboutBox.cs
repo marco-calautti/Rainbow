@@ -34,7 +34,7 @@ namespace Rainbow.App.GUI
             this.labelProductName.Text = AssemblyProduct;
             this.labelVersion.Text = String.Format("Version {0}", Application.ProductVersion);
             this.labelCopyright.Text = AssemblyCopyright;
-            this.textBoxLicense.Text = Properties.Resources.License;
+            this.textBoxLicense.Lines = System.Text.RegularExpressions.Regex.Split(Properties.Resources.License, "\r\n|\r|\n");
         }
 
         #region Assembly Attribute Accessors
