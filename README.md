@@ -1,4 +1,4 @@
-Rainbow [![Build Status](https://travis-ci.org/marco-calautti/Rainbow.svg?branch=master)](https://travis-ci.org/marco-calautti/Rainbow) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/fdef8602205e499683cc536a27f8be02)](https://www.codacy.com/app/marco-calautti/Rainbow?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marco-calautti/Rainbow&amp;utm_campaign=Badge_Grade)
+Rainbow [![Build Status](https://travis-ci.com/marco-calautti/Rainbow.svg?branch=master)](https://travis-ci.com/marco-calautti/Rainbow) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/414449c402094f33bdbdc5c7b125cc41)](https://www.codacy.com/gh/marco-calautti/Rainbow/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marco-calautti/Rainbow&amp;utm_campaign=Badge_Grade)
 =======
 **Download latest dev build from [here](https://www.dropbox.com/s/tzfosqzbifqieo4/rainbow_win32_bin_dev.zip?dl=1).**
 
