@@ -1,14 +1,12 @@
 ## Travis CI Integration
 
-language: c
+language: csharp
+solution: Rainbow.sln
 
 cache: apt
 
-install:
-  - sudo apt-get update
-  - sudo apt-get install mono-devel nunit-console
 script:
-  - xbuild /p:Configuration=Release Rainbow.sln
+  - msbuild /p:Configuration=Release Rainbow.sln
   
 after_success:
 - cp *.md /home/travis/build/marco-calautti/Rainbow/Rainbow.App/bin/v3.5/Release/
